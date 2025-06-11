@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +12,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _rememberMe = false;
 
   void _login() {
     if (_formKey.currentState!.validate()) {
@@ -21,6 +23,18 @@ class _LoginPageState extends State<LoginPage> {
 
   void _goToRegister() {
     Navigator.pushReplacementNamed(context, '/register');
+  }
+
+  void _forgotPassword() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+    );
+  }
+
+  void _signInWithGoogle() {
+    // Implement Google sign-in logic
+    print("Google sign-in clicked!");
   }
 
   @override
@@ -49,7 +63,8 @@ class _LoginPageState extends State<LoginPage> {
                   prefixIcon: Icon(Icons.email),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) return 'Please enter your email';
+                  if (value == null || value.isEmpty)
+                    return 'Please enter your email';
                   if (!value.contains('@')) return 'Enter a valid email';
                   return null;
                 },
@@ -64,20 +79,55 @@ class _LoginPageState extends State<LoginPage> {
                   prefixIcon: Icon(Icons.lock),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) return 'Please enter your password';
-                  if (value.length < 6) return 'Password must be at least 6 characters';
+                  if (value == null || value.isEmpty)
+                    return 'Please enter your password';
+                  if (value.length < 6)
+                    return 'Password must be at least 6 characters';
                   return null;
                 },
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Checkbox(
+                    value: _rememberMe,
+                    onChanged: (value) {
+                      setState(() {
+                        _rememberMe = value ?? false;
+                      });
+                    },
+                  ),
+                  const Text("Remember Me"),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: _forgotPassword,
+                    child: const Text("Forgot Password?"),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _login,
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 14.0),
-                  child: Text(
-                    'Login',
-                    style: TextStyle(fontSize: 18),
-                  ),
+                  child: Text('Login', style: TextStyle(fontSize: 18)),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const SizedBox(height: 40),
+              const Text(
+                "Or continue with Google",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: _signInWithGoogle,
+                icon: const Icon(Icons.account_circle),
+                label: const Text('Continue with Google'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red, // Customize button color
+                  padding: const EdgeInsets.symmetric(vertical: 14.0),
                 ),
               ),
               const SizedBox(height: 16),

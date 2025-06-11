@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import '../widgets/cards/CardWidget.dart'; // Import the CardWidget
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -10,101 +11,117 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   final List<String> imageUrls = const [
-    'https://via.placeholder.com/600x300.png?text=Slide+1',
-    'https://via.placeholder.com/600x300.png?text=Slide+2',
-    'https://via.placeholder.com/600x300.png?text=Slide+3',
+    'assets/carousel_1.png',
+    'assets/carousel_2.png',
+    'assets/carousel_3.png',
   ];
 
   int _currentIndex = 0;
-  final CarouselSliderController _carouselController = CarouselSliderController(); // Updated
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Landing')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CarouselSlider(
-              carouselController: _carouselController,  // Correct usage
-              options: CarouselOptions(
-                height: 200.0,
-                autoPlay: false,
-                enlargeCenterPage: true,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-              ),
-              items: imageUrls.map((url) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[200],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          url,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: imageUrls.asMap().entries.map((entry) {
-                bool isActive = _currentIndex == entry.key;
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  width: isActive ? 24.0 : 12.0,
-                  height: 12.0,
-                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                  decoration: BoxDecoration(
-                    color: isActive
-                        ? const Color.fromARGB(255, 235, 86, 49)
-                        : Colors.grey,
-                    borderRadius: BorderRadius.circular(6),
+      appBar: AppBar(title: const Text('Loyalty')),
+      body: Stack(
+        children: [
+          // Main Carousel Container
+          Column(
+            children: [
+              Expanded(
+                child: CarouselSlider(
+                  carouselController: _carouselController,
+                  options: CarouselOptions(
+                    height: double.infinity, // Take up remaining space
+                    autoPlay: false,
+                    enlargeCenterPage: true,
+                    viewportFraction: 1.0,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
                   ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
+                  items: imageUrls.map((url) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return CardWidget(imageUrl: url); // Use the CardWidget here
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+              // Carousel Indicators
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: imageUrls.asMap().entries.map((entry) {
+                  bool isActive = _currentIndex == entry.key;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    width: isActive ? 48.0 : 12.0,
+                    height: 12.0,
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 4.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? const Color.fromARGB(255, 235, 86, 49)
+                          : Colors.grey,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  );
+                }).toList(),
+              ),
+              // Next Slide or Get Started Button at the bottom
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_currentIndex == imageUrls.length - 1) {
+                        // Navigate to MainPage when "Get Started" is clicked
+                        Navigator.pushReplacementNamed(context, '/login');
+                      } else {
+                        _carouselController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.linear,
+                        );
+                      }
+                    },
+                    child: Text(
+                      _currentIndex == imageUrls.length - 1
+                          ? 'Get Started'
+                          : 'Next Slide',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // Skip Button on the Top Right
+          Positioned(
+            top: 20,
+            right: 20,
+            child: TextButton(
               onPressed: () {
-                _carouselController.nextPage(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.linear,
-                );
+                // Navigate to the login screen or main page immediately
+                Navigator.pushReplacementNamed(context, '/login');
               },
-              child: const Text('Next Slide'),
+              child: const Text(
+                'Skip',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
             ),
-            // const SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     Navigator.pushReplacementNamed(context, '/login');
-            //   },
-            //   child: const Text('Next'),
-            // ),
-            // const SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     Navigator.pushReplacementNamed(context, '/main');
-            //   },
-            //   child: const Text('To Main'),
-            // ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

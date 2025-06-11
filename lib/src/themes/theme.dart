@@ -30,7 +30,7 @@ final ThemeData lightTheme = ThemeData(
     style: ElevatedButton.styleFrom(
       foregroundColor: Colors.white, backgroundColor: Colors.red, // Button text color
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
     ),
   ),
 );
