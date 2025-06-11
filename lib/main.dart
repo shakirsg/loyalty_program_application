@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'src/config/route.dart';
+import 'src/themes/theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Landing App',
+      title: 'Loyalty App',
+      theme: lightTheme,  // Apply theme here
       debugShowCheckedModeBanner: false,
       initialRoute: '/landing',
       routes: appRoutes,
