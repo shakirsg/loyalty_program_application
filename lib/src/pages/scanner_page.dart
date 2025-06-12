@@ -4,8 +4,8 @@ import 'package:loyalty_program_application/src/components/PointsCard.dart';
 import 'package:loyalty_program_application/src/components/RecentActivityCard.dart';
 import 'package:loyalty_program_application/src/components/StatusCard.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class ScannerPage extends StatelessWidget {
+  const ScannerPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,11 @@ class HomePage extends StatelessWidget {
               title: 'Quick Actions',
               cardCount: 2,
               cards: [
-                QuickActionCard(icon: Icons.qr_code, title: 'Scan Product', targetIndex: 2,),
+                QuickActionCard(
+                  icon: Icons.qr_code,
+                  title: 'Scan Product',
+                  targetIndex: 2,
+                ),
                 QuickActionCard(
                   icon: Icons.card_giftcard,
                   title: 'Redeem Points',

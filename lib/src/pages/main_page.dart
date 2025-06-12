@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/pages/home_page.dart';
 import 'package:loyalty_program_application/src//widgets/BottomNavigationBar/bottom_navigation_bar.dart';
+import 'package:loyalty_program_application/src/pages/profile_page.dart';
+import 'package:loyalty_program_application/src/pages/rewards_page.dart';
+import 'package:loyalty_program_application/src/pages/scanner_page.dart';
+
+// Create a GlobalKey for MainPage
+final GlobalKey<_MainPageState> mainPageKey = GlobalKey<_MainPageState>();
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -14,12 +20,12 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const Center(child: Text('Rewards Page')), // Placeholder
-    const Center(child: Text('Scan Page')), // Placeholder
-    const Center(child: Text('Profile Page')), // Placeholder
+    const RewardsPage(),
+    const ScannerPage(),
+    const ProfilePage(),
   ];
 
-  void _onItemTapped(int index) {
+  void onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -31,7 +37,7 @@ class _MainPageState extends State<MainPage> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        onTap: onItemTapped,
       ),
       // backgroundColor: Colors.transparent, // Make the background transparent
     );
