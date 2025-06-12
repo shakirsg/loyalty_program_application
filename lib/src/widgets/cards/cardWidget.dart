@@ -14,7 +14,7 @@ class CardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         // borderRadius: BorderRadius.circular(10),
         borderRadius: BorderRadius.zero, 
-        color: Colors.grey[200],
+        color: Colors.white,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),

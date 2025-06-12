@@ -96,6 +96,10 @@ class _LoginPageState extends State<LoginPage> {
                         _rememberMe = value ?? false;
                       });
                     },
+                    side: BorderSide(
+                      color: Color(0xFFF05024), // Border color
+                      width: 2, // Border width
+                    ),
                   ),
                   const Text("Remember Me"),
                   const Spacer(),
@@ -109,17 +113,26 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                 onPressed: _login,
                 child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 14.0),
-                  child: Text('Login', style: TextStyle(fontSize: 18)),
+                  padding: EdgeInsets.symmetric(vertical: 0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Sign in'),
+                      Icon(
+                        Icons.arrow_forward, // Right arrow icon
+                        size: 24,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
-              const SizedBox(height: 40),
-              const Text(
-                "Or continue with Google",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
-              ),
+              // const SizedBox(height: 40),
+              // const Text(
+              //   "Or continue with Google",
+              //   textAlign: TextAlign.center,
+              //   style: TextStyle(fontSize: 16),
+              // ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _signInWithGoogle,
@@ -127,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                 label: const Text('Continue with Google'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red, // Customize button color
-                  padding: const EdgeInsets.symmetric(vertical: 14.0),
+                  padding: const EdgeInsets.symmetric(vertical: 18.0),
                 ),
               ),
               const SizedBox(height: 16),

@@ -13,9 +13,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Loyalty App',
-      theme: lightTheme,  // Apply theme here
+      theme: lightTheme, // Apply theme here
+
       debugShowCheckedModeBanner: false,
-      initialRoute: '/landing',
+      initialRoute: '/main',
       routes: appRoutes,
     );
   }

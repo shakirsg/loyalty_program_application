@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/pages/home_page.dart';
-import '../pages/landing_page.dart';
-import '../pages/login_page.dart';
-import '../widgets/BottomNavigationBar/bottom_navigation_bar.dart';
+import 'package:loyalty_program_application/src/pages/landing_page.dart';
+import 'package:loyalty_program_application/src/pages/login_page.dart';
+import 'package:loyalty_program_application/src//widgets/BottomNavigationBar/bottom_navigation_bar.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -19,7 +19,6 @@ class _MainPageState extends State<MainPage> {
     const Center(child: Text('Cart Page')), // Placeholder
     const Center(child: Text('Search Page')), // Placeholder
     const Center(child: Text('Profile Page')), // Placeholder
-
   ];
 
   void _onItemTapped(int index) {
@@ -36,6 +35,7 @@ class _MainPageState extends State<MainPage> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
+      // backgroundColor: Colors.transparent, // Make the background transparent
     );
   }
 }
