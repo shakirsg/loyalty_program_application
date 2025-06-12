@@ -1,167 +1,198 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/components/QuickActionCard.dart';
-import 'package:loyalty_program_application/src/components/PointsCard.dart';
-import 'package:loyalty_program_application/src/components/RecentActivityCard.dart';
-import 'package:loyalty_program_application/src/components/StatusCard.dart';
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 
-class ScannerPage extends StatelessWidget {
+class ScannerPage extends StatefulWidget {
   const ScannerPage({super.key});
+
+  @override
+  _QRViewExampleState createState() => _QRViewExampleState();
+}
+
+class _QRViewExampleState extends State<ScannerPage>
+    with SingleTickerProviderStateMixin {
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Barcode? result;
+  QRViewController? controller;
+
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  final double scanBoxSize = 250;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    )..repeat();
+
+    _animation = Tween<double>(begin: 0, end: scanBoxSize).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.linear),
+    );
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid && controller != null) {
+      controller!.pauseCamera();
+    } else if (Platform.isIOS && controller != null) {
+      controller!.resumeCamera();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      backgroundColor: const Color(0xFFEFEFEF),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // First Section: Points Plus
-            SectionCard(
-              title: 'Points Plus',
-              titleColor: Colors.white,
-              description: 'Welcome back, Alex',
-              descriptionColor: Colors.white,
-              cardCount: 1,
-              cards: [PointsCard()],
-              backgroundColor: Color(0xFFF05024), // Example background color
-            ),
-
-            // Second Section: Quick Actions
-            SectionCard(
-              title: 'Quick Actions',
-              cardCount: 2,
-              cards: [
-                QuickActionCard(
-                  icon: Icons.qr_code,
-                  title: 'Scan Product',
-                  targetIndex: 2,
+      appBar: AppBar(
+        title: Text('QR Code Scanner'),
+        backgroundColor: Color(0xFFF05024),
+      ),
+      body: Stack(
+        children: [
+          QRView(
+            key: qrKey,
+            onQRViewCreated: _onQRViewCreated,
+          ),
+          Center(
+            child: Stack(
+              children: [
+                // White border
+                Container(
+                  width: scanBoxSize,
+                  height: scanBoxSize,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
                 ),
-                QuickActionCard(
-                  icon: Icons.card_giftcard,
-                  title: 'Redeem Points',
-                  targetIndex: 3,
+                // Red corners
+                Positioned(top: 0, left: 0, child: _cornerBox(Alignment.topLeft)),
+                Positioned(top: 0, right: 0, child: _cornerBox(Alignment.topRight)),
+                Positioned(bottom: 0, left: 0, child: _cornerBox(Alignment.bottomLeft)),
+                Positioned(bottom: 0, right: 0, child: _cornerBox(Alignment.bottomRight)),
+
+                // Animated red scanline
+                AnimatedBuilder(
+                  animation: _animation,
+                  builder: (context, child) {
+                    return Positioned(
+                      top: _animation.value,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        width: scanBoxSize,
+                        height: 2,
+                        color: Colors.redAccent,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
-
-            // Third Section: Stats
-            SectionCard(
-              title: 'Stats',
-              cardCount: 2,
-              cards: [
-                StatusCard(
-                  icon: Icons.monetization_on,
-                  title: 'Total earned!',
-                  description: '750 pts',
-                ),
-                StatusCard(
-                  icon: Icons.history,
-                  title: 'This month',
-                  description: '250 pts',
-                ),
-              ],
+          ),
+          // Scan result
+          Positioned(
+            bottom: 50,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: (result != null)
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Barcode Type: ${describeEnum(result!.format)}\nData: ${result!.code}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              result = null;
+                            });
+                          },
+                          child: Text('Scan Again'),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                        ),
+                      ],
+                    )
+                  : Text(
+                      'Scan a code',
+                      style: TextStyle(color: Colors.white),
+                    ),
             ),
-
-            // Fourth Section: Recent Activity
-            SectionCard(
-              title: 'Recent Activity',
-              description: '',
-              cardCount: 1,
-
-              cards: [
-                RecentActivityCard(
-                  icon: Icons.arrow_upward,
-                  title: 'Scanned Coffee Bag',
-                  value: '+200 pts',
-                  date: '2025-06-12',
-                  location: 'New York, USA',
-                  downtime: '2 hours',
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _cornerBox(Alignment alignment) {
+    return Container(
+      width: 80,
+      height: 80,
+      child: CustomPaint(
+        painter: _CornerPainter(color: Colors.red, alignment: alignment),
+      ),
+    );
+  }
+
+  void _onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      setState(() {
+        result = scanData;
+      });
+    });
   }
 }
 
-class SectionCard extends StatelessWidget {
-  final String title;
-  final String description;
-  final int cardCount;
-  final List<Widget> cards;
-  final Color backgroundColor; // Background color prop
-  final Color titleColor; // Title color prop
-  final Color descriptionColor; // Description color prop
-  final double bottomRadius; // Bottom radius prop
+class _CornerPainter extends CustomPainter {
+  final Color color;
+  final Alignment alignment;
 
-  const SectionCard({
-    super.key,
-    required this.title,
-    this.description = '', // Default value is an empty string
-    required this.cardCount,
-    required this.cards,
-    this.backgroundColor = const Color(0xFFEFEFEF), // Default background color
-    this.titleColor = Colors.black, // Default title color
-    this.descriptionColor = Colors.grey, // Default description color
-    this.bottomRadius = 25.0, // Default bottom radius
-  });
+  _CornerPainter({required this.color, required this.alignment});
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: backgroundColor, // Apply the background color
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(bottomRadius), // Bottom-left radius
-            bottomRight: Radius.circular(bottomRadius), // Bottom-right radius
-          ),
-        ),
-        padding: const EdgeInsets.all(
-          16.0,
-        ), // Optional padding inside the container
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: titleColor, // Apply title color
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Only show the description if it's not empty
-            if (description.isNotEmpty) ...[
-              Text(
-                description,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: descriptionColor, // Apply description color
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-            // Using Row with Expanded and flex for responsive cards
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(cardCount, (index) {
-                return Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: cards.isNotEmpty ? cards[index] : SizedBox.shrink(),
-                  ),
-                );
-              }),
-            ),
-          ],
-        ),
-      ),
-    );
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 4
+      ..style = PaintingStyle.stroke;
+
+    final path = Path();
+    if (alignment == Alignment.topLeft) {
+      path.moveTo(0, size.height * 0.3);
+      path.lineTo(0, 0);
+      path.lineTo(size.width * 0.3, 0);
+    } else if (alignment == Alignment.topRight) {
+      path.moveTo(size.width * 0.7, 0);
+      path.lineTo(size.width, 0);
+      path.lineTo(size.width, size.height * 0.3);
+    } else if (alignment == Alignment.bottomLeft) {
+      path.moveTo(0, size.height * 0.7);
+      path.lineTo(0, size.height);
+      path.lineTo(size.width * 0.3, size.height);
+    } else if (alignment == Alignment.bottomRight) {
+      path.moveTo(size.width * 0.7, size.height);
+      path.lineTo(size.width, size.height);
+      path.lineTo(size.width, size.height * 0.7);
+    }
+
+    canvas.drawPath(path, paint);
   }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
