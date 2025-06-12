@@ -1,166 +1,248 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/components/QuickActionCard.dart';
-import 'package:loyalty_program_application/src/components/PointsCard.dart';
-import 'package:loyalty_program_application/src/components/RecentActivityCard.dart';
-import 'package:loyalty_program_application/src/components/StatusCard.dart';
 
-class RewardsPage extends StatelessWidget {
+class RewardsPage extends StatefulWidget {
   const RewardsPage({super.key});
+
+  @override
+  _RewardsPageState createState() => _RewardsPageState();
+}
+
+class _RewardsPageState extends State<RewardsPage> {
+  String _selectedCategory = 'All'; // Default category
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: AppBar(
+        title: Text('Rewards Catalog'),
+        backgroundColor: Color(0xFFF05024),
+      ),
       backgroundColor: const Color(0xFFEFEFEF),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // First Section: Points Plus
-            SectionCard(
-              title: 'Points Plus',
-              titleColor: Colors.white,
-              description: 'Welcome back, Alex',
-              descriptionColor: Colors.white,
-              cardCount: 1,
-              cards: [PointsCard()],
-              backgroundColor: Color(0xFFF05024), // Example background color
+            // Top Background Section
+            Container(
+              width: double.infinity,
+              color: Color(0xFFF05024),
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rewards Catalog',
+                    style: TextStyle(fontSize: 30, color: Colors.white),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Redeem your points for rewards',
+                    style: TextStyle(fontSize: 18, color: Colors.white70),
+                  ),
+                ],
+              ),
             ),
 
-            // Second Section: Quick Actions
-            SectionCard(
-              title: 'Quick Actions',
-              cardCount: 2,
-              cards: [
-                QuickActionCard(
-                  icon: Icons.qr_code,
-                  title: 'Scan Product',
-                  targetIndex: 2,
-                ),
-                QuickActionCard(
-                  icon: Icons.card_giftcard,
-                  title: 'Redeem Points',
-                  targetIndex: 3,
-                ),
-              ],
-            ),
+            // Main Panel
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  // Search Bar
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Search...',
+                            border: OutlineInputBorder(),
+                            filled: true, // Enable filled background
+                            fillColor: Colors.white, // Set the background color to white
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Container(
+                        width: 40, // Square button size
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.search, color: Color(0xFFF05024)),
+                          onPressed: () {
+                            // Handle search logic
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
 
-            // Third Section: Stats
-            SectionCard(
-              title: 'Stats',
-              cardCount: 2,
-              cards: [
-                StatusCard(
-                  icon: Icons.monetization_on,
-                  title: 'Total earned!',
-                  description: '750 pts',
-                ),
-                StatusCard(
-                  icon: Icons.history,
-                  title: 'This month',
-                  description: '250 pts',
-                ),
-              ],
-            ),
+                  // Search Categories (Scroll-x)
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _categoryButton('All'),
+                        _categoryButton('Food'),
+                        _categoryButton('Electronics'),
+                        _categoryButton('Fashion'),
+                        _categoryButton('Clock'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20),
 
-            // Fourth Section: Recent Activity
-            SectionCard(
-              title: 'Recent Activity',
-              description: '',
-              cardCount: 1,
+                  // Available Rewards Section
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Available Rewards',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '500 pts available',
+                        style: TextStyle(fontSize: 18, color: Colors.red),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
 
-              cards: [
-                RecentActivityCard(
-                  icon: Icons.arrow_upward,
-                  title: 'Scanned Coffee Bag',
-                  value: '+200 pts',
-                  date: '2025-06-12',
-                  location: 'New York, USA',
-                  downtime: '2 hours',
-                ),
-              ],
+                  // First Reward Card
+                  _rewardCard(
+                    imageUrl: './assets/coffee.png', // Use real image URL
+                    title: 'Free Coffee',
+                    description: 'Get a free coffee at any participating store',
+                    points: '200',
+                  ),
+                  SizedBox(height: 20),
+
+                  // Second Reward Card
+                  _rewardCard(
+                    imageUrl: './assets/carousel_3.png', // Use real image URL
+                    title: '15% Discount',
+                    description: '15% off your next purchase',
+                    points: '300',
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
   }
-}
 
-class SectionCard extends StatelessWidget {
-  final String title;
-  final String description;
-  final int cardCount;
-  final List<Widget> cards;
-  final Color backgroundColor; // Background color prop
-  final Color titleColor; // Title color prop
-  final Color descriptionColor; // Description color prop
-  final double bottomRadius; // Bottom radius prop
+  // Category Button Widget
+  Widget _categoryButton(String label) {
+    bool isSelected = _selectedCategory == label;
 
-  const SectionCard({
-    super.key,
-    required this.title,
-    this.description = '', // Default value is an empty string
-    required this.cardCount,
-    required this.cards,
-    this.backgroundColor = const Color(0xFFEFEFEF), // Default background color
-    this.titleColor = Colors.black, // Default title color
-    this.descriptionColor = Colors.grey, // Default description color
-    this.bottomRadius = 25.0, // Default bottom radius
-  });
-
-  @override
-  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: backgroundColor, // Apply the background color
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(bottomRadius), // Bottom-left radius
-            bottomRight: Radius.circular(bottomRadius), // Bottom-right radius
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ElevatedButton(
+        onPressed: () {
+          setState(() {
+            _selectedCategory = label; // Update selected category
+          });
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Color(0xFFF05024) : Colors.white, // Change color based on selection
+          padding: EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          side: BorderSide(
+            color: Color(0xFFF05024), // Border color for unselected buttons
           ),
         ),
-        padding: const EdgeInsets.all(
-          16.0,
-        ), // Optional padding inside the container
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: titleColor, // Apply title color
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Only show the description if it's not empty
-            if (description.isNotEmpty) ...[
-              Text(
-                description,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: descriptionColor, // Apply description color
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-            // Using Row with Expanded and flex for responsive cards
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(cardCount, (index) {
-                return Expanded(
-                  flex: 1,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: cards.isNotEmpty ? cards[index] : SizedBox.shrink(),
-                  ),
-                );
-              }),
-            ),
-          ],
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            color: isSelected ? Colors.white : Color(0xFFF05024), // Change text color based on selection
+          ),
         ),
+      ),
+    );
+  }
+
+  // Reward Card Widget
+  Widget _rewardCard({
+    required String imageUrl,
+    required String title,
+    required String description,
+    required String points,
+  }) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Container(
+            height: 150,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(imageUrl),
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                Text(description),
+                SizedBox(height: 8),
+                Stack(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: Text('Redeem Reward'),
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '$points pts',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

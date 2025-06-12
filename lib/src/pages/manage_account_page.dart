@@ -9,8 +9,15 @@ class ManageAccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Account'),
+        title: Text('Back'),
         backgroundColor: Color(0xFFF05024),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          color: Colors.white, // Set your desired color here
+          onPressed: () {
+            Navigator.of(context).pop(); // Navigate back
+          },
+        ),
       ),
       backgroundColor: const Color(0xFFEFEFEF),
 

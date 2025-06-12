@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/notifications_page.dart';  // Import Notifications Page
+import 'package:loyalty_program_application/src/pages/help_support_page.dart';
+import 'package:loyalty_program_application/src/pages/manage_account_page.dart';
+import 'package:loyalty_program_application/src/pages/notifications_page.dart';
+import 'package:loyalty_program_application/src/pages/privacy_security_page.dart'; // Import Notifications Page
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -83,9 +86,15 @@ class ProfilePage extends StatelessWidget {
                         ),
                         Spacer(),
                         IconButton(
-                          icon: Icon(Icons.edit),
+                          icon: Icon(Icons.edit_outlined), // Outlined edit icon
                           onPressed: () {
                             // Navigate to Manage Account page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ManageAccountPage(),
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -118,7 +127,9 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   // Notifications Item
                   ListTile(
-                    leading: Icon(Icons.notifications),
+                    leading: Icon(
+                      Icons.notifications_outlined,
+                    ), // Outlined notifications icon
                     title: Text('Notifications'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -139,7 +150,8 @@ class ProfilePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => NotificationsPage(),  // Navigate here
+                          builder: (context) =>
+                              NotificationsPage(), // Navigate here
                         ),
                       );
                     },
@@ -147,21 +159,34 @@ class ProfilePage extends StatelessWidget {
                   Divider(),
                   // Privacy & Security Item
                   ListTile(
-                    leading: Icon(Icons.lock),
+                    leading: Icon(Icons.lock_outline), // Outlined lock icon
                     title: Text('Privacy & Security'),
                     trailing: Icon(Icons.arrow_forward_ios),
                     onTap: () {
                       // Navigate to privacy settings
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PrivacySecurityPage(),
+                        ),
+                      );
                     },
                   ),
                   Divider(),
                   // Help & Support Item
                   ListTile(
-                    leading: Icon(Icons.help),
+                    leading: Icon(Icons.help_outline), // Outlined help icon
                     title: Text('Help & Support'),
                     trailing: Icon(Icons.arrow_forward_ios),
                     onTap: () {
-                      // Navigate to help and support page
+                      // Navigate to Privacy & Security page
+                      // Navigate to Help Support page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HelpSupportPage(),
+                        ),
+                      );
                     },
                   ),
                 ],

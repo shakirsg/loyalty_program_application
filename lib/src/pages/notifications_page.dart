@@ -5,8 +5,15 @@ class NotificationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: Text('Back'),
         backgroundColor: Color(0xFFF05024),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          color: Colors.white, // Set your desired color here
+          onPressed: () {
+            Navigator.of(context).pop(); // Navigate back
+          },
+        ),
       ),
       backgroundColor: const Color(0xFFEFEFEF),
 
@@ -77,10 +84,14 @@ class NotificationCard extends StatelessWidget {
                 // Notification Content
                 Row(
                   children: [
-                    Icon(
-                      Icons.notifications,
-                      size: 40,
-                      color: Color(0xFFF05024),
+                    CircleAvatar(
+                      radius: 25, // Size of the circle
+                      backgroundColor: Color.fromRGBO(254, 236, 231, 1.0), // Circle color
+                      child: Icon(
+                        Icons.notifications_outlined,
+                        size: 30, // Icon size inside the circle
+                        color: Color(0xFFF05024),
+                      ),
                     ),
                     SizedBox(width: 16),
                     Expanded(
