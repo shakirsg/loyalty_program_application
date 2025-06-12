@@ -10,10 +10,22 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  final List<String> imageUrls = const [
-    'assets/carousel_1.png',
-    'assets/carousel_2.png',
-    'assets/carousel_3.png',
+  final List<Map<String, String>> cardData = const [
+    {
+      'imageUrl': 'assets/carousel_2.png',
+      'title': 'Scan Products to Earn Points',
+      'description': 'Use your camera to scan QR codes on participating products and instantly earn loyalty points.',
+    },
+    {
+      'imageUrl': 'assets/carousel_1.png',
+      'title': 'Blockchain-Secured Points',
+      'description': "Your points are securely stored on blockchain technology, ensuring they can't be lost or tampered with.",
+    },
+    {
+      'imageUrl': 'assets/carousel_3.png',
+      'title': 'Redeem for Exclusive Rewards',
+      'description': 'Exchange your points for exclusive discounts, products, and experiences from our partners.',
+    },
   ];
 
   int _currentIndex = 0;
@@ -50,12 +62,14 @@ class _LandingPageState extends State<LandingPage> {
                                 });
                               },
                             ),
-                            items: imageUrls.map((url) {
+                            items: cardData.map((data) {
                               return Builder(
                                 builder: (BuildContext context) {
                                   return CardWidget(
-                                    imageUrl: url,
-                                  ); // Use the CardWidget here
+                                    imageUrl: data['imageUrl']!,
+                                    title: data['title']!,
+                                    description: data['description']!,
+                                  );
                                 },
                               );
                             }).toList(),
@@ -75,7 +89,7 @@ class _LandingPageState extends State<LandingPage> {
                   if (shouldDisplayImages)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: imageUrls.asMap().entries.map((entry) {
+                      children: cardData.asMap().entries.map((entry) {
                         bool isActive = _currentIndex == entry.key;
                         return AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
@@ -97,11 +111,11 @@ class _LandingPageState extends State<LandingPage> {
                   // Next Slide or Get Started Button at the bottom
                   Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: Container(
+                    child: SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          if (_currentIndex == imageUrls.length - 1) {
+                          if (_currentIndex == cardData.length - 1) {
                             // Navigate to MainPage when "Get Started" is clicked
                             Navigator.pushReplacementNamed(context, '/login');
                           } else {
@@ -115,11 +129,11 @@ class _LandingPageState extends State<LandingPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              _currentIndex == imageUrls.length - 1
+                              _currentIndex == cardData.length - 1
                                   ? 'Get Started'
                                   : 'Next',
                             ),
-                            if (_currentIndex != imageUrls.length - 1)
+                            if (_currentIndex != cardData.length - 1)
                               Icon(
                                 Icons.arrow_forward_ios, // Right arrow icon
                                 size: 18,

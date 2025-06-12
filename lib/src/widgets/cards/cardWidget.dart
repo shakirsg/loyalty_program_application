@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 
 class CardWidget extends StatelessWidget {
   final String imageUrl;
+  final String title;        // Title as a parameter
+  final String description;  // Description as a parameter
 
-  const CardWidget({super.key, required this.imageUrl});
+  const CardWidget({super.key, 
+    required this.imageUrl,
+    required this.title,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +18,6 @@ class CardWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 5.0),
       decoration: BoxDecoration(
-        // borderRadius: BorderRadius.circular(10),
-        borderRadius: BorderRadius.zero, 
         color: Colors.white,
       ),
       child: ClipRRect(
@@ -28,22 +32,22 @@ class CardWidget extends StatelessWidget {
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 20),
-            // Card Title
-            const Text(
-              'Sample Card Title',
-              style: TextStyle(
+            // Card Title (use the dynamic title)
+            Text(
+              title,  // Use the passed title
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 10),
-            // Card Description
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
+            // Card Description (use the dynamic description)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
-                'This is a sample description for the card. You can add more information here.',
+                description,  // Use the passed description
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 14),
               ),
             ),
             const SizedBox(height: 20),

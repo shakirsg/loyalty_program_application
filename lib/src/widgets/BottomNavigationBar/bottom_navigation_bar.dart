@@ -7,10 +7,10 @@ class BottomNavBar extends StatefulWidget {
   final ValueChanged<int> onTap;
 
   const BottomNavBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
@@ -107,8 +107,8 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
         Tween<double>(begin: Curves.easeInExpo.transform(_yController.value),
             end: inCurve.transform(_yController.value))
             .transform(_yController.velocity.sign * 0.5 + 0.5),
-        // Theme.of(context).colorScheme.background,
-        const Color.fromARGB(255, 241, 216, 216)
+        Theme.of(context).colorScheme.surface,
+        // const Color.fromARGB(255, 241, 216, 216)
       ),
     );
   }
@@ -136,7 +136,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     Future.delayed(
       const Duration(milliseconds: 300),
           () {
-        _yController.animateTo(1.0, duration: const Duration(milliseconds: 900));
+        _yController.animateTo(1.0, duration: const Duration(milliseconds: 700));
       },
     );
     _yController.animateTo(0.0, duration: const Duration(milliseconds: 200));
@@ -168,7 +168,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
               children: <Widget>[
                 _buildNavItem(icon: Icons.home_outlined, isSelected: widget.currentIndex == 0, index: 0),
                 _buildNavItem(icon: Icons.card_giftcard_outlined, isSelected: widget.currentIndex == 1, index: 1),
-                _buildNavItem(icon: Icons.qr_code_2_outlined, isSelected: widget.currentIndex == 2, index: 2),
+                _buildNavItem(icon: Icons.qr_code_outlined, isSelected: widget.currentIndex == 2, index: 2),
                 _buildNavItem(icon: Icons.person_outlined, isSelected: widget.currentIndex == 3, index: 3),
               ],
             ),

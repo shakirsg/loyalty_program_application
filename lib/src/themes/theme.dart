@@ -5,16 +5,32 @@ final ThemeData lightTheme = ThemeData(
   primarySwatch: Colors.blue, // Primary color for your app
   scaffoldBackgroundColor: Colors.white, // Set the default background color
   checkboxTheme: CheckboxThemeData(
-    checkColor: MaterialStateProperty.all(
+    checkColor: WidgetStateProperty.all(
       Color(0xFFF05024),
     ), // Color of the check mark when checked
-    fillColor: MaterialStateProperty.all(
+    fillColor: WidgetStateProperty.all(
       Colors.white,
     ), // Background color for the checkbox when unchecked
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(4), // Custom border radius
     ),
-   
+  ),
+  textTheme: TextTheme(
+    bodyLarge: TextStyle(color: Colors.black),
+    bodyMedium: TextStyle(color: Colors.black),
+    displayLarge: TextStyle(color: Colors.black),
+    displayMedium: TextStyle(color: Colors.black),
+    displaySmall: TextStyle(color: Colors.black),
+    // Add other styles as needed
+  ),
+  cardTheme: CardThemeData(
+    color: Colors.white, // Background color of the card
+    shadowColor: Colors.black.withOpacity(0.2), // Shadow color
+    elevation: 4, // Elevation of the card
+    margin: EdgeInsets.all(8), // Margin around the card
+    shape: RoundedRectangleBorder( // Shape of the card
+      borderRadius: BorderRadius.circular(12), // Rounded corners
+    ),
   ),
 
   inputDecorationTheme: InputDecorationTheme(
@@ -50,14 +66,7 @@ final ThemeData lightTheme = ThemeData(
   ),
   visualDensity: VisualDensity
       .adaptivePlatformDensity, // Adjusts for different screen densities
-  textTheme: TextTheme(
-    bodyLarge: TextStyle(color: Colors.black), // Default body text style
-    bodyMedium: TextStyle(color: Colors.black54), // Secondary body text style
-    titleLarge: TextStyle(
-      color: Colors.blue,
-      fontWeight: FontWeight.bold,
-    ), // Headline style (used in AppBar)
-  ),
+  
 
   appBarTheme: AppBarTheme(
     color: Color(0xFFF05024), // AppBar color
