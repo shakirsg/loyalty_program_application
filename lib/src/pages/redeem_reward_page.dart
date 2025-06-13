@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty_program_application/src/pages/rewards_success_page.dart';
 
 class RedeemRewardPage extends StatelessWidget {
   final String imageUrl;
@@ -269,9 +270,16 @@ class RedeemRewardPage extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Reward redeemed successfully!'),
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //     content: Text('Reward redeemed successfully!'),
+                            //   ),
+                            // );
+                            // Navigate to RedeemRewardPage
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RedemptionSuccessPage (),
                               ),
                             );
                           },
