@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty_program_application/src/pages/redeem_reward_page.dart';
 
 class RewardsPage extends StatefulWidget {
   const RewardsPage({super.key});
@@ -56,7 +57,8 @@ class _RewardsPageState extends State<RewardsPage> {
                             hintText: 'Search...',
                             border: OutlineInputBorder(),
                             filled: true, // Enable filled background
-                            fillColor: Colors.white, // Set the background color to white
+                            fillColor: Colors
+                                .white, // Set the background color to white
                           ),
                         ),
                       ),
@@ -151,7 +153,9 @@ class _RewardsPageState extends State<RewardsPage> {
           });
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Color(0xFFF05024) : Colors.white, // Change color based on selection
+          backgroundColor: isSelected
+              ? Color(0xFFF05024)
+              : Colors.white, // Change color based on selection
           padding: EdgeInsets.all(16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
@@ -164,7 +168,9 @@ class _RewardsPageState extends State<RewardsPage> {
           label,
           style: TextStyle(
             fontSize: 14,
-            color: isSelected ? Colors.white : Color(0xFFF05024), // Change text color based on selection
+            color: isSelected
+                ? Colors.white
+                : Color(0xFFF05024), // Change text color based on selection
           ),
         ),
       ),
@@ -172,6 +178,7 @@ class _RewardsPageState extends State<RewardsPage> {
   }
 
   // Reward Card Widget
+  // Inside _rewardCard
   Widget _rewardCard({
     required String imageUrl,
     required String title,
@@ -180,9 +187,7 @@ class _RewardsPageState extends State<RewardsPage> {
   }) {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
         children: [
           Container(
@@ -211,31 +216,29 @@ class _RewardsPageState extends State<RewardsPage> {
                 SizedBox(height: 8),
                 Text(description),
                 SizedBox(height: 8),
-                Stack(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text('Redeem Reward'),
-                        ),
-                      ],
+                    ElevatedButton(
+                      onPressed: () {
+                        // Navigate to RedeemRewardPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RedeemRewardPage(
+                              imageUrl: imageUrl,
+                              title: title,
+                              description: description,
+                              points: points,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text('Redeem Reward'),
                     ),
-                    Positioned(
-                      right: 8,
-                      top: 8,
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          '$points pts',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+                    Text(
+                      '$points pts',
+                      style: TextStyle(fontSize: 16, color: Colors.red),
                     ),
                   ],
                 ),
