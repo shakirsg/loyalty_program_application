@@ -47,7 +47,7 @@ class PointsCard extends StatelessWidget {
                               Colors.white, // Icon background color
                           radius: 12, // Circle size
                           child: Icon(
-                            Icons.arrow_upward,
+                            Icons.trending_up,
                             color: Color(0xFF22C55E), // Icon color
                             size: 20,
                           ),
@@ -100,7 +100,7 @@ class PointsCard extends StatelessWidget {
               ), // Icon background color
               radius: 16, // Circle size
               child: const Icon(
-                Icons.star,
+                Icons.flash_on,
                 color: Colors.black, // Icon color
                 size: 20,
               ),

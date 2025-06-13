@@ -123,13 +123,12 @@ class ProfilePage extends StatelessWidget {
             Card(
               margin: EdgeInsets.all(16),
               elevation: 5,
-              child: Column(
+              child: // ... inside the last Card widget's child Column:
+              Column(
                 children: [
                   // Notifications Item
                   ListTile(
-                    leading: Icon(
-                      Icons.notifications_outlined,
-                    ), // Outlined notifications icon
+                    leading: Icon(Icons.notifications_outlined),
                     title: Text('Notifications'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -146,12 +145,10 @@ class ProfilePage extends StatelessWidget {
                       ],
                     ),
                     onTap: () {
-                      // Navigate to Notifications page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              NotificationsPage(), // Navigate here
+                          builder: (context) => NotificationsPage(),
                         ),
                       );
                     },
@@ -159,11 +156,10 @@ class ProfilePage extends StatelessWidget {
                   Divider(),
                   // Privacy & Security Item
                   ListTile(
-                    leading: Icon(Icons.lock_outline), // Outlined lock icon
+                    leading: Icon(Icons.lock_outline),
                     title: Text('Privacy & Security'),
                     trailing: Icon(Icons.arrow_forward_ios),
                     onTap: () {
-                      // Navigate to privacy settings
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -175,12 +171,10 @@ class ProfilePage extends StatelessWidget {
                   Divider(),
                   // Help & Support Item
                   ListTile(
-                    leading: Icon(Icons.help_outline), // Outlined help icon
+                    leading: Icon(Icons.help_outline),
                     title: Text('Help & Support'),
                     trailing: Icon(Icons.arrow_forward_ios),
                     onTap: () {
-                      // Navigate to Privacy & Security page
-                      // Navigate to Help Support page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -189,7 +183,31 @@ class ProfilePage extends StatelessWidget {
                       );
                     },
                   ),
+                  // Divider(),
+                  // After the last Card widget inside the Column's children:
                 ],
+              ),
+            ),
+            SizedBox(height: 16), // spacing before the button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red, // red background for logout
+                  minimumSize: Size(
+                    double.infinity,
+                    48,
+                  ), // full width, 48 height
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                icon: Icon(Icons.logout),
+                label: Text('Log Out'),
+                onPressed: () {
+                  // TODO: Add your logout logic here
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
               ),
             ),
           ],

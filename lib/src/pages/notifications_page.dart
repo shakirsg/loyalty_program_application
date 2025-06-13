@@ -86,7 +86,12 @@ class NotificationCard extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 25, // Size of the circle
-                      backgroundColor: Color.fromRGBO(254, 236, 231, 1.0), // Circle color
+                      backgroundColor: Color.fromRGBO(
+                        254,
+                        236,
+                        231,
+                        1.0,
+                      ), // Circle color
                       child: Icon(
                         Icons.notifications_outlined,
                         size: 30, // Icon size inside the circle
@@ -120,18 +125,19 @@ class NotificationCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                // "New" Badge on top right
+                // "+50 tps" Badge on top right
                 Positioned(
                   right: 0,
                   top: 0,
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.red,
+                      color:
+                          Colors.green, // You can change the color if you want
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      'NEW',
+                      '+50 tps',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

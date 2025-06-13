@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
               cardCount: 2,
               cards: [
                 StatusCard(
-                  icon: Icons.monetization_on,
+                  icon: Icons.trending_up,
                   title: 'Total earned!',
                   description: '750 pts',
                 ),
@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
 
               cards: [
                 RecentActivityCard(
-                  icon: Icons.arrow_upward,
+                  icon: Icons.trending_up,
                   title: 'Scanned Coffee Bag',
                   value: '+200 pts',
                   date: '2025-06-12',
@@ -107,7 +107,7 @@ class SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.only(bottom: 0.0),
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor, // Apply the background color
