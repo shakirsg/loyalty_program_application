@@ -10,11 +10,10 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-        backgroundColor: Color(0xFFF05024),
-      ),
-      backgroundColor: const Color(0xFFEFEFEF),
+      // appBar: AppBar(
+      //   title: Text('Profile'),
+      //   backgroundColor: Color(0xFFF05024),
+      // ),
 
       body: SingleChildScrollView(
         child: Column(
@@ -64,8 +63,8 @@ class ProfilePage extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 30,
-                          backgroundImage: NetworkImage(
-                            'https://via.placeholder.com/150',
+                          backgroundImage: AssetImage(
+                            './assets/avatar.png',
                           ),
                         ),
                         SizedBox(width: 16),
@@ -193,7 +192,7 @@ class ProfilePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red, // red background for logout
+                  backgroundColor: Colors.grey, // red background for logout
                   minimumSize: Size(
                     double.infinity,
                     48,

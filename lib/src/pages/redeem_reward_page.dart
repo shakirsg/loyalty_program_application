@@ -23,7 +23,6 @@ class RedeemRewardPage extends StatelessWidget {
         title: Text('Redeem Reward'),
         backgroundColor: Color(0xFFF05024),
       ),
-      backgroundColor: Color(0xFFEFEFEF),
       body: ListView(
         children: [
           // Top Image Section with Title and Badge

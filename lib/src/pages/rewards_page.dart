@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/pages/redeem_reward_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
 
 class RewardsPage extends StatefulWidget {
   const RewardsPage({super.key});
@@ -11,18 +15,33 @@ class RewardsPage extends StatefulWidget {
 class _RewardsPageState extends State<RewardsPage> {
   String _selectedCategory = 'All'; // Default category
 
+  String? _data;
+  bool _loading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    // fetchData();
+    // Trigger API call when HomePage loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).loadUserProfile("token");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Rewards Catalog'),
-        backgroundColor: Color(0xFFF05024),
-      ),
-      backgroundColor: const Color(0xFFEFEFEF),
+      // appBar: AppBar(
+      //   title: Text('Rewards Catalog'),
+      //   backgroundColor: Color(0xFFF05024),
+      // ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Top Background Section
             Container(
               width: double.infinity,
               color: Color(0xFFF05024),
@@ -35,9 +54,18 @@ class _RewardsPageState extends State<RewardsPage> {
                     style: TextStyle(fontSize: 30, color: Colors.white),
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    'Redeem your points for rewards',
-                    style: TextStyle(fontSize: 18, color: Colors.white70),
+                  Consumer<UserProvider>(
+                    builder: (context, userProvider, child) {
+                      final userData = userProvider.userData;
+                      final totalPoints = userData != null
+                          ? userData['total'].toString()
+                          : 'your';
+
+                      return Text(
+                        'Redeem $totalPoints points for rewards',
+                        style: TextStyle(fontSize: 18, color: Colors.white70),
+                      );
+                    },
                   ),
                 ],
               ),

@@ -18,7 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
       // Registration logic goes here
 
       // Navigate to main page after register
-      Navigator.pushReplacementNamed(context, '/main');
+      Navigator.pushReplacementNamed(context, '/login');
     }
   }
 
@@ -34,6 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
         padding: const EdgeInsets.all(24.0),
         child: Form(
           key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: ListView(
             shrinkWrap: true,
             children: [
@@ -85,14 +86,22 @@ class _RegisterPageState extends State<RegisterPage> {
               ElevatedButton(
                 onPressed: _register,
                 child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 5),
                   child: Text('Register', style: TextStyle(fontSize: 18)),
                 ),
               ),
               const SizedBox(height: 16),
-              TextButton(
-                onPressed: _goToLogin,
-                child: const Text("Already have an account? Login"),
+              Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text("Already have an account? "),
+                    TextButton(
+                      onPressed: _goToLogin,
+                      child: const Text("Login"),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -8,7 +8,6 @@ class RedemptionSuccessPage extends StatelessWidget {
     const mainColor = Color(0xFFF05024);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEFEFEF),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -76,7 +75,7 @@ class RedemptionSuccessPage extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.green,
+                            color: Colors.red,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Text(
@@ -216,7 +215,7 @@ class RedemptionSuccessPage extends StatelessWidget {
                       icon: const Icon(Icons.dashboard),
                       label: const Text('Dashboard'),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/main');
+                        Navigator.pushReplacementNamed(context, '/main');
                       },
                     ),
                   ),

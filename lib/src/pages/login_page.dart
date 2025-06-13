@@ -99,10 +99,6 @@ class _LoginPageState extends State<LoginPage> {
                         _rememberMe = value ?? false;
                       });
                     },
-                    side: BorderSide(
-                      color: Color(0xFFF05024), // Border color
-                      width: 2, // Border width
-                    ),
                   ),
                   const Text("Remember Me"),
                   const Spacer(),
@@ -116,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                 onPressed: _login,
                 child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0.0),
+                  padding: EdgeInsets.symmetric(vertical: 5.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -147,9 +143,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextButton(
-                onPressed: _goToRegister,
-                child: const Text("Don't have an account? Register"),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Don't have an account?"),
+                  TextButton(onPressed: _goToRegister, child: const Text("Register")),
+                ],
               ),
             ],
           ),

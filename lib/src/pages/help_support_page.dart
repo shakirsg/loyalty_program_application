@@ -17,7 +17,6 @@ class HelpSupportPage extends StatelessWidget {
           },
         ),
       ),
-      backgroundColor: const Color(0xFFEFEFEF),
 
       body: SingleChildScrollView(
         child: Column(

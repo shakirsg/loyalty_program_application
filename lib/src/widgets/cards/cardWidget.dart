@@ -16,12 +16,12 @@ class CardWidget extends StatelessWidget {
     double width = MediaQuery.of(context).size.width; // Get the width of the screen
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+      // margin: const EdgeInsets.symmetric(horizontal: 5.0),
       decoration: BoxDecoration(
         color: Colors.white,
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
+        // borderRadius: BorderRadius.circular(10),
         child: Column(
           children: [
             // Card Image (same as screen width)
@@ -51,14 +51,14 @@ class CardWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // Action Button
-            ElevatedButton(
-              onPressed: () {
-                // Action for button press
-                print("Button pressed for $imageUrl");
-              },
-              child: const Text('Learn More'),
-            ),
+            // // Action Button
+            // ElevatedButton(
+            //   onPressed: () {
+            //     // Action for button press
+            //     print("Button pressed for $imageUrl");
+            //   },
+            //   child: const Text('Learn More'),
+            // ),
           ],
         ),
       ),

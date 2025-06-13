@@ -19,7 +19,6 @@ class ManageAccountPage extends StatelessWidget {
           },
         ),
       ),
-      backgroundColor: const Color(0xFFEFEFEF),
 
       body: SingleChildScrollView(
         child: Column(
@@ -68,8 +67,8 @@ class ManageAccountPage extends StatelessWidget {
                     // Profile Picture and Description
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(
-                        'https://via.placeholder.com/150',
+                      backgroundImage: AssetImage(
+                        './assets/avatar.png',
                       ),
                     ),
                     SizedBox(height: 16),

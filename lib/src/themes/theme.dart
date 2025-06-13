@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 final ThemeData lightTheme = ThemeData(
   primarySwatch: Colors.blue, // Primary color for your app
-  scaffoldBackgroundColor: Colors.white, // Set the default background color
+  scaffoldBackgroundColor: const Color(
+    0xFFEFEFEF,
+  ), // Global scaffold background
   checkboxTheme: CheckboxThemeData(
     checkColor: WidgetStateProperty.all(
       Color(0xFFF05024),
@@ -14,6 +16,7 @@ final ThemeData lightTheme = ThemeData(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(4), // Custom border radius
     ),
+    side: const BorderSide(color: Color(0xFFF05024), width: 2),
   ),
   textTheme: TextTheme(
     bodyLarge: TextStyle(color: Colors.black),
@@ -28,35 +31,45 @@ final ThemeData lightTheme = ThemeData(
     shadowColor: Colors.black.withOpacity(0.2), // Shadow color
     elevation: 4, // Elevation of the card
     margin: EdgeInsets.all(8), // Margin around the card
-    shape: RoundedRectangleBorder( // Shape of the card
+    shape: RoundedRectangleBorder(
+      // Shape of the card
       borderRadius: BorderRadius.circular(12), // Rounded corners
     ),
   ),
 
   inputDecorationTheme: InputDecorationTheme(
-    labelStyle: TextStyle(color: Colors.grey), // Customize the label color
-    prefixIconColor: Color(0xFFF05024), // Customize the color of the icons
+    labelStyle: const TextStyle(color: Colors.grey),
+    prefixIconColor: const Color(0xFFF05024),
+    filled: true, // Enable background fill
+    fillColor: Colors.white, // Set background color to white
+    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+
     border: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xFFF05024), // Outline border color
-      ),
-      borderRadius: BorderRadius.circular(
-        12.0,
-      ), // Set the radius of the input field
+      borderSide: const BorderSide(color: Color(0xFFF05024)),
+      borderRadius: BorderRadius.circular(12.0),
     ),
+
     enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(
-          0xFFB0BEC5,
-        ), // Border color when the field is enabled but not focused
-      ),
-      borderRadius: BorderRadius.circular(12.0), // Radius for enabled state
+      borderSide: const BorderSide(color: Color(0xFFB0BEC5)),
+      borderRadius: BorderRadius.circular(12.0),
     ),
+
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Color(0xFFF05024), // Border color when the field is focused
-      ),
-      borderRadius: BorderRadius.circular(12.0), // Radius for focused state
+      borderSide: const BorderSide(color: Color(0xFFF05024), width: 2),
+      borderRadius: BorderRadius.circular(12.0),
+    ),
+
+    errorBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: Colors.red),
+      borderRadius: BorderRadius.circular(12.0),
+    ),
+
+    focusedErrorBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: Colors.red, width: 2),
+      borderRadius: BorderRadius.circular(12.0),
+    ),
+    errorStyle: const TextStyle(
+      height: 1.2, // Controls error text height to avoid border overlap
     ),
   ),
   textButtonTheme: TextButtonThemeData(
@@ -66,7 +79,6 @@ final ThemeData lightTheme = ThemeData(
   ),
   visualDensity: VisualDensity
       .adaptivePlatformDensity, // Adjusts for different screen densities
-  
 
   appBarTheme: AppBarTheme(
     color: Color(0xFFF05024), // AppBar color

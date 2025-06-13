@@ -35,7 +35,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Loyalty')),
+      // appBar: AppBar(title: const Text('Loyalty')),
       body: LayoutBuilder(
         builder: (context, constraints) {
           bool shouldDisplayImages =
