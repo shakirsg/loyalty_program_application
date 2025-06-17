@@ -20,6 +20,12 @@ class RedeemRewardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
+                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null, // no back button on root page
         title: Text('Redeem Reward'),
       ),
       body: ListView(
@@ -277,7 +283,7 @@ class RedeemRewardPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => RedemptionSuccessPage (),
+                                builder: (context) => RedemptionSuccessPage(),
                               ),
                             );
                           },

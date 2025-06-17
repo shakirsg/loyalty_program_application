@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:loyalty_program_application/src/pages/history_page.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:loyalty_program_application/src/components/CornerPainter.dart';
 import 'package:loyalty_program_application/src/pages/earn_point_page.dart';
@@ -55,11 +56,23 @@ class _QRViewExampleState extends State<ScannerPage>
     }
   }
 
+  Widget _buildHistoryButton(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.work_history,color: Colors.white,),
+      tooltip: 'History',
+      onPressed: () {
+        // TODO: Navigate to history details page
+        Navigator.push(context, MaterialPageRoute(builder: (_) => HistoryPage()));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('QR Code Scanner'),
+        actions: [_buildHistoryButton(context)],
       ),
       body: Stack(
         children: [

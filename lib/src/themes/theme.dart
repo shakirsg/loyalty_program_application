@@ -18,6 +18,21 @@ final ThemeData lightTheme = ThemeData(
     ),
     side: const BorderSide(color: Color(0xFFF05024), width: 2),
   ),
+  tabBarTheme: TabBarThemeData(
+    labelStyle: TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    ),
+    unselectedLabelStyle: TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.normal,
+      color: const Color.fromARGB(255, 216, 214, 214),
+    ),
+    labelColor: Colors.white,
+    unselectedLabelColor: const Color.fromARGB(255, 216, 214, 214),
+    indicatorSize: TabBarIndicatorSize.tab,
+  ),
   textTheme: TextTheme(
     bodyLarge: TextStyle(color: Colors.black),
     bodyMedium: TextStyle(color: Colors.black),
@@ -25,7 +40,13 @@ final ThemeData lightTheme = ThemeData(
     displayMedium: TextStyle(color: Colors.black),
     displaySmall: TextStyle(color: Colors.black),
     // Add other styles as needed
+    labelLarge: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: Colors.black,
+    ),
   ),
+
   cardTheme: CardThemeData(
     color: Colors.white, // Background color of the card
     shadowColor: Colors.black.withOpacity(0.2), // Shadow color
