@@ -35,10 +35,15 @@ class _RewardsPageState extends State<RewardsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Rewards Catalog'),
-      //   backgroundColor: Color(0xFFF05024),
-      // ),
+      appBar: AppBar(
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
+                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null, // no back button on root page
+        title: Text('Rewards Catalog'),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [

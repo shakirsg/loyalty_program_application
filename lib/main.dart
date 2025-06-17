@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: lightTheme, // Apply theme here
 
       debugShowCheckedModeBanner: false,
-      initialRoute: '/landing',
+      initialRoute: '/main',
       routes: appRoutes,
     );
   }

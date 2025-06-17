@@ -21,7 +21,6 @@ class RedeemRewardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Redeem Reward'),
-        backgroundColor: Color(0xFFF05024),
       ),
       body: ListView(
         children: [

@@ -82,6 +82,10 @@ final ThemeData lightTheme = ThemeData(
 
   appBarTheme: AppBarTheme(
     color: Color(0xFFF05024), // AppBar color
+    iconTheme: IconThemeData(
+      color: Colors.deepPurple, // Changes back arrow color
+      size: 28, // Changes back arrow size
+    ),
     titleTextStyle: TextStyle(
       color: Colors.white,
       fontSize: 22,
@@ -99,6 +103,14 @@ final ThemeData lightTheme = ThemeData(
       backgroundColor: Color(0xFFF05024), // Button text color
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+    ),
+  ),
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      foregroundColor: Colors.black, // Text & icon color
+      side: BorderSide(color: Color(0xFFF05024), width: 2),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
     ),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(

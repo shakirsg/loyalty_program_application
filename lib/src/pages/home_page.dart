@@ -10,7 +10,15 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: const Text('Home')),
+      appBar: AppBar(
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
+                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null, // no back button on root page
+        title: const Text('Home'),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -30,7 +38,11 @@ class HomePage extends StatelessWidget {
               title: 'Quick Actions',
               cardCount: 2,
               cards: [
-                QuickActionCard(icon: Icons.qr_code, title: 'Scan Product', targetIndex: 2,),
+                QuickActionCard(
+                  icon: Icons.qr_code,
+                  title: 'Scan Product',
+                  targetIndex: 2,
+                ),
                 QuickActionCard(
                   icon: Icons.card_giftcard,
                   title: 'Redeem Points',

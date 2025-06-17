@@ -9,13 +9,12 @@ class HelpSupportPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Back'),
         backgroundColor: Color(0xFFF05024),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          color: Colors.white, // Set your desired color here
-          onPressed: () {
-            Navigator.of(context).pop(); // Navigate back
-          },
-        ),
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
+                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null, // 
       ),
 
       body: SingleChildScrollView(

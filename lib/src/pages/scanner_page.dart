@@ -58,10 +58,9 @@ class _QRViewExampleState extends State<ScannerPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('QR Code Scanner'),
-      //   backgroundColor: const Color(0xFFF05024),
-      // ),
+      appBar: AppBar(
+        title: const Text('QR Code Scanner'),
+      ),
       body: Stack(
         children: [
           QRView(

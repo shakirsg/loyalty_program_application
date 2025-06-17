@@ -10,10 +10,15 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Profile'),
-      //   backgroundColor: Color(0xFFF05024),
-      // ),
+      appBar: AppBar(
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
+                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null, // no back button on root page
+        title: Text('Profile'),
+      ),
 
       body: SingleChildScrollView(
         child: Column(
@@ -63,9 +68,7 @@ class ProfilePage extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 30,
-                          backgroundImage: AssetImage(
-                            './assets/avatar.png',
-                          ),
+                          backgroundImage: AssetImage('./assets/avatar.png'),
                         ),
                         SizedBox(width: 16),
                         Column(
@@ -84,18 +87,18 @@ class ProfilePage extends StatelessWidget {
                           ],
                         ),
                         Spacer(),
-                        IconButton(
-                          icon: Icon(Icons.edit_outlined), // Outlined edit icon
-                          onPressed: () {
-                            // Navigate to Manage Account page
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ManageAccountPage(),
-                              ),
-                            );
-                          },
-                        ),
+                        // IconButton(
+                        //   icon: Icon(Icons.edit_outlined), // Outlined edit icon
+                        //   onPressed: () {
+                        //     // Navigate to Manage Account page
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => ManageAccountPage(),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                       ],
                     ),
                     SizedBox(height: 16),

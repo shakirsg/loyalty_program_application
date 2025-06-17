@@ -14,13 +14,12 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
       appBar: AppBar(
         title: Text('Back'),
         backgroundColor: Color(0xFFF05024),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          color: Colors.white, // Set your desired color here
-          onPressed: () {
-            Navigator.of(context).pop(); // Navigate back
-          },
-        ),
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
+                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null, // no back button on root page
       ),
 
       body: SingleChildScrollView(
@@ -98,7 +97,11 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
                     // Privacy Settings Card
                     Row(
                       children: [
-                        Icon(Icons.privacy_tip, size: 40, color: Color(0xFFF05024)),
+                        Icon(
+                          Icons.privacy_tip,
+                          size: 40,
+                          color: Color(0xFFF05024),
+                        ),
                         SizedBox(width: 16),
                         Expanded(
                           child: Column(
@@ -126,7 +129,11 @@ class _PrivacySecurityPageState extends State<PrivacySecurityPage> {
                     // Two-Factor Authentication Card
                     Row(
                       children: [
-                        Icon(Icons.security, size: 40, color: Color(0xFFF05024)),
+                        Icon(
+                          Icons.security,
+                          size: 40,
+                          color: Color(0xFFF05024),
+                        ),
                         SizedBox(width: 16),
                         Expanded(
                           child: Column(
