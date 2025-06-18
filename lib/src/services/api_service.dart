@@ -71,9 +71,15 @@ class ApiService {
   }
 
   /// Get total points
-  Future<dynamic> getPoints() async {
-    final url = Uri.parse('$baseUrl/customers/points/');
-    final response = await http.get(url, headers: _headers);
+  Future<dynamic> getPoints(String token) async {
+    final url = Uri.parse('$baseUrl/customers/points');
+    final headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.0.0',
+    };
+
+    final response = await http.get(url, headers: headers);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);

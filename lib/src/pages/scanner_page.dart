@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:loyalty_program_application/src/pages/history_page.dart';
+import 'package:loyalty_program_application/src/services/location_service.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:loyalty_program_application/src/components/CornerPainter.dart';
 import 'package:loyalty_program_application/src/pages/earn_point_page.dart';
@@ -58,11 +59,14 @@ class _QRViewExampleState extends State<ScannerPage>
 
   Widget _buildHistoryButton(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.work_history,color: Colors.white,),
+      icon: const Icon(Icons.work_history, color: Colors.white),
       tooltip: 'History',
       onPressed: () {
         // TODO: Navigate to history details page
-        Navigator.push(context, MaterialPageRoute(builder: (_) => HistoryPage()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => HistoryPage()),
+        );
       },
     );
   }
@@ -71,6 +75,12 @@ class _QRViewExampleState extends State<ScannerPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Navigator.of(context).canPop()
+            ? IconButton(
+                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null,
         title: const Text('QR Code Scanner'),
         actions: [_buildHistoryButton(context)],
       ),
@@ -223,7 +233,22 @@ class _QRViewExampleState extends State<ScannerPage>
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
-                  onPressed: () {
+                  onPressed: () async {
+                    try {
+                      final position =
+                          await LocationService.determinePosition();
+                      final address =
+                          await LocationService.getAddressFromPosition(
+                            position,
+                          );
+
+                      print(
+                        'Lat: ${position.latitude}, Lng: ${position.longitude}',
+                      );
+                      print('Address: $address');
+                    } catch (e) {
+                      print('Error: $e');
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(

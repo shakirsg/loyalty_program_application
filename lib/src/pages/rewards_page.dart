@@ -21,7 +21,7 @@ class _RewardsPageState extends State<RewardsPage> {
       Provider.of<UserProvider>(
         context,
         listen: false,
-      ).loadUserProfile("token");
+      ).getUserPoints();
     });
   }
 

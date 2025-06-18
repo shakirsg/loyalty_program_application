@@ -4,6 +4,7 @@ import 'package:loyalty_program_application/src/components/PointsCard.dart';
 import 'package:loyalty_program_application/src/components/RecentActivityCard.dart';
 import 'package:loyalty_program_application/src/components/StatusCard.dart';
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
+import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,13 +15,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _isInitCalled = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AuthProvider>(context, listen: false).getUserProfile();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() => _isLoading = true);
+
+      try {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+        await Future.wait([
+          authProvider.getUserProfile(),
+          userProvider.getUserPoints(),
+        ]);
+      } catch (e) {
+        // Handle error if needed
+      } finally {
+        setState(() => _isLoading = false);
+      }
     });
   }
 
@@ -39,7 +54,7 @@ class _HomePageState extends State<HomePage> {
             : null, // no back button on root page
         title: const Text('Home'),
       ),
-      body: isLoading
+      body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Column(

@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty_program_application/src/services/local_storage_service.dart';
 import '../services/api_service.dart';
 
 class UserProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
+  Map<String, dynamic>? userData;
 
-  Map<String, dynamic>? _userData;
+  int points = 0;
 
-  Map<String, dynamic>? get userData => _userData;
+  bool isLoading = false;
+  String? error;
+  String? token;
 
-  Future<void> loadUserProfile(String token) async {
-    // _userData = await _apiService.fetchUserProfile();
-    print('User profile loaded: $_userData'); // <--- print here
-
+  /// Fetch user points
+  Future<void> getUserPoints() async {
+    isLoading = true;
+    error = null;
     notifyListeners();
+
+    token = await LocalStorageService.getToken();
+    print("getUserPoints...");
+
+    try {
+      final pointsData = await _apiService.getPoints(token!);
+      points = pointsData['points'] ?? 0;
+      print("User points: $points");
+    } catch (e) {
+      error = "Failed to fetch points: ${e.toString()}";
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 }
