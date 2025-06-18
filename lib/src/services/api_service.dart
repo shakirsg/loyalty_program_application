@@ -58,15 +58,36 @@ class ApiService {
   }
 
   /// Claim points with a QR code
-  Future<dynamic> claimPoints(String qrCode) async {
-    final url = Uri.parse('$baseUrl/customers/claim-points/?qr_code=$qrCode');
+  /// Claim points with a QR code and location info
+  Future<dynamic> claimPoints({
+    required String token,
+    required String qrCode,
+    required double latitude,
+    required double longitude,
+    required String address,
+  }) async {
+    final url = Uri.parse(
+      '$baseUrl/customers/claim-points/?qr_code=${Uri.encodeComponent(qrCode)}',
+    );
 
-    final response = await http.post(url, headers: _headers);
+    final headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.0.0',
+    };
+
+    final body = jsonEncode({
+      'latitude': latitude,
+      'longitude': longitude,
+      'address': address,
+    });
+
+    final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      throw Exception('Failed to claim points');
+      throw Exception('Failed to claim points: ${response.body}');
     }
   }
 
