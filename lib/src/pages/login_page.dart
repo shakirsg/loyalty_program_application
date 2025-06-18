@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty_program_application/src/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 import './forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,10 +16,33 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      // Replace with actual authentication logic
-      Navigator.pushReplacementNamed(context, '/main');
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      final result = await authProvider.login(
+        username: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      if (result is String) {
+        print(result);
+        // Login successful (token received)
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Login successful!')));
+        Navigator.pushReplacementNamed(context, '/main');
+      } else if (result is Map && result.containsKey('non_field_errors')) {
+        // Show error message from backend
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(result['non_field_errors'][0])));
+      } else {
+        // Fallback error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed. Please try again.')),
+        );
+      }
     }
   }
 
@@ -148,7 +173,10 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Don't have an account?"),
-                  TextButton(onPressed: _goToRegister, child: const Text("Register")),
+                  TextButton(
+                    onPressed: _goToRegister,
+                    child: const Text("Register"),
+                  ),
                 ],
               ),
             ],

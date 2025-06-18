@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/pages/help_support_page.dart';
 import 'package:loyalty_program_application/src/pages/manage_account_page.dart';
 import 'package:loyalty_program_application/src/pages/notifications_page.dart';
-import 'package:loyalty_program_application/src/pages/privacy_security_page.dart'; // Import Notifications Page
+import 'package:loyalty_program_application/src/pages/privacy_security_page.dart';
+import 'package:loyalty_program_application/src/services/local_storage_service.dart'; // Import Notifications Page
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -206,7 +207,12 @@ class ProfilePage extends StatelessWidget {
                 ),
                 icon: Icon(Icons.logout),
                 label: Text('Log Out'),
-                onPressed: () {
+                onPressed: () async {
+                  // Clear the token (logout logic)
+                  await LocalStorageService.deleteToken();
+
+                  // Optional: Clear auth/user state if using Provider
+                  // Provider.of<AuthProvider>(context, listen: false).logout(); ← if you have it
                   // TODO: Add your logout logic here
                   Navigator.pushReplacementNamed(context, '/login');
                 },

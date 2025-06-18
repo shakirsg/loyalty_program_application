@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty_program_application/src/services/local_storage_service.dart';
 import '../services/api_service.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -62,8 +63,11 @@ class AuthProvider with ChangeNotifier {
 
       if (response is Map<String, dynamic> && response.containsKey('key')) {
         token = response['key'];
+        print("Login Token: ${token}");
+        await LocalStorageService.saveToken(token!); // Save token
         return token!; // Return token as a string
       } else {
+        
         return response; // This will be the error JSON
       }
     } catch (e) {
@@ -74,4 +78,5 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
 }
