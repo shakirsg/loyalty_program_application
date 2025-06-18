@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,42 +21,27 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
 
   void _register() async {
-    if (_formKey.currentState!.validate()) {
-      final firstName = _firstNameController.text.trim();
-      final lastName = _lastNameController.text.trim();
-      final email = _emailController.text.trim();
-      final phone = _phoneController.text.trim();
-      final password = _passwordController.text;
+    if (!_formKey.currentState!.validate()) return;
 
-      final url = Uri.parse('http://68.183.83.230:8000/api/customers/register');
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      try {
-        final response = await http.post(
-          url,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode({
-            'first_name': firstName,
-            'last_name': lastName,
-            'phone': phone,
-            'email': email,
-            'password': password,
-          }),
-        );
+    final success = await authProvider.register(
+      firstName: _firstNameController.text.trim(),
+      lastName: _lastNameController.text.trim(),
+      phone: _phoneController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
 
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          Navigator.pushReplacementNamed(context, '/login');
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Registration failed: ${response.body}')),
-          );
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Connection error: $e')),
-        );
-      }
+    if (success) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Registration successful')));
+      _goToLogin();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(authProvider.error ?? 'Registration failed')),
+      );
     }
   }
 
@@ -109,8 +97,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.phone),
                 ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter phone number' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Enter phone number'
+                    : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
