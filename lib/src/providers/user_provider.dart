@@ -9,7 +9,7 @@ class UserProvider with ChangeNotifier {
   Map<String, dynamic>? get userData => _userData;
 
   Future<void> loadUserProfile(String token) async {
-    _userData = await _apiService.fetchUserProfile(token);
+    _userData = await _apiService.fetchUserProfile();
     print('User profile loaded: $_userData'); // <--- print here
 
     notifyListeners();

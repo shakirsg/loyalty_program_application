@@ -148,7 +148,7 @@ class _LandingPageState extends State<LandingPage> {
 
               // Skip Button on the Top Right
               Positioned(
-                top: 20,
+                top: 40,
                 right: 20,
                 child: TextButton(
                   onPressed: () {

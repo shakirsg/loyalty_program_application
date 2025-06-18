@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const SizedBox(height: 60),
               const Text(
-                'Welcome to PointsPlus!',
+                'Welcome to Eyby Points!',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
