@@ -3,12 +3,32 @@ import 'package:loyalty_program_application/src/components/QuickActionCard.dart'
 import 'package:loyalty_program_application/src/components/PointsCard.dart';
 import 'package:loyalty_program_application/src/components/RecentActivityCard.dart';
 import 'package:loyalty_program_application/src/components/StatusCard.dart';
+import 'package:loyalty_program_application/src/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _isInitCalled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AuthProvider>(context, listen: false).getUserProfile();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<AuthProvider>(context);
+    final isLoading = provider.isLoading;
+
     return Scaffold(
       appBar: AppBar(
         leading: Navigator.of(context).canPop()
@@ -19,76 +39,80 @@ class HomePage extends StatelessWidget {
             : null, // no back button on root page
         title: const Text('Home'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // First Section: Points Plus
-            SectionCard(
-              title: 'Points Plus',
-              titleColor: Colors.white,
-              description: 'Welcome back, Alex',
-              descriptionColor: Colors.white,
-              cardCount: 1,
-              cards: [PointsCard()],
-              backgroundColor: Color(0xFFF05024), // Example background color
-            ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  // First Section: Points Plus
+                  SectionCard(
+                    title: 'Points Plus',
+                    titleColor: Colors.white,
+                    description: 'Welcome back, Alex',
+                    descriptionColor: Colors.white,
+                    cardCount: 1,
+                    cards: [PointsCard()],
+                    backgroundColor: Color(
+                      0xFFF05024,
+                    ), // Example background color
+                  ),
 
-            // Second Section: Quick Actions
-            SectionCard(
-              title: 'Quick Actions',
-              cardCount: 2,
-              cards: [
-                QuickActionCard(
-                  icon: Icons.qr_code,
-                  title: 'Scan Product',
-                  targetIndex: 2,
-                ),
-                QuickActionCard(
-                  icon: Icons.card_giftcard,
-                  title: 'Redeem Points',
-                  targetIndex: 3,
-                ),
-              ],
-            ),
+                  // Second Section: Quick Actions
+                  SectionCard(
+                    title: 'Quick Actions',
+                    cardCount: 2,
+                    cards: [
+                      QuickActionCard(
+                        icon: Icons.qr_code,
+                        title: 'Scan Product',
+                        targetIndex: 2,
+                      ),
+                      QuickActionCard(
+                        icon: Icons.card_giftcard,
+                        title: 'Redeem Points',
+                        targetIndex: 3,
+                      ),
+                    ],
+                  ),
 
-            // Third Section: Stats
-            SectionCard(
-              title: 'Stats',
-              cardCount: 2,
-              cards: [
-                StatusCard(
-                  icon: Icons.trending_up,
-                  title: 'Total earned!',
-                  description: '750 pts',
-                ),
-                StatusCard(
-                  icon: Icons.history,
-                  title: 'This month',
-                  description: '250 pts',
-                ),
-              ],
-            ),
+                  // Third Section: Stats
+                  SectionCard(
+                    title: 'Stats',
+                    cardCount: 2,
+                    cards: [
+                      StatusCard(
+                        icon: Icons.trending_up,
+                        title: 'Total earned!',
+                        description: '750 pts',
+                      ),
+                      StatusCard(
+                        icon: Icons.history,
+                        title: 'This month',
+                        description: '250 pts',
+                      ),
+                    ],
+                  ),
 
-            // Fourth Section: Recent Activity
-            SectionCard(
-              title: 'Recent Activity',
-              description: '',
-              cardCount: 1,
+                  // Fourth Section: Recent Activity
+                  SectionCard(
+                    title: 'Recent Activity',
+                    description: '',
+                    cardCount: 1,
 
-              cards: [
-                RecentActivityCard(
-                  icon: Icons.trending_up,
-                  title: 'Scanned Coffee Bag',
-                  value: '+200 pts',
-                  date: '2025-06-12',
-                  location: 'New York, USA',
-                  downtime: '2 hours',
-                ),
-              ],
+                    cards: [
+                      RecentActivityCard(
+                        icon: Icons.trending_up,
+                        title: 'Scanned Coffee Bag',
+                        value: '+200 pts',
+                        date: '2025-06-12',
+                        location: 'New York, USA',
+                        downtime: '2 hours',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

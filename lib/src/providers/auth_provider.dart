@@ -8,6 +8,8 @@ class AuthProvider with ChangeNotifier {
   bool isLoading = false;
   String? error;
   String? token;
+  Map<String, dynamic>? userProfile;
+
 
   Future<bool> register({
     required String firstName,
@@ -67,7 +69,6 @@ class AuthProvider with ChangeNotifier {
         await LocalStorageService.saveToken(token!); // Save token
         return token!; // Return token as a string
       } else {
-        
         return response; // This will be the error JSON
       }
     } catch (e) {
@@ -79,4 +80,21 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<void> getUserProfile() async {
+    isLoading = true;
+    error = null;
+    notifyListeners();
+    token = await LocalStorageService.getToken();
+    print("getUserProfile...");
+    try {
+      final profile = await _apiService.fetchUserProfile(token!);
+      userProfile = profile;
+      print(userProfile);
+    } catch (e) {
+      error = "Failed to fetch profile: ${e.toString()}";
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
 }
