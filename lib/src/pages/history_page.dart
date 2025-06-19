@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/user_provider.dart'; // adjust path as needed
 
 class HistoryPage extends StatelessWidget {
+  String formatDateTime(String? dateTimeStr) {
+    if (dateTimeStr == null) return '';
+
+    final dateTime = DateTime.tryParse(dateTimeStr);
+    if (dateTime == null) return dateTimeStr;
+
+    // Format as "YYYY-MM-DD HH:mm"
+    final date =
+        "${dateTime.year.toString().padLeft(4, '0')}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
+    final time =
+        "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
+    return "$date $time";
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Back'),
-        backgroundColor: Color(0xFFF05024), // Changed color to blue for history
+        backgroundColor: Color(0xFFF05024),
         leading: Navigator.of(context).canPop()
             ? IconButton(
                 icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
@@ -14,57 +32,77 @@ class HistoryPage extends StatelessWidget {
               )
             : null,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Blue background section with rounded bottom
-            Container(
-              width: double.infinity,
-              height: 150,
-              decoration: BoxDecoration(
-                color: Color(0xFFF05024), // Blue instead of orange
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
+      body: RefreshIndicator(
+        onRefresh: () => userProvider.getUserPoints(),
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              // Top Section
+              Container(
+                width: double.infinity,
+                height: 150,
+                decoration: BoxDecoration(
+                  color: Color(0xFFF05024),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'History',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'History',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Review your past activities and records.',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+                      SizedBox(height: 8),
+                      Text(
+                        'Review your past activities and records.',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            // History List
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 10, // Example: replace with your actual history count
-              itemBuilder: (context, index) {
-                return HistoryCard(
-                  title: 'History Item ${index + 1}',
-                  description: 'Details of your past activity or record #${index + 1}.',
-                  date: '2025-06-${(index + 10).toString().padLeft(2, '0')}',
-                  points: '+${(index + 1) * 20} pts',
-                );
-              },
-            ),
-          ],
+
+              if (userProvider.isLoading)
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: CircularProgressIndicator(),
+                )
+              else if (userProvider.pointHistory.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Text("No history found."),
+                )
+              else
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: userProvider.pointHistory.length,
+                  itemBuilder: (context, index) {
+                    final item = userProvider.pointHistory[index];
+                    return HistoryCard(
+                      title: item['product'] ?? 'Unknown Product',
+                      description: item['expired']
+                          ? 'Expired'
+                          : item['redeemed']
+                          ? 'Redeemed'
+                          : 'Active',
+                      date: formatDateTime(item['created']),
+                      points: '+${item['points']} pts',
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -96,11 +134,11 @@ class HistoryCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 25,
-              backgroundColor: Color(0xFFD6E4FF), // Light blue circle
+              backgroundColor: Color(0xFFDCFCE7), // Light blue circle
               child: Icon(
-                Icons.history,
+                Icons.trending_up,
                 size: 30,
-                color: Color(0xFFF05024),
+                color: Color(0xFF16A34A),
               ),
             ),
             SizedBox(width: 16),
@@ -109,22 +147,13 @@ class HistoryCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title, 
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
+                    title,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   SizedBox(height: 8),
-                  Text(
-                    description,
-                    style: TextStyle(color: Colors.grey[700]),
-                  ),
+                  Text(description, style: TextStyle(color: Colors.grey[700])),
                   SizedBox(height: 8),
-                  Text(
-                    date,
-                    style: TextStyle(color: Colors.grey),
-                  ),
+                  Text(date, style: TextStyle(color: Colors.grey)),
                 ],
               ),
             ),
