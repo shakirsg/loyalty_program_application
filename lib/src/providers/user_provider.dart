@@ -7,8 +7,7 @@ class UserProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
   Map<String, dynamic>? userData;
 
-  int points = 0;
-
+  //
   bool isLoading = false;
   String? error;
   String? token;
@@ -16,6 +15,10 @@ class UserProvider with ChangeNotifier {
   bool isClaiming = false;
   String? errorClaim;
   dynamic claimResult;
+  // getUserPoints
+  dynamic pointsData;
+  double points = 0.0;
+
 
   Future<void> claimPointsWithLocation(String qrCode) async {
     isClaiming = true;
@@ -57,8 +60,10 @@ class UserProvider with ChangeNotifier {
     print("getUserPoints...");
 
     try {
-      final pointsData = await _apiService.getPoints(token!);
-      points = pointsData['points'] ?? 0;
+      pointsData = await _apiService.getPoints(token!);
+      print('Points: $pointsData');
+      points = (pointsData?['total_points'] ?? 0).toDouble();
+
       print("User points: $points");
     } catch (e) {
       error = "Failed to fetch points: ${e.toString()}";

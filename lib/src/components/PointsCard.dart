@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class PointsCard extends StatelessWidget {
   const PointsCard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final points = context.watch<UserProvider>().points;
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -26,9 +29,9 @@ class PointsCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 // Content (points balance)
-                const Text(
-                  '500 pts',
-                  style: TextStyle(
+                Text(
+                  '${points} pts',
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
