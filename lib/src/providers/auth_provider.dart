@@ -8,8 +8,11 @@ class AuthProvider with ChangeNotifier {
   bool isLoading = false;
   String? error;
   String? token;
-  Map<String, dynamic>? userProfile;
 
+  // UserProfile
+  Map<String, dynamic>? userProfile;
+  String? fullName = "Alex";
+  String? email;
 
   Future<bool> register({
     required String firstName,
@@ -67,6 +70,10 @@ class AuthProvider with ChangeNotifier {
         token = response['key'];
         print("Login Token: ${token}");
         await LocalStorageService.saveToken(token!); // Save token
+        
+        // // 🔥 Call getUserProfile right after login
+        // await getUserProfile();
+
         return token!; // Return token as a string
       } else {
         return response; // This will be the error JSON
@@ -89,7 +96,12 @@ class AuthProvider with ChangeNotifier {
     try {
       final profile = await _apiService.fetchUserProfile(token!);
       userProfile = profile;
-      print(userProfile);
+
+      // Full name
+      fullName = (userProfile?['full_name'] ?? "Alex");
+      print(fullName);
+      // Email
+      email = (userProfile?['email'] ?? "");
     } catch (e) {
       error = "Failed to fetch profile: ${e.toString()}";
     } finally {

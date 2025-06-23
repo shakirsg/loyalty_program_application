@@ -62,8 +62,9 @@ class UserProvider with ChangeNotifier {
     try {
       pointsData = await _apiService.getPoints(token!);
       print('Raw API response: $pointsData');
-
+      // total_points
       points = (pointsData?['total_points'] ?? 0).toDouble();
+      // Historys
       pointHistory = pointsData?['points'] ?? [];
       print("User points: $points");
       print("History count: ${pointHistory.length}");

@@ -4,6 +4,9 @@ import 'package:loyalty_program_application/src//widgets/BottomNavigationBar/bot
 import 'package:loyalty_program_application/src/pages/profile_page.dart';
 import 'package:loyalty_program_application/src/pages/rewards_page.dart';
 import 'package:loyalty_program_application/src/pages/scanner_page.dart';
+import 'package:loyalty_program_application/src/providers/auth_provider.dart';
+import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 // Create a GlobalKey for MainPage
 final GlobalKey<_MainPageState> mainPageKey = GlobalKey<_MainPageState>();
@@ -17,6 +20,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
+  bool _isLoading = true;
 
   final List<Widget> _pages = [
     const HomePage(),
@@ -32,14 +36,38 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() => _isLoading = false);
+
+      try {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+        await Future.wait([
+          authProvider.getUserProfile(),
+          userProvider.getUserPoints(),
+        ]);
+      } catch (e) {
+        // Handle error if needed
+      } finally {
+        setState(() => _isLoading = false);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: _selectedIndex,
-        onTap: onItemTapped,
-      ),
-      // backgroundColor: Colors.transparent, // Make the background transparent
-    );
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Scaffold(
+            body: _pages[_selectedIndex],
+            bottomNavigationBar: BottomNavBar(
+              currentIndex: _selectedIndex,
+              onTap: onItemTapped,
+            ),
+            // backgroundColor: Colors.transparent, // Make the background transparent
+          );
   }
 }

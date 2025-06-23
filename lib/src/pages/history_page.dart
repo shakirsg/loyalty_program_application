@@ -98,6 +98,9 @@ class HistoryPage extends StatelessWidget {
                           : 'Active',
                       date: formatDateTime(item['created']),
                       points: '+${item['points']} pts',
+                      expiredTime: formatDateTime(
+                        item['expiration_date'],
+                      ), // Add this line
                     );
                   },
                 ),
@@ -114,6 +117,7 @@ class HistoryCard extends StatelessWidget {
   final String description;
   final String date;
   final String points;
+  final String expiredTime; // NEW
 
   const HistoryCard({
     Key? key,
@@ -121,6 +125,7 @@ class HistoryCard extends StatelessWidget {
     required this.description,
     required this.date,
     required this.points,
+    required this.expiredTime, // NEW
   }) : super(key: key);
 
   @override
@@ -134,7 +139,7 @@ class HistoryCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 25,
-              backgroundColor: Color(0xFFDCFCE7), // Light blue circle
+              backgroundColor: Color(0xFFDCFCE7),
               child: Icon(
                 Icons.trending_up,
                 size: 30,
@@ -154,6 +159,13 @@ class HistoryCard extends StatelessWidget {
                   Text(description, style: TextStyle(color: Colors.grey[700])),
                   SizedBox(height: 8),
                   Text(date, style: TextStyle(color: Colors.grey)),
+                  if (expiredTime.isNotEmpty) ...[
+                    SizedBox(height: 8),
+                    Text(
+                      'Expired: $expiredTime',
+                      style: TextStyle(color: Colors.red[300]),
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -3,13 +3,22 @@ import 'package:loyalty_program_application/src/pages/help_support_page.dart';
 import 'package:loyalty_program_application/src/pages/manage_account_page.dart';
 import 'package:loyalty_program_application/src/pages/notifications_page.dart';
 import 'package:loyalty_program_application/src/pages/privacy_security_page.dart';
-import 'package:loyalty_program_application/src/services/local_storage_service.dart'; // Import Notifications Page
+import 'package:loyalty_program_application/src/providers/auth_provider.dart';
+import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'package:loyalty_program_application/src/services/local_storage_service.dart';
+import 'package:provider/provider.dart'; // Import Notifications Page
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<AuthProvider>(context);
+    final fullName = context.watch<AuthProvider>().fullName;
+    final email = context.watch<AuthProvider>().email;
+
+    final points = context.watch<UserProvider>().points;
+
     return Scaffold(
       appBar: AppBar(
         leading: Navigator.of(context).canPop()
@@ -76,14 +85,14 @@ class ProfilePage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'John Doe', // Replace with user name
+                              '$fullName', // Replace with user name
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
                               ),
                             ),
                             Text(
-                              'john.doe@example.com',
+                              '$email',
                             ), // Replace with user email
                           ],
                         ),
@@ -108,7 +117,7 @@ class ProfilePage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Available Points: 1200',
+                          'Available Points: $points',
                         ), // Replace with user points
                         ElevatedButton(
                           onPressed: () {

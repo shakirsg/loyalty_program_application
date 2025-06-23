@@ -15,34 +15,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _isLoading = true;
+  // bool _isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      setState(() => _isLoading = true);
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //     setState(() => _isLoading = false);
 
-      try {
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
+  //     try {
+  //       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  //       final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-        await Future.wait([
-          authProvider.getUserProfile(),
-          userProvider.getUserPoints(),
-        ]);
-      } catch (e) {
-        // Handle error if needed
-      } finally {
-        setState(() => _isLoading = false);
-      }
-    });
-  }
+  //       await Future.wait([
+  //         authProvider.getUserProfile(),
+  //         userProvider.getUserPoints(),
+  //       ]);
+  //     } catch (e) {
+  //       // Handle error if needed
+  //     } finally {
+  //       setState(() => _isLoading = false);
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthProvider>(context);
-    final isLoading = provider.isLoading;
+    // final isLoading = provider.isLoading;
+    final fullName = context.watch<AuthProvider>().fullName;
 
     return Scaffold(
       appBar: AppBar(
@@ -54,16 +55,14 @@ class _HomePageState extends State<HomePage> {
             : null, // no back button on root page
         title: const Text('Home'),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
+      body: SingleChildScrollView(
               child: Column(
                 children: [
                   // First Section: Points Plus
                   SectionCard(
                     title: 'Points Plus',
                     titleColor: Colors.white,
-                    description: 'Welcome back, Alex',
+                    description: 'Welcome back, $fullName',
                     descriptionColor: Colors.white,
                     cardCount: 1,
                     cards: [PointsCard()],
