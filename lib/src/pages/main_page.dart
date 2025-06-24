@@ -20,7 +20,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   final List<Widget> _pages = [
     const HomePage(),

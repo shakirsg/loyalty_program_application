@@ -7,7 +7,9 @@ import 'package:loyalty_program_application/src/services/location_service.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:loyalty_program_application/src/components/CornerPainter.dart';
+import 'package:loyalty_program_application/src/pages/history_page.dart';
 import 'package:loyalty_program_application/src/pages/earn_point_page.dart';
+
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({super.key});
@@ -255,12 +257,12 @@ class _QRViewExampleState extends State<ScannerPage>
                       context,
                       listen: false,
                     ).claimPointsWithLocation('${result!.code}');
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const EarnPointPage(),
-                    //   ),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HistoryPage(),
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.trending_up),
                   label: const Text('Get Points'),

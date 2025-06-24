@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:loyalty_program_application/src/services/local_storage_service.dart';
 import '../services/api_service.dart';
 
@@ -70,7 +71,7 @@ class AuthProvider with ChangeNotifier {
         token = response['key'];
         print("Login Token: ${token}");
         await LocalStorageService.saveToken(token!); // Save token
-        
+
         // // 🔥 Call getUserProfile right after login
         // await getUserProfile();
 
@@ -109,4 +110,20 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // // Google Sign In
+  // GoogleSignInAccount? _user;
+
+  // GoogleSignInAccount? get user => _user;
+
+  // Future<void> signIn() async {
+  //   _user = await _apiService.signInWithGoogle();
+  //   notifyListeners();
+  // }
+
+  // Future<void> signOut() async {
+  //   await _apiService.signOut();
+  //   _user = null;
+  //   notifyListeners();
+  // }
 }

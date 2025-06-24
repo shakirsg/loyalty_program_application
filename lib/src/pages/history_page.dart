@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/user_provider.dart'; // adjust path as needed
 
-class HistoryPage extends StatelessWidget {
+
+class HistoryPage extends StatefulWidget {
+  const HistoryPage({super.key});
+
+  @override
+  State<HistoryPage> createState() => _HistoryState();
+}
+class _HistoryState extends  State<HistoryPage>  {
   String formatDateTime(String? dateTimeStr) {
     if (dateTimeStr == null) return '';
 

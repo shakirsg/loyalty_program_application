@@ -18,7 +18,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
-      child: MyApp(initialRoute: token != null ? '/main' : '/login'),
+      child: MyApp(initialRoute: token != null ? '/main' : '/landing'),
     ),
   );
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+// import 'package:google_sign_in/google_sign_in.dart';
 
 class ApiService {
   final String baseUrl =
@@ -141,4 +142,20 @@ class ApiService {
       throw Exception('Failed to get product points');
     }
   }
+
+  // // Google SignIn
+  // final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  // Future<GoogleSignInAccount?> signInWithGoogle() async {
+  //   try {
+  //     return await _googleSignIn.signIn();
+  //   } catch (e) {
+  //     print("Google Sign-In error: $e");
+  //     return null;
+  //   }
+  // }
+
+  // Future<void> signOut() async {
+  //   await _googleSignIn.signOut();
+  // }
 }

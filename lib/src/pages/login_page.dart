@@ -57,7 +57,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _signInWithGoogle() {
+  void _signInWithGoogle() async {
+    // final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    // await authProvider.signIn();
     // Implement Google sign-in logic
     print("Google sign-in clicked!");
   }
