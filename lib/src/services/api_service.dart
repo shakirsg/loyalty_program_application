@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-// import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ApiService {
   final String baseUrl =
@@ -143,19 +143,23 @@ class ApiService {
     }
   }
 
-  // // Google SignIn
-  // final GoogleSignIn _googleSignIn = GoogleSignIn();
+  // Google SignIn
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: ['email', 'profile'],
+  clientId: '388610220112-no1q7frmmdmimcu0a4608cp5qg1c9ug4.apps.googleusercontent.com', // ⬅️ From Google Cloud Console
+);
 
-  // Future<GoogleSignInAccount?> signInWithGoogle() async {
-  //   try {
-  //     return await _googleSignIn.signIn();
-  //   } catch (e) {
-  //     print("Google Sign-In error: $e");
-  //     return null;
-  //   }
-  // }
 
-  // Future<void> signOut() async {
-  //   await _googleSignIn.signOut();
-  // }
+  Future<GoogleSignInAccount?> signInWithGoogle() async {
+    try {
+      return await _googleSignIn.signIn();
+    } catch (e) {
+      print("Google Sign-In error: $e");
+      return null;
+    }
+  }
+
+  Future<void> signOut() async {
+    await _googleSignIn.signOut();
+  }
 }

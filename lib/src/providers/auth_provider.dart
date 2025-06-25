@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:loyalty_program_application/src/services/local_storage_service.dart';
 import '../services/api_service.dart';
 
@@ -111,19 +111,27 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // // Google Sign In
-  // GoogleSignInAccount? _user;
+  // Google Sign In
+  GoogleSignInAccount? _user;
 
-  // GoogleSignInAccount? get user => _user;
+  GoogleSignInAccount? get user => _user;
 
-  // Future<void> signIn() async {
-  //   _user = await _apiService.signInWithGoogle();
-  //   notifyListeners();
-  // }
+  Future<void> signIn() async {
+    _user = await _apiService.signInWithGoogle();
+    if (_user != null) {
+      print('Name: ${_user!.displayName}');
+      print('Email: ${_user!.email}');
+      print('ID: ${_user!.id}');
+      print('Photo URL: ${_user!.photoUrl}');
+    } else {
+      print('Google Sign-In failed or was cancelled.');
+    }
+    notifyListeners();
+  }
 
-  // Future<void> signOut() async {
-  //   await _apiService.signOut();
-  //   _user = null;
-  //   notifyListeners();
-  // }
+  Future<void> signOut() async {
+    await _apiService.signOut();
+    _user = null;
+    notifyListeners();
+  }
 }
