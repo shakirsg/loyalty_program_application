@@ -145,10 +145,10 @@ class ApiService {
 
   // Google SignIn
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: ['email', 'profile'],
-  clientId: '388610220112-no1q7frmmdmimcu0a4608cp5qg1c9ug4.apps.googleusercontent.com', // ⬅️ From Google Cloud Console
-);
-
+    scopes: ['email', 'profile'],
+    clientId:
+        '388610220112-no1q7frmmdmimcu0a4608cp5qg1c9ug4.apps.googleusercontent.com', // ⬅️ From Google Cloud Console
+  );
 
   Future<GoogleSignInAccount?> signInWithGoogle() async {
     try {
@@ -159,7 +159,88 @@ class ApiService {
     }
   }
 
+  Future<dynamic> loginWithGoogle(
+    String email,
+    String firstName,
+    String lastName,
+    String googleId,
+    String photoUrl,
+    String loginMethod,
+    String password,
+  ) async {
+    final url = Uri.parse('$baseUrl/dj-rest-auth/login/');
+
+    // Prepare the request body with the new data format
+    final body = jsonEncode({
+      'email': email,
+      'first_name': firstName,
+      'last_name': lastName,
+      'google_id': googleId,
+      'photo_url': photoUrl,
+      'login_method': loginMethod,
+      'password': password,
+    });
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent':
+            'insomnia/11.0.0', // You can change this to something more appropriate if needed
+      },
+      body: body,
+    );
+
+    // Check the response status
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // The response will contain the token
+    } else {
+      throw Exception('Failed to login: ${response.body}');
+    }
+  }
+
   Future<void> signOut() async {
     await _googleSignIn.signOut();
+  }
+
+  /// Get a list of available rewards
+  Future<dynamic> getRewardsList(String token) async {
+    final url = Uri.parse('$baseUrl/products/rewards/');
+    final headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.0.0',
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to fetch rewards list: ${response.body}');
+    }
+  }
+
+  /// Redeem a reward by reward ID
+  Future<dynamic> redeemReward({
+    required String token,
+    required int rewardId,
+  }) async {
+    final url = Uri.parse('$baseUrl/customers/redeem-reward/');
+    final headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.0.0',
+    };
+
+    final body = jsonEncode({'reward_id': rewardId});
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to redeem reward: ${response.body}');
+    }
   }
 }

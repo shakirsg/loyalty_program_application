@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
     final fullName = context.watch<AuthProvider>().fullName;
     final email = context.watch<AuthProvider>().email;
 
-    final points = context.watch<UserProvider>().points;
+    final points = context.watch<UserProvider>().total_points;
 
     return Scaffold(
       appBar: AppBar(
@@ -91,9 +91,7 @@ class ProfilePage extends StatelessWidget {
                                 fontSize: 18,
                               ),
                             ),
-                            Text(
-                              '$email',
-                            ), // Replace with user email
+                            Text('$email'), // Replace with user email
                           ],
                         ),
                         Spacer(),
@@ -217,13 +215,46 @@ class ProfilePage extends StatelessWidget {
                 icon: Icon(Icons.logout),
                 label: Text('Log Out'),
                 onPressed: () async {
-                  // Clear the token (logout logic)
-                  await LocalStorageService.deleteToken();
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: Color(
+                          0xFFFFF5F3,
+                        ), // Light warm background color
+                        title: Text(
+                          'Logout',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        content: Text(
+                          'Are you sure you want to logout?',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              // Clear the token (logout logic)
+                              await LocalStorageService.deleteToken();
 
-                  // Optional: Clear auth/user state if using Provider
-                  // Provider.of<AuthProvider>(context, listen: false).logout(); ← if you have it
-                  // TODO: Add your logout logic here
-                  Navigator.pushReplacementNamed(context, '/login');
+                              // Optional: Clear auth/user state if using Provider
+                              // Provider.of<AuthProvider>(context, listen: false).logout(); ← if you have it
+                              // TODO: Add your logout logic here
+                              Navigator.pushReplacementNamed(context, '/login');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFFF05024),
+                            ),
+                            child: Text('Confirm'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
               ),
             ),

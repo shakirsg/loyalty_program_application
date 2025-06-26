@@ -11,6 +11,6 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/register': (context) => const RegisterPage(), // ✅ Add this
   '/landing': (context) => const LandingPage(),
   '/main': (context) => const MainPage(),
-  '/test': (context) => const CoffeeIntroPage(),
+  '/test': (context) => const LoginPage1(),
 
 };

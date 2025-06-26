@@ -72,9 +72,6 @@ class AuthProvider with ChangeNotifier {
         print("Login Token: ${token}");
         await LocalStorageService.saveToken(token!); // Save token
 
-        // // 🔥 Call getUserProfile right after login
-        // await getUserProfile();
-
         return token!; // Return token as a string
       } else {
         return response; // This will be the error JSON
@@ -133,5 +130,46 @@ class AuthProvider with ChangeNotifier {
     await _apiService.signOut();
     _user = null;
     notifyListeners();
+  }
+  // loginWithGoogle
+
+  Future<void> loginWithGoogle() async {
+    isLoading = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      final account = await _apiService.signInWithGoogle();
+      if (account == null) {
+        error = 'Google sign-in was cancelled.';
+        return;
+      }
+
+      _user = account;
+
+      final response = await _apiService.loginWithGoogle(
+        account.email,
+        account.displayName?.split(' ').first ?? '',
+        account.displayName?.split(' ').skip(1).join(' ') ?? '',
+        account.id,
+        account.photoUrl ?? '',
+        'google',
+        account.id,
+      );
+
+      if (response != null && response.containsKey('key')) {
+        token = response['key'];
+        await LocalStorageService.saveToken(token!);
+      } else {
+        error = "Google login failed: Unexpected response";
+      }
+    } catch (e) {
+      error = "Google login failed: ${e.toString()}";
+    } finally {
+      await _apiService.signOut();
+
+      isLoading = false;
+      notifyListeners();
+    }
   }
 }

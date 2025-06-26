@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/pages/rewards_success_page.dart';
+import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class RedeemRewardPage extends StatelessWidget {
   final String imageUrl;
@@ -18,6 +20,14 @@ class RedeemRewardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final userProvider = context.watch<UserProvider>();
+    final totalPoints  = context.watch<UserProvider>().total_points;
+    double remaining = totalPoints  - double.parse(points);
+String formatted = remaining.toStringAsFixed(3); // "83092.00"
+
+
+
     return Scaffold(
       appBar: AppBar(
         leading: Navigator.of(context).canPop()
@@ -36,7 +46,7 @@ class RedeemRewardPage extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(imageUrl), // Image of the reward
+                image: NetworkImage(imageUrl), // Image of the reward
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.only(
@@ -110,7 +120,7 @@ class RedeemRewardPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Free Coffee',
+                  title,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 8),
@@ -224,7 +234,7 @@ class RedeemRewardPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 8),
-                    Text('500 pts'), // Replace with current balance
+                    Text('$totalPoints pts'), // Replace with current balance
                   ],
                 ),
                 Column(
@@ -238,7 +248,7 @@ class RedeemRewardPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 8),
-                    Text('300 pts'), // Replace with after redeem balance
+                    Text('$formatted pts'), // Replace with after redeem balance
                   ],
                 ),
               ],

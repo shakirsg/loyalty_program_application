@@ -7,7 +7,7 @@ class PointsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final points = context.watch<UserProvider>().points;
+    final points = context.watch<UserProvider>().total_points;
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

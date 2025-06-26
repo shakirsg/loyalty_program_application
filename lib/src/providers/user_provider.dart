@@ -17,7 +17,7 @@ class UserProvider with ChangeNotifier {
   dynamic claimResult;
   // getUserPoints
   dynamic pointsData;
-  double points = 0.0;
+  double total_points = 0.0;
   List<dynamic> pointHistory = [];
 
   Future<void> claimPointsWithLocation(String qrCode) async {
@@ -63,15 +63,71 @@ class UserProvider with ChangeNotifier {
       pointsData = await _apiService.getPoints(token!);
       print('Raw API response: $pointsData');
       // total_points
-      points = (pointsData?['total_points'] ?? 0).toDouble();
+      total_points = (pointsData?['total_points'] ?? 0).toDouble();
       // Historys
       pointHistory = pointsData?['points'] ?? [];
-      print("User points: $points");
+      print("User points: $total_points");
       print("History count: ${pointHistory.length}");
     } catch (e) {
       error = "Failed to fetch points: ${e.toString()}";
     } finally {
       isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Rewards
+  List<dynamic> rewards = [];
+  String? rewardsError;
+  bool isLoadingRewards = false;
+
+  bool isRedeeming = false;
+  String? redeemError;
+  dynamic redeemResult;
+
+  /// Fetch list of rewards
+  Future<void> fetchRewardsList() async {
+    isLoadingRewards = true;
+    rewardsError = null;
+    notifyListeners();
+
+    try {
+      token = await LocalStorageService.getToken();
+
+      final response = await _apiService.getRewardsList(token!);
+      // rewards = response;
+      // Use raw map data from the "results" key
+      rewards = List<Map<String, dynamic>>.from(response['results']);
+    } catch (e) {
+      rewardsError = "Failed to fetch rewards: ${e.toString()}";
+    } finally {
+      isLoadingRewards = false;
+      notifyListeners();
+    }
+  }
+
+  /// Redeem a reward by ID
+  Future<void> redeemRewardById(int rewardId) async {
+    isRedeeming = true;
+    redeemError = null;
+    notifyListeners();
+
+    try {
+      token = await LocalStorageService.getToken();
+
+      final response = await _apiService.redeemReward(
+        token: token!,
+        rewardId: rewardId,
+      );
+
+      redeemResult = response;
+
+      // Optionally refresh user points
+      // await getUserPoints();
+    } catch (e) {
+      redeemError = "Failed to redeem reward: ${e.toString()}";
+    } finally {
+      isRedeeming = false;
       notifyListeners();
     }
   }

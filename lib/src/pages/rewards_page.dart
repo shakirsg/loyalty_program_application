@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/pages/redeem_reward_page.dart';
+import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:loyalty_program_application/src/widgets/topTabBar/waveBar.dart';
 import 'package:provider/provider.dart';
@@ -18,15 +19,15 @@ class _RewardsPageState extends State<RewardsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProvider>(
-        context,
-        listen: false,
-      ).getUserPoints();
+      Provider.of<UserProvider>(context, listen: false).fetchRewardsList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = context.watch<UserProvider>();
+    final points = context.watch<UserProvider>().total_points;
+
     return DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
@@ -158,28 +159,52 @@ class _RewardsPageState extends State<RewardsPage> {
                               ),
                             ),
                             Text(
-                              '500 pts available',
+                              '$points pts',
                               style: TextStyle(fontSize: 18, color: Colors.red),
                             ),
                           ],
                         ),
                         SizedBox(height: 20),
 
-                        // Reward Cards
-                        _rewardCard(
-                          imageUrl: './assets/coffee.png',
-                          title: 'Free Coffee',
-                          description:
-                              'Get a free coffee at any participating store',
-                          points: '200',
-                        ),
-                        SizedBox(height: 20),
-                        _rewardCard(
-                          imageUrl: './assets/carousel_3.png',
-                          title: '15% Discount',
-                          description: '15% off your next purchase',
-                          points: '300',
-                        ),
+                        // // Reward Cards
+                        // _rewardCard(
+                        //   imageUrl: './assets/coffee.png',
+                        //   title: 'Free Coffee',
+                        //   description:
+                        //       'Get a free coffee at any participating store',
+                        //   points: '200',
+                        // ),
+                        // SizedBox(height: 20),
+                        // _rewardCard(
+                        //   imageUrl: './assets/carousel_3.png',
+                        //   title: '15% Discount',
+                        //   description: '15% off your next purchase',
+                        //   points: '300',
+                        // ),
+                        userProvider.rewards.isNotEmpty
+                            ? Column(
+                                children: userProvider.rewards.map((reward) {
+                                  return Column(
+                                    children: [
+                                      _rewardCard(
+                                        imageUrl: reward['image'] ?? '',
+                                        title: reward['description'] ?? '',
+                                        description:
+                                            'Redeem for ${reward['uom']}', // or any custom text
+                                        points: reward['points_required']
+                                            .toString(),
+                                      ),
+                                      const SizedBox(height: 20),
+                                    ],
+                                  );
+                                }).toList(),
+                              )
+                            : Column(
+                                children: List.generate(
+                                  2,
+                                  (index) => _rewardCardSkeleton(),
+                                ),
+                              ),
                       ],
                     ),
                   ),
@@ -191,6 +216,40 @@ class _RewardsPageState extends State<RewardsPage> {
             _buildRewardsHistoryTab(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _rewardCardSkeleton() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey.shade300,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade400,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(height: 16, width: 120, color: Colors.grey.shade400),
+                const SizedBox(height: 8),
+                Container(height: 14, width: 180, color: Colors.grey.shade400),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -241,7 +300,7 @@ class _RewardsPageState extends State<RewardsPage> {
             width: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(imageUrl),
+                image: NetworkImage(imageUrl),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.only(
