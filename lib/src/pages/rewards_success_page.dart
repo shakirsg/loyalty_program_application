@@ -224,6 +224,7 @@ class RedemptionSuccessPage extends StatelessWidget {
             ),
 
             const SizedBox(height: 24),
+            
           ],
         ),
       ),

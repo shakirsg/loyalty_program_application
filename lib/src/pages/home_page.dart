@@ -16,117 +16,114 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // bool _isLoading = true;
+  bool _showImage = true;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //     setState(() => _isLoading = false);
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 4), () {
+      _showImage = false;
+      setState(() {});
+    });
+  }
 
-  //     try {
-  //       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-  //       final userProvider = Provider.of<UserProvider>(context, listen: false);
-
-  //       await Future.wait([
-  //         authProvider.getUserProfile(),
-  //         userProvider.getUserPoints(),
-  //       ]);
-  //     } catch (e) {
-  //       // Handle error if needed
-  //     } finally {
-  //       setState(() => _isLoading = false);
-  //     }
-  //   });
-  // }
+  bool _visible = true;
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthProvider>(context);
     // final isLoading = provider.isLoading;
     final fullName = context.watch<AuthProvider>().fullName;
-
+    if (!_visible) return SizedBox.shrink();
     return Scaffold(
+      // backgroundColor: Colors.blue,
       appBar: AppBar(
         leading: Navigator.of(context).canPop()
             ? IconButton(
                 icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
                 onPressed: () => Navigator.of(context).pop(),
               )
-            : null, // no back button on root page
+            : null,
         title: const Text('Home'),
       ),
-      body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // First Section: Points Plus
-                  SectionCard(
-                    title: 'Points Plus',
-                    titleColor: Colors.white,
-                    description: 'Welcome back, $fullName',
-                    descriptionColor: Colors.white,
-                    cardCount: 1,
-                    cards: [PointsCard()],
-                    backgroundColor: Color(
-                      0xFFF05024,
-                    ), // Example background color
-                  ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                // Remove the image from here since it will be on top now
+                // Your other sections here...
+                SectionCard(
+                  title: 'Points Plus',
+                  titleColor: Colors.white,
+                  description: 'Welcome back, $fullName',
+                  descriptionColor: Colors.white,
+                  cardCount: 1,
+                  cards: [PointsCard()],
+                  backgroundColor: Color(0xFFF05024),
+                ),
+                SectionCard(
+                  title: 'Quick Actions',
+                  cardCount: 2,
+                  cards: [
+                    QuickActionCard(
+                      icon: Icons.qr_code,
+                      title: 'Scan Product',
+                      targetIndex: 2,
+                    ),
+                    QuickActionCard(
+                      icon: Icons.card_giftcard,
+                      title: 'Redeem Points',
+                      targetIndex: 3,
+                    ),
+                  ],
+                ),
+                SectionCard(
+                  title: 'Stats',
+                  cardCount: 2,
+                  cards: [
+                    StatusCard(
+                      icon: Icons.trending_up,
+                      title: 'Total earned!',
+                      description: '750 pts',
+                    ),
+                    StatusCard(
+                      icon: Icons.history,
+                      title: 'This month',
+                      description: '250 pts',
+                    ),
+                  ],
+                ),
+                SectionCard(
+                  title: 'Recent Activity',
+                  description: '',
+                  cardCount: 1,
+                  cards: [
+                    RecentActivityCard(
+                      icon: Icons.trending_up,
+                      title: 'Scanned Coffee Bag',
+                      value: '+200 pts',
+                      date: '2025-06-12',
+                      location: 'New York, USA',
+                      downtime: '2 hours',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
 
-                  // Second Section: Quick Actions
-                  SectionCard(
-                    title: 'Quick Actions',
-                    cardCount: 2,
-                    cards: [
-                      QuickActionCard(
-                        icon: Icons.qr_code,
-                        title: 'Scan Product',
-                        targetIndex: 2,
-                      ),
-                      QuickActionCard(
-                        icon: Icons.card_giftcard,
-                        title: 'Redeem Points',
-                        targetIndex: 3,
-                      ),
-                    ],
-                  ),
-
-                  // Third Section: Stats
-                  SectionCard(
-                    title: 'Stats',
-                    cardCount: 2,
-                    cards: [
-                      StatusCard(
-                        icon: Icons.trending_up,
-                        title: 'Total earned!',
-                        description: '750 pts',
-                      ),
-                      StatusCard(
-                        icon: Icons.history,
-                        title: 'This month',
-                        description: '250 pts',
-                      ),
-                    ],
-                  ),
-
-                  // Fourth Section: Recent Activity
-                  SectionCard(
-                    title: 'Recent Activity',
-                    description: '',
-                    cardCount: 1,
-
-                    cards: [
-                      RecentActivityCard(
-                        icon: Icons.trending_up,
-                        title: 'Scanned Coffee Bag',
-                        value: '+200 pts',
-                        date: '2025-06-12',
-                        location: 'New York, USA',
-                        downtime: '2 hours',
-                      ),
-                    ],
-                  ),
-                ],
+          if (_showImage)
+            AbsorbPointer(
+              absorbing: true,
+              child: Image.asset(
+                'assets/1.webp',
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
             ),
+        ],
+      ),
     );
   }
 }
