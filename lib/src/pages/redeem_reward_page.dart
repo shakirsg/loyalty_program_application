@@ -4,6 +4,7 @@ import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class RedeemRewardPage extends StatelessWidget {
+  final int itemId;
   final String imageUrl;
   final String title;
   final String description;
@@ -12,6 +13,7 @@ class RedeemRewardPage extends StatelessWidget {
   // Constructor
   const RedeemRewardPage({
     super.key,
+    required this.itemId,
     required this.imageUrl,
     required this.title,
     required this.description,
@@ -20,13 +22,10 @@ class RedeemRewardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final userProvider = context.watch<UserProvider>();
-    final totalPoints  = context.watch<UserProvider>().total_points;
-    double remaining = totalPoints  - double.parse(points);
-String formatted = remaining.toStringAsFixed(3); // "83092.00"
-
-
+    final totalPoints = context.watch<UserProvider>().total_points;
+    double remaining = totalPoints - double.parse(points);
+    String formatted = remaining.toStringAsFixed(3); // "83092.00"
 
     return Scaffold(
       appBar: AppBar(
@@ -282,7 +281,14 @@ String formatted = remaining.toStringAsFixed(3); // "83092.00"
                           child: Text('Cancel'),
                         ),
                         ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            
+
+                            // Call the redeemRewardById method with the rewardId you want to redeem
+                            await userProvider.redeemRewardById(
+                              itemId
+                            ); // replace 123 with actual rewardId
+
                             Navigator.of(context).pop();
                             // ScaffoldMessenger.of(context).showSnackBar(
                             //   SnackBar(

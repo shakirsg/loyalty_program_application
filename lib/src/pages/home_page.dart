@@ -21,20 +21,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 3), () {
       _showImage = false;
       setState(() {});
     });
   }
 
-  bool _visible = true;
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthProvider>(context);
     // final isLoading = provider.isLoading;
     final fullName = context.watch<AuthProvider>().fullName;
-    if (!_visible) return SizedBox.shrink();
     return Scaffold(
       // backgroundColor: Colors.blue,
       appBar: AppBar(
@@ -117,7 +115,7 @@ class _HomePageState extends State<HomePage> {
             AbsorbPointer(
               absorbing: true,
               child: Image.asset(
-                'assets/1.webp',
+                'assets/2.webp',
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),

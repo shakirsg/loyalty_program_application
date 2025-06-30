@@ -3,6 +3,7 @@ import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import './forgot_password_page.dart';
 
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -224,8 +225,17 @@ class _LoginPageState extends State<LoginPage> {
         ),
         if (authProvider.isLoading)
           Container(
-            color: Colors.black.withOpacity(0.3),
-            child: const Center(child: CircularProgressIndicator()),
+            color: Colors.black.withOpacity(0.1),
+            width: double.infinity,
+            height: double.infinity,
+            child: Center(
+              child: Image.asset(
+                'assets/123.gif',
+                width: double.infinity,
+                // height: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
       ],
     );

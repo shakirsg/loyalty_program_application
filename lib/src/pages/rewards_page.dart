@@ -187,6 +187,7 @@ class _RewardsPageState extends State<RewardsPage> {
                                   return Column(
                                     children: [
                                       _rewardCard(
+                                        itemId: int.tryParse(reward['item_id']?.toString() ?? '') ?? 0,
                                         imageUrl: reward['image'] ?? '',
                                         title: reward['description'] ?? '',
                                         description:
@@ -285,6 +286,8 @@ class _RewardsPageState extends State<RewardsPage> {
   }
 
   Widget _rewardCard({
+    required int itemId,
+
     required String imageUrl,
     required String title,
     required String description,
@@ -330,6 +333,7 @@ class _RewardsPageState extends State<RewardsPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => RedeemRewardPage(
+                              itemId: itemId,
                               imageUrl: imageUrl,
                               title: title,
                               description: description,
