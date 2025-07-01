@@ -24,6 +24,7 @@ class RedeemRewardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
     final totalPoints = context.watch<UserProvider>().total_points;
+    String totalPoints_ = totalPoints.toStringAsFixed(3);
     double remaining = totalPoints - double.parse(points);
     String formatted = remaining.toStringAsFixed(3); // "83092.00"
 
@@ -233,7 +234,7 @@ class RedeemRewardPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 8),
-                    Text('$totalPoints pts'), // Replace with current balance
+                    Text('$totalPoints_ pts'), // Replace with current balance
                   ],
                 ),
                 Column(
@@ -259,57 +260,71 @@ class RedeemRewardPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton(
               onPressed: () {
+                // final intPoints = int.tryParse(formatted.toString()) ?? 0;
+
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor: Color(
-                        0xFFFFF5F3,
-                      ), // Light warm background color
-                      title: Text(
-                        'Confirm Redemption',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      content: Text(
-                        'Are you sure you want to redeem this reward for $points pts?',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('Cancel'),
+                    if (remaining < 0) {
+                      return AlertDialog(
+                        title: const Text(
+                          'Info',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            
-
-                            // Call the redeemRewardById method with the rewardId you want to redeem
-                            await userProvider.redeemRewardById(
-                              itemId
-                            ); // replace 123 with actual rewardId
-
-                            Navigator.of(context).pop();
-                            // ScaffoldMessenger.of(context).showSnackBar(
-                            //   SnackBar(
-                            //     content: Text('Reward redeemed successfully!'),
-                            //   ),
-                            // );
-                            // Navigate to RedeemRewardPage
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RedemptionSuccessPage(),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFF05024),
+                        content: const Text(
+                          'Need more reward points. Cannot redeem the reward.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            child: const Text('OK'),
                           ),
-                          child: Text('Confirm'),
+                        ],
+                      );
+                    } else {
+                      // Else show confirmation dialog
+                      return AlertDialog(
+                        backgroundColor: const Color(0xFFFFF5F3),
+                        title: const Text(
+                          'Confirm Redemption',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ],
-                    );
+                        content: Text(
+                          'Are you sure you want to redeem this reward for $points pts?',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await userProvider.redeemRewardById(itemId);
+
+                              Navigator.of(
+                                context,
+                              ).pop(); // Close confirmation dialog
+
+                              // Navigate to success page
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RedemptionSuccessPage(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFF05024),
+                            ),
+                            child: const Text('Confirm'),
+                          ),
+                        ],
+                      );
+                    }
                   },
                 );
               },

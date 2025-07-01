@@ -131,4 +131,33 @@ class UserProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // Get redeemedPoints
+  double redeemedPoints = 0.0;
+  List<dynamic> redeemedHistory = [];
+  String? redeemedPointsError;
+  bool isLoadingRedeemedPoints = false;
+
+  Future<void> getRedeemedPoints() async {
+    isLoadingRedeemedPoints = true;
+    redeemedPointsError = null;
+    notifyListeners();
+
+    try {
+      token = await LocalStorageService.getToken();
+      final response = await _apiService.getRedeemedPoints(token!);
+      print('Redeemed points response: $response');
+
+      redeemedPoints = (response['total_points'] ?? 0).toDouble();
+      redeemedHistory = response['points'] ?? [];
+
+      print("Redeemed points: $redeemedPoints");
+      print("Redeemed history count: ${redeemedHistory.length}");
+    } catch (e) {
+      redeemedPointsError = "Failed to fetch redeemed points: ${e.toString()}";
+    } finally {
+      isLoadingRedeemedPoints = false;
+      notifyListeners();
+    }
+  }
 }

@@ -16,15 +16,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // bool _isLoading = true;
-  bool _showImage = true;
+  bool _showImage = false;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      _showImage = false;
-      setState(() {});
-    });
+    // Future.delayed(const Duration(seconds: 3), () {
+    //   _showImage = false;
+    //   setState(() {});
+    // });
   }
 
 
@@ -92,34 +92,34 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                SectionCard(
-                  title: 'Recent Activity',
-                  description: '',
-                  cardCount: 1,
-                  cards: [
-                    RecentActivityCard(
-                      icon: Icons.trending_up,
-                      title: 'Scanned Coffee Bag',
-                      value: '+200 pts',
-                      date: '2025-06-12',
-                      location: 'New York, USA',
-                      downtime: '2 hours',
-                    ),
-                  ],
-                ),
+                // SectionCard(
+                //   title: 'Recent Activity',
+                //   description: '',
+                //   cardCount: 1,
+                //   cards: [
+                //     RecentActivityCard(
+                //       icon: Icons.trending_up,
+                //       title: 'Scanned Coffee Bag',
+                //       value: '+200 pts',
+                //       date: '2025-06-12',
+                //       location: 'New York, USA',
+                //       downtime: '2 hours',
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),
 
-          if (_showImage)
-            AbsorbPointer(
-              absorbing: true,
-              child: Image.asset(
-                'assets/2.webp',
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
+          // if (_showImage)
+          //   AbsorbPointer(
+          //     absorbing: true,
+          //     child: Image.asset(
+          //       'assets/2.webp',
+          //       width: double.infinity,
+          //       fit: BoxFit.cover,
+          //     ),
+          //   ),
         ],
       ),
     );

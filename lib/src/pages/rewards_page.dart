@@ -18,15 +18,16 @@ class _RewardsPageState extends State<RewardsPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProvider>(context, listen: false).fetchRewardsList();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Provider.of<UserProvider>(context, listen: false).fetchRewardsList();
+      await Provider.of<UserProvider>(context, listen: false).getRedeemedPoints();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
-    final points = context.watch<UserProvider>().total_points;
+    final points = context.watch<UserProvider>().total_points.toStringAsFixed(3);
 
     return DefaultTabController(
       length: 2, // Number of tabs
@@ -187,7 +188,7 @@ class _RewardsPageState extends State<RewardsPage> {
                                   return Column(
                                     children: [
                                       _rewardCard(
-                                        itemId: int.tryParse(reward['item_id']?.toString() ?? '') ?? 0,
+                                        itemId: int.tryParse(reward['id']?.toString() ?? '') ?? 0,
                                         imageUrl: reward['image'] ?? '',
                                         title: reward['description'] ?? '',
                                         description:
@@ -359,115 +360,107 @@ class _RewardsPageState extends State<RewardsPage> {
   }
 
   Widget _buildRewardsHistoryTab() {
-    final history = [
-      {
-        'title': 'Free Coffee',
-        'date': '2025-05-01',
-        'points': '200',
-        'status': 'Redeemed',
-      },
-      {
-        'title': '15% Discount',
-        'date': '2025-04-15',
-        'points': '300',
-        'status': 'Expired',
-      },
-    ];
+  final history = context.watch<UserProvider>().redeemedHistory;
 
-    Color _getStatusColor(String status) {
-      switch (status) {
-        case 'Redeemed':
-          return Colors.green;
-        case 'Expired':
-          return Colors.grey;
-        default:
-          return Colors.blueGrey;
-      }
-    }
-
-    IconData _getStatusIcon(String status) {
-      switch (status) {
-        case 'Redeemed':
-          return Icons.check_circle_outline;
-        case 'Expired':
-          return Icons.cancel_outlined;
-        default:
-          return Icons.info_outline;
-      }
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: history.length,
-      itemBuilder: (context, index) {
-        final item = history[index];
-        final status = item['status']!;
-        return Card(
-          margin: const EdgeInsets.only(bottom: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 3,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Icon(
-                  _getStatusIcon(status),
-                  color: _getStatusColor(status),
-                  size: 32,
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item['title']!,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Date: ${item['date']}',
-                        style: TextStyle(color: Colors.grey[700]),
-                      ),
-                      Text(
-                        'Status: $status',
-                        style: TextStyle(
-                          color: _getStatusColor(status),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '${item['points']} pts',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+  Color _getStatusColor({required bool redeemed, required bool expired}) {
+    if (redeemed) return Colors.green;
+    if (expired) return Colors.grey;
+    return Colors.blueGrey;
   }
+
+  IconData _getStatusIcon({required bool redeemed, required bool expired}) {
+    if (redeemed) return Icons.check_circle_outline;
+    if (expired) return Icons.cancel_outlined;
+    return Icons.info_outline;
+  }
+
+  String _getStatusText({required bool redeemed, required bool expired}) {
+    if (redeemed) return 'Redeemed';
+    if (expired) return 'Expired';
+    return 'Pending';
+  }
+
+  return ListView.builder(
+    padding: const EdgeInsets.all(16),
+    itemCount: history.length,
+    itemBuilder: (context, index) {
+      final item = history[index];
+      final product = item['product'] ?? 'Unknown';
+      final date = item['created']?.toString().split('T')[0] ?? '';
+      final points = item['points'] ?? 0;
+      final redeemed = item['redeemed'] ?? false;
+      final expired = item['expired'] ?? false;
+
+      final statusColor = _getStatusColor(redeemed: redeemed, expired: expired);
+      final statusIcon = _getStatusIcon(redeemed: redeemed, expired: expired);
+      final statusText = _getStatusText(redeemed: redeemed, expired: expired);
+
+      return Card(
+        margin: const EdgeInsets.only(bottom: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(
+                statusIcon,
+                color: statusColor,
+                size: 32,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Date: $date',
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    Text(
+                      'Status: $statusText',
+                      style: TextStyle(
+                        color: statusColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '$points pts',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 }

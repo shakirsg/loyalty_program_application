@@ -243,4 +243,22 @@ class ApiService {
       throw Exception('Failed to redeem reward: ${response.body}');
     }
   }
+
+  /// Get total points
+  Future<dynamic> getRedeemedPoints(String token) async {
+    final url = Uri.parse('$baseUrl/customers/redeemed-points');
+    final headers = {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.0.0',
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to get redeemed points');
+    }
+  }
 }
