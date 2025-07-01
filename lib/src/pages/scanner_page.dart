@@ -10,7 +10,6 @@ import 'package:loyalty_program_application/src/components/CornerPainter.dart';
 import 'package:loyalty_program_application/src/pages/history_page.dart';
 import 'package:loyalty_program_application/src/pages/earn_point_page.dart';
 
-
 class ScannerPage extends StatefulWidget {
   const ScannerPage({super.key});
 
@@ -169,6 +168,9 @@ class _QRViewExampleState extends State<ScannerPage>
   }
 
   Widget _buildResultOverlay() {
+    final isClaiming = context.watch<UserProvider>().isClaiming;
+    
+
     return Positioned.fill(
       child: Container(
         color: Colors.black.withOpacity(0.85),
@@ -238,31 +240,90 @@ class _QRViewExampleState extends State<ScannerPage>
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: () async {
-                    try {
-                      final position =
-                          await LocationService.determinePosition();
-                      final address =
-                          await LocationService.getAddressFromPosition(
-                            position,
-                          );
+                    // try {
+                    //   final position =
+                    //       await LocationService.determinePosition();
+                    //   final address =
+                    //       await LocationService.getAddressFromPosition(
+                    //         position,
+                    //       );
 
-                      print(
-                        'Lat: ${position.latitude}, Lng: ${position.longitude}',
-                      );
-                      print('Address: $address');
-                    } catch (e) {
-                      print('Error: $e');
-                    }
-                    Provider.of<UserProvider>(
+                    //   print(
+                    //     'Lat: ${position.latitude}, Lng: ${position.longitude}',
+                    //   );
+                    //   print('Address: $address');
+                    // } catch (e) {
+                    //   print('Error: $e');
+                    // }
+                    await Provider.of<UserProvider>(
                       context,
                       listen: false,
                     ).claimPointsWithLocation('${result!.code}');
-                    Navigator.push(
+                    final claimResult = Provider.of<UserProvider>(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const HistoryPage(),
-                      ),
-                    );
+                      listen: false,
+                    ).claimResult;
+                    if (claimResult is Map<String, dynamic>) {
+                      if (claimResult.containsKey('detail')) {
+                        // ❌ Show error dialog
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Error'),
+                            content: Text(claimResult['detail']),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        // ✅ Show success dialog with points
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Success'),
+                            content: Text(
+                              'Points Gained: ${claimResult['points']}',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    } else {
+                      // 🚫 Show unexpected format dialog
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Error'),
+                          content: Text('Unexpected response format.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    Provider.of<UserProvider>(
+                      context,
+                      listen: false,
+                    ).getUserPoints();
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const HistoryPage(),
+                    //   ),
+                    // );
                   },
                   icon: const Icon(Icons.trending_up),
                   label: const Text('Get Points'),

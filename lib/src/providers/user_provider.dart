@@ -27,7 +27,7 @@ class UserProvider with ChangeNotifier {
 
     try {
       final position = await LocationService.determinePosition();
-      final address = await LocationService.getAddressFromPosition(position);
+      // final address = await LocationService.getAddressFromPosition(position);
       token = await LocalStorageService.getToken();
 
       final result = await _apiService.claimPoints(
@@ -35,15 +35,17 @@ class UserProvider with ChangeNotifier {
         qrCode: qrCode,
         latitude: position.latitude,
         longitude: position.longitude,
-        address: address,
+        address: "address",
       );
 
       claimResult = result;
-
+      print(claimResult);
       // Optionally update user points again here
-      await getUserPoints();
+      // await getUserPoints();
+      
     } catch (e) {
       error = e.toString();
+      print(error);
     } finally {
       isClaiming = false;
       notifyListeners();

@@ -38,23 +38,24 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initializeData());
+  }
+
+  Future<void> _initializeData() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    try {
+      await Future.wait([
+        authProvider.getUserProfile(),
+        userProvider.getUserPoints(),
+      ]);
+    } catch (e) {
+      // Optional: handle or log error
+    } finally {
+      if (!mounted) return;
       setState(() => _isLoading = false);
-
-      try {
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-
-        await Future.wait([
-          authProvider.getUserProfile(),
-          userProvider.getUserPoints(),
-        ]);
-      } catch (e) {
-        // Handle error if needed
-      } finally {
-        setState(() => _isLoading = false);
-      }
-    });
+    }
   }
 
   @override

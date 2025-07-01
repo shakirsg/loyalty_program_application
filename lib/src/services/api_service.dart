@@ -85,7 +85,10 @@ class ApiService {
 
     final response = await http.post(url, headers: headers, body: body);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    }
+    if (response.statusCode == 400) {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to claim points: ${response.body}');

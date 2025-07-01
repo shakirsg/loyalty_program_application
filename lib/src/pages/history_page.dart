@@ -104,7 +104,7 @@ class _HistoryState extends  State<HistoryPage>  {
                           ? 'Redeemed'
                           : 'Active',
                       date: formatDateTime(item['created']),
-                      points: '+${item['points']} pts',
+                      points: '+${item['points'].toStringAsFixed(3)} pts',
                       expiredTime: formatDateTime(
                         item['expiration_date'],
                       ), // Add this line

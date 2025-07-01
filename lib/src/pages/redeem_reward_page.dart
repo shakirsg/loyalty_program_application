@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/pages/rewards_success_page.dart';
+import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,7 @@ class RedeemRewardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
     final userProvider = context.watch<UserProvider>();
     final totalPoints = context.watch<UserProvider>().total_points;
     String totalPoints_ = totalPoints.toStringAsFixed(3);
@@ -304,6 +306,8 @@ class RedeemRewardPage extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () async {
                               await userProvider.redeemRewardById(itemId);
+                              await userProvider.getUserPoints();
+
 
                               Navigator.of(
                                 context,

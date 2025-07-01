@@ -18,10 +18,15 @@ class _RewardsPageState extends State<RewardsPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Provider.of<UserProvider>(context, listen: false).fetchRewardsList();
-      await Provider.of<UserProvider>(context, listen: false).getRedeemedPoints();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadRewards());
+  }
+
+  Future<void> _loadRewards() async {
+    if (!mounted) return;
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    await userProvider.fetchRewardsList();
+    if (!mounted) return;
+    await userProvider.getRedeemedPoints();
   }
 
   @override
