@@ -242,6 +242,8 @@ class ApiService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
+    } if (response.statusCode == 404) {
+      return jsonDecode(response.body);
     } else {
       throw Exception('Failed to redeem reward: ${response.body}');
     }

@@ -307,19 +307,78 @@ class RedeemRewardPage extends StatelessWidget {
                             onPressed: () async {
                               await userProvider.redeemRewardById(itemId);
                               await userProvider.getUserPoints();
+                              Navigator.of(context).pop();
 
-
-                              Navigator.of(
+                              final redeemResult = Provider.of<UserProvider>(
                                 context,
-                              ).pop(); // Close confirmation dialog
+                                listen: false,
+                              ).redeemResult;
+                              if (redeemResult is Map<String, dynamic>) {
+                                if (redeemResult.containsKey('error')) {
+                                  // ❌ Show error dialog
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('Error'),
+                                      content: Text(redeemResult['error']),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                } else {
+                                  // ✅ Show success dialog with points
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('Success'),
+                                      content: Text(
+                                        'Points Used: ${points}',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              } else {
+                                // 🚫 Show unexpected format dialog
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('Error'),
+                                    content: Text(
+                                      'Unexpected response format.',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: Text('OK'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                              // Navigator.of(
+                              //   context,
+                              // ).pop(); // Close confirmation dialog
 
-                              // Navigate to success page
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RedemptionSuccessPage(),
-                                ),
-                              );
+                              // // Navigate to success page
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => RedemptionSuccessPage(),
+                              //   ),
+                              // );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFF05024),

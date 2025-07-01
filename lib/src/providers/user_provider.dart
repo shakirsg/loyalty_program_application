@@ -42,7 +42,6 @@ class UserProvider with ChangeNotifier {
       print(claimResult);
       // Optionally update user points again here
       // await getUserPoints();
-      
     } catch (e) {
       error = e.toString();
       print(error);
@@ -123,7 +122,7 @@ class UserProvider with ChangeNotifier {
       );
 
       redeemResult = response;
-
+      print(redeemResult);
       // Optionally refresh user points
       // await getUserPoints();
     } catch (e) {

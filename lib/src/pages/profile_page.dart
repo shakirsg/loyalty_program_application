@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
     final fullName = context.watch<AuthProvider>().fullName;
     final email = context.watch<AuthProvider>().email;
 
-    final points = context.watch<UserProvider>().total_points;
+    final points = context.watch<UserProvider>().total_points.toStringAsFixed(3);
 
     return Scaffold(
       appBar: AppBar(
