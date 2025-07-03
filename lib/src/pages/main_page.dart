@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/pages/home_page.dart';
-import 'package:loyalty_program_application/src//widgets/BottomNavigationBar/bottom_navigation_bar.dart';
 import 'package:loyalty_program_application/src/pages/profile_page.dart';
 import 'package:loyalty_program_application/src/pages/rewards_page.dart';
 import 'package:loyalty_program_application/src/pages/scanner_page.dart';
+import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
+import 'package:loyalty_program_application/src/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
-// Create a GlobalKey for MainPage
 final GlobalKey<_MainPageState> mainPageKey = GlobalKey<_MainPageState>();
 
 class MainPage extends StatefulWidget {
@@ -19,21 +20,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 3;
   bool _isLoading = false;
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const RewardsPage(),
-    const ScannerPage(),
-    const ProfilePage(),
+  final List<Widget> _pages = const [
+    HomePage(),
+    RewardsPage(),
+    ScannerPage(),
+    ProfilePage(),
   ];
-
-  void onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   void initState() {
@@ -50,8 +44,8 @@ class _MainPageState extends State<MainPage> {
         authProvider.getUserProfile(),
         userProvider.getUserPoints(),
       ]);
-    } catch (e) {
-      // Optional: handle or log error
+    } catch (_) {
+      // Optional: log error
     } finally {
       if (!mounted) return;
       setState(() => _isLoading = false);
@@ -60,15 +54,16 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = context.watch<NavigationProvider>().selectedIndex;
+
     return _isLoading
         ? const Center(child: CircularProgressIndicator())
         : Scaffold(
-            body: _pages[_selectedIndex],
+            body: _pages[currentIndex],
             bottomNavigationBar: BottomNavBar(
-              currentIndex: _selectedIndex,
-              onTap: onItemTapped,
+              currentIndex: currentIndex,
+              onTap: (index) => context.read<NavigationProvider>().setIndex(index),
             ),
-            // backgroundColor: Colors.transparent, // Make the background transparent
           );
   }
 }

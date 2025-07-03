@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:loyalty_program_application/src/services/local_storage_service.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +16,10 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+
       ],
       child: MyApp(initialRoute: token != null ? '/main' : '/landing'),
     ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/pages/main_page.dart';
+import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
+import 'package:provider/provider.dart';
 
 class QuickActionCard extends StatelessWidget {
   final IconData icon;
@@ -14,10 +16,16 @@ class QuickActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final navProvider = context.watch<NavigationProvider>();
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         // Trigger onItemTapped on MainPage using GlobalKey
-        print(mainPageKey);
+        // print(mainPageKey);
+        // navProvider.refresh(targetIndex);
+        // Navigator.pushReplacementNamed(context, '/main');
+
+        Navigator.pushReplacementNamed(context, '/main');
+        navProvider.setIndex(targetIndex);
       },
       child: Card(
         elevation: 4,

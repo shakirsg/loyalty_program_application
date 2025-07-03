@@ -53,6 +53,7 @@ class _QRViewExampleState extends State<ScannerPage>
   @override
   void reassemble() {
     super.reassemble();
+    print("resum -----------");
     if (Platform.isAndroid) {
       controller?.pauseCamera();
     } else if (Platform.isIOS) {
@@ -169,7 +170,6 @@ class _QRViewExampleState extends State<ScannerPage>
 
   Widget _buildResultOverlay() {
     final isClaiming = context.watch<UserProvider>().isClaiming;
-    
 
     return Positioned.fill(
       child: Container(

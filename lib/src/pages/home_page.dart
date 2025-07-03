@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                     QuickActionCard(
                       icon: Icons.card_giftcard,
                       title: 'Redeem Points',
-                      targetIndex: 3,
+                      targetIndex: 1,
                     ),
                   ],
                 ),

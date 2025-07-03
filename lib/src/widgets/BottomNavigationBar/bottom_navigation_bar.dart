@@ -64,6 +64,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       child: InkWell(
         borderRadius: BorderRadius.circular(50),
         onTap: () {
+          // print('I am selected');
           _handlePressed(index);
         },
         child: AnimatedContainer(
