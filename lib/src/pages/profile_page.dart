@@ -6,18 +6,27 @@ import 'package:loyalty_program_application/src/pages/privacy_security_page.dart
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:loyalty_program_application/src/services/local_storage_service.dart';
-import 'package:provider/provider.dart'; // Import Notifications Page
+import 'package:provider/provider.dart';
+import 'package:skeleton_loader/skeleton_loader.dart'; // Import Notifications Page
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AuthProvider>(context);
+    // final provider = Provider.of<AuthProvider>(context);
     final fullName = context.watch<AuthProvider>().fullName;
     final email = context.watch<AuthProvider>().email;
 
-    final points = context.watch<UserProvider>().total_points.toStringAsFixed(3);
+    final points = context.watch<UserProvider>().total_points.toStringAsFixed(
+      3,
+    );
+    final isLoadingUserProfile = context
+        .watch<AuthProvider>()
+        .isLoadingUserProfile;
+    final isLoadingUserPoints = context
+        .watch<UserProvider>()
+        .isLoadingUserPoints;
 
     return Scaffold(
       appBar: AppBar(
@@ -66,69 +75,111 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
             ),
-            Card(
-              margin: EdgeInsets.all(16),
-              elevation: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    // Profile info panel
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: AssetImage('./assets/avatar.png'),
-                        ),
-                        SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+            isLoadingUserProfile || isLoadingUserPoints
+                ? SkeletonLoader(
+                    builder: Card(
+                      margin: EdgeInsets.all(16),
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
                           children: [
-                            Text(
-                              '$fullName', // Replace with user name
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
+                            Row(
+                              children: [
+                                CircleAvatar(radius: 30),
+                                SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 120,
+                                      height: 16,
+                                      color: Colors.grey[300],
+                                    ),
+                                    SizedBox(height: 8),
+                                    Container(
+                                      width: 180,
+                                      height: 14,
+                                      color: Colors.grey[300],
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            Text('$email'), // Replace with user email
+                            SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: 150,
+                                  height: 14,
+                                  color: Colors.grey[300],
+                                ),
+                                Container(
+                                  width: 80,
+                                  height: 36,
+                                  color: Colors.grey[300],
+                                ),
+                              ],
+                            ),
                           ],
                         ),
-                        Spacer(),
-                        // IconButton(
-                        //   icon: Icon(Icons.edit_outlined), // Outlined edit icon
-                        //   onPressed: () {
-                        //     // Navigate to Manage Account page
-                        //     Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => ManageAccountPage(),
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
-                      ],
+                      ),
                     ),
-                    SizedBox(height: 16),
-                    // Points and Redeem panel
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Available Points: $points',
-                        ), // Replace with user points
-                        ElevatedButton(
-                          onPressed: () {
-                            // Redeem action
-                          },
-                          child: Text('Redeem'),
-                        ),
-                      ],
+                    items: 1,
+                    period: Duration(seconds: 2),
+                    highlightColor: Colors.grey[100]!,
+                    direction: SkeletonDirection.ltr,
+                  )
+                : Card(
+                    margin: EdgeInsets.all(16),
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                                backgroundImage: AssetImage(
+                                  './assets/avatar.png',
+                                ),
+                              ),
+                              SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    fullName ?? 'User',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(email ?? 'No email'),
+                                ],
+                              ),
+                              Spacer(),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Available Points: $points'),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Redeem action
+                                },
+                                child: Text('Redeem'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
             // Wrap the settings items inside a Card
             Card(
               margin: EdgeInsets.all(16),
@@ -226,9 +277,7 @@ class ProfilePage extends StatelessWidget {
                           'Logout',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        content: Text(
-                          'Are you sure you want to logout?',
-                        ),
+                        content: Text('Are you sure you want to logout?'),
                         actions: [
                           TextButton(
                             onPressed: () {

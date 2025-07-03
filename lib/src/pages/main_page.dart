@@ -19,7 +19,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 3;
   bool _isLoading = false;
 
   final List<Widget> _pages = [
