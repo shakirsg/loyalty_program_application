@@ -395,6 +395,8 @@ class _RewardsPageState extends State<RewardsPage> {
       final points = item['points'] ?? 0;
       final redeemed = item['redeemed'] ?? false;
       final expired = item['expired'] ?? false;
+      final formatedPoints = points.toStringAsFixed(3);
+
 
       final statusColor = _getStatusColor(redeemed: redeemed, expired: expired);
       final statusIcon = _getStatusIcon(redeemed: redeemed, expired: expired);
@@ -453,7 +455,7 @@ class _RewardsPageState extends State<RewardsPage> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  '$points pts',
+                  '$formatedPoints pts',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

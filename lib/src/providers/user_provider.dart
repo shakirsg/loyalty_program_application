@@ -16,6 +16,8 @@ class UserProvider with ChangeNotifier {
   String? errorClaim;
   dynamic claimResult;
   // getUserPoints
+  bool isLoadingUserPoints = false;
+
   dynamic pointsData;
   double total_points = 0.0;
   List<dynamic> pointHistory = [];
@@ -53,7 +55,7 @@ class UserProvider with ChangeNotifier {
 
   /// Fetch user points
   Future<void> getUserPoints() async {
-    isLoading = true;
+    isLoadingUserPoints = true;
     error = null;
     notifyListeners();
 
@@ -72,7 +74,7 @@ class UserProvider with ChangeNotifier {
     } catch (e) {
       error = "Failed to fetch points: ${e.toString()}";
     } finally {
-      isLoading = false;
+      isLoadingUserPoints = false;
       notifyListeners();
     }
   }

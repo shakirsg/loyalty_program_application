@@ -11,6 +11,8 @@ class AuthProvider with ChangeNotifier {
   String? token;
 
   // UserProfile
+  bool isLoadingUserProfile = false;
+
   Map<String, dynamic>? userProfile;
   String? fullName = "Alex";
   String? email;
@@ -86,7 +88,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> getUserProfile() async {
-    isLoading = true;
+    isLoadingUserProfile = true;
     error = null;
     notifyListeners();
     token = await LocalStorageService.getToken();
@@ -103,7 +105,7 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       error = "Failed to fetch profile: ${e.toString()}";
     } finally {
-      isLoading = false;
+      isLoadingUserProfile = false;
       notifyListeners();
     }
   }
