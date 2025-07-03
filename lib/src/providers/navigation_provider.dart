@@ -10,7 +10,10 @@ class NavigationProvider with ChangeNotifier {
     _selectedIndex = index;
     notifyListeners();
   }
-
+void setIndex_(int index) {
+    _selectedIndex = index;
+    // notifyListeners();
+  }
   // void refresh(int index) {
   //   // _selectedIndex = index;
   //   isRereshing = true;
