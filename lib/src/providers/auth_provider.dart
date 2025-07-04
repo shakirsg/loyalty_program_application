@@ -12,6 +12,7 @@ class AuthProvider with ChangeNotifier {
 
   // UserProfile
   bool isLoadingUserProfile = false;
+  bool isLoadingOtp = false;
 
   Map<String, dynamic>? userProfile;
   String? fullName = "Alex";
@@ -174,4 +175,49 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+  Map<String, dynamic>? getOtpResponse;
+  
+    /// Request OTP
+  Future<void> getOtp(String phoneNumber) async {
+    try {
+      isLoadingOtp = true;
+      notifyListeners();
+
+      getOtpResponse = await _apiService.getOtp(phoneNumber: phoneNumber);
+      // You can handle response if needed (usually 200 is success)
+      // return response;
+    } catch (e) {
+      rethrow;
+    } finally {
+      isLoadingOtp = false;
+      notifyListeners();
+    }
+  }
+
+  /// Verify OTP and login
+  Future<dynamic> loginWithPhoneOtp(String phone, String otp) async {
+    try {
+      isLoadingOtp = true;
+      notifyListeners();
+
+      final result = await _apiService.verifyOtp(otp: otp);
+
+      // Check if token is returned
+      if (result is Map && result.containsKey('key')) {
+        token = result['key'];
+        await LocalStorageService.saveToken(token!); // Save token
+
+        print(token);
+        return token;
+      } else {
+        return result;
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      isLoadingOtp = false;
+      notifyListeners();
+    }
+  }
+
 }

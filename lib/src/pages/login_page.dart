@@ -3,7 +3,6 @@ import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import './forgot_password_page.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -11,14 +10,25 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
+  final _emailFormKey = GlobalKey<FormState>();
+  final _phoneFormKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _otpController = TextEditingController();
   bool _rememberMe = false;
+  late TabController _tabController;
+  int _selectedLoginMethod = 0; // 0 = Email, 1 = Phone
 
-  void _login() async {
-    if (_formKey.currentState!.validate()) {
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  void _loginWithEmail() async {
+    if (_emailFormKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       final result = await authProvider.login(
@@ -26,218 +36,390 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
 
-      if (result is String) {
-        // Login successful
-        print(result);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: const [
-                Icon(Icons.check_circle, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Login successful!'),
-              ],
-            ),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 3),
-          ),
-        );
-        Navigator.pushReplacementNamed(context, '/main');
-      } else if (result is Map && result.containsKey('non_field_errors')) {
-        // Backend-specific error
+      _handleLoginResult(result);
+    }
+  }
+
+  void _loginWithOtp() async {
+    if (_phoneFormKey.currentState!.validate()) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final result = await authProvider.loginWithPhoneOtp(
+        _phoneController.text.trim(),
+        _otpController.text.trim(),
+      );
+
+      _handleLoginResult(result);
+    }
+  }
+
+  bool _isOtpSent = false;
+
+  void _getOtp() async {
+    final phone = _phoneController.text.trim();
+    if (phone.length >= 8) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      await authProvider.getOtp(phone);
+      final getOtpResponse = authProvider.getOtpResponse;
+      if (getOtpResponse?.containsKey("data") == true) {
+        setState(() {
+          _isOtpSent = true;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
-                const Icon(Icons.warning, color: Colors.white),
+                const Icon(Icons.check_circle, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text(result['non_field_errors'][0])),
+                Text(getOtpResponse!["data"] ?? "No message"),
               ],
             ),
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 4),
           ),
         );
-      } else {
-        // General login failure
+      } else if (getOtpResponse!.containsKey("detail")) {
+        setState(() {
+          _isOtpSent = false;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
-              children: const [
-                Icon(Icons.error, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Login failed. Please try again.'),
+              children: [
+                const Icon(Icons.error, color: Colors.white),
+                const SizedBox(width: 12),
+                Text(getOtpResponse!["detail"] ?? "No message"),
               ],
             ),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 4),
           ),
         );
       }
     }
   }
 
-  void _goToRegister() {
-    Navigator.pushReplacementNamed(context, '/register');
+  void _handleLoginResult(dynamic result) {
+    if (result is String) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.white),
+              SizedBox(width: 12),
+              Text('Login successful!'),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      Navigator.pushReplacementNamed(context, '/main');
+    } else if (result is Map && result.containsKey('non_field_errors')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.warning, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(child: Text(result['non_field_errors'][0])),
+            ],
+          ),
+          backgroundColor: Colors.orange,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.error, color: Colors.white),
+              SizedBox(width: 12),
+              Text('Login failed. Please try again.'),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   void _forgotPassword() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+      MaterialPageRoute(builder: (_) => const ForgotPasswordPage()),
     );
+  }
+
+  void _goToRegister() {
+    Navigator.pushReplacementNamed(context, '/register');
   }
 
   void _signInWithGoogle() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    // await authProvider.signIn();
-    // await authProvider.signOut();
     await authProvider.loginWithGoogle();
-    // Implement Google sign-in logic
-    print("Google sign-in clicked!");
   }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
 
-    return Stack(
-      children: [
-        Scaffold(
-          body: AbsorbPointer(
-            absorbing: authProvider.isLoading,
-            child: Opacity(
-              opacity: authProvider.isLoading ? 0.5 : 1,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      const SizedBox(height: 60),
-                      const Text(
-                        'Welcome to Eyby Points!',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
+    return Scaffold(
+      // appBar: AppBar(
+      //   // title: const Text("Login"),
+      //   // bottom: TabBar(
+      //   //   controller: _tabController,
+      //   //   tabs: const [
+      //   //     Tab(text: "Email Login"),
+      //   //     Tab(text: "Phone Login"),
+      //   //   ],
+      //   // ),
+      // ),
+      body: Column(
+        children: [
+          const SizedBox(height: 120),
+          const Text(
+            'Welcome to Eyby Points!',
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 40),
+          Container(
+            padding: const EdgeInsets.all(4),
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedLoginMethod = 0;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _selectedLoginMethod == 0
+                            ? Colors.white
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      const SizedBox(height: 40),
-                      TextFormField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.email),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
-                          }
-                          if (!value.contains('@')) {
-                            return 'Enter a valid email';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.lock),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          if (value.length < 6) {
-                            return 'Password must be at least 6 characters';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: _rememberMe,
-                            onChanged: (value) {
-                              setState(() {
-                                _rememberMe = value ?? false;
-                              });
-                            },
+                      child: Center(
+                        child: Text(
+                          "Email Login",
+                          style: TextStyle(
+                            color: _selectedLoginMethod == 0
+                                ? Theme.of(context).primaryColor
+                                : Colors.black54,
+                            fontWeight: FontWeight.w600,
                           ),
-                          const Text("Remember Me"),
-                          const Spacer(),
-                          TextButton(
-                            onPressed: _forgotPassword,
-                            child: const Text("Forgot Password?"),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _login,
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Sign in'),
-                            Icon(Icons.arrow_forward, size: 24),
-                          ],
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      ElevatedButton.icon(
-                        onPressed: _signInWithGoogle,
-                        icon: const Icon(Icons.account_circle),
-                        label: const Text('Continue with Google'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          padding: const EdgeInsets.symmetric(vertical: 18.0),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("Don't have an account?"),
-                          TextButton(
-                            onPressed: _goToRegister,
-                            child: const Text("Register"),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedLoginMethod = 1;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _selectedLoginMethod == 1
+                            ? Colors.white
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Phone Login",
+                          style: TextStyle(
+                            color: _selectedLoginMethod == 1
+                                ? Theme.of(context).primaryColor
+                                : Colors.black54,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+          // const SizedBox(height: 20),
+          Expanded(
+            child: _selectedLoginMethod == 0
+                ? _buildEmailLoginTab()
+                : _buildPhoneLoginTab(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmailLoginTab() {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Form(
+        key: _emailFormKey,
+        child: ListView(
+          children: [
+            // const SizedBox(height: 40),
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.email),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty)
+                  return 'Please enter your email';
+                if (!value.contains('@')) return 'Enter a valid email';
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.lock),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty)
+                  return 'Please enter your password';
+                if (value.length < 6)
+                  return 'Password must be at least 6 characters';
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Checkbox(
+                  value: _rememberMe,
+                  onChanged: (value) {
+                    setState(() {
+                      _rememberMe = value ?? false;
+                    });
+                  },
+                ),
+                const Text("Remember Me"),
+                const Spacer(),
+                TextButton(
+                  onPressed: _forgotPassword,
+                  child: const Text("Forgot Password?"),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _loginWithEmail,
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Sign in'),
+                  Icon(Icons.arrow_forward, size: 24),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _signInWithGoogle,
+              icon: const Icon(Icons.account_circle),
+              label: const Text('Continue with Google'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                padding: const EdgeInsets.symmetric(vertical: 18.0),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Don't have an account?"),
+                TextButton(
+                  onPressed: _goToRegister,
+                  child: const Text("Register"),
+                ),
+              ],
+            ),
+          ],
         ),
-        if (authProvider.isLoading)
-          Container(
-            color: Colors.black.withOpacity(0.1),
-            width: double.infinity,
-            height: double.infinity,
-            child: Center(
-              child: Image.asset(
-                'assets/123.gif',
-                width: double.infinity,
-                // height: double.infinity,
-                fit: BoxFit.cover,
+      ),
+    );
+  }
+
+  Widget _buildPhoneLoginTab() {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Form(
+        key: _phoneFormKey,
+        child: ListView(
+          children: [
+            // const SizedBox(height: 40),
+            if (!_isOtpSent) ...[
+              TextFormField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  labelText: 'Phone Number',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.phone),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Enter phone number'
+                    : null,
               ),
-            ),
-          ),
-      ],
+              const SizedBox(height: 20),
+              ElevatedButton(onPressed: _getOtp, child: const Text("Get OTP")),
+            ] else ...[
+              TextFormField(
+                controller: _otpController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Enter OTP',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.password),
+                ),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Enter OTP' : null,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _loginWithOtp,
+                child: const Text("Login with OTP"),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _isOtpSent = false;
+                    _otpController.clear();
+                  });
+                },
+                child: const Text("Edit phone number"),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

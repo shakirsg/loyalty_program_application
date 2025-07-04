@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:loyalty_program_application/src/pages/history_page.dart';
+import 'package:loyalty_program_application/src/pages/product_info_page.dart';
 import 'package:loyalty_program_application/src/providers/guest_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:loyalty_program_application/src/services/location_service.dart';
@@ -279,18 +280,25 @@ class _QRViewExampleState extends State<AuthenticatePage>
                           ),
                         );
                       } else {
-                        // ✅ Show success dialog with points
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('Success'),
-                            content: Text('ProductInfo: ${productInfo}'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text('OK'),
-                              ),
-                            ],
+                        // // ✅ Show success dialog with points
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (context) => AlertDialog(
+                        //     title: Text('Success'),
+                        //     content: Text('ProductInfo: ${productInfo}'),
+                        //     actions: [
+                        //       TextButton(
+                        //         onPressed: () => Navigator.of(context).pop(),
+                        //         child: Text('OK'),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ProductInfoPage(productInfo: productInfo),
                           ),
                         );
                       }

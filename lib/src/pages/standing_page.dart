@@ -55,7 +55,7 @@ class _StandingPage extends State<StandingPage> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Join Energya Zawadi Program',
+                    'Join Eyby Loyalty Program',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -132,7 +132,7 @@ class _StandingPage extends State<StandingPage> {
             const Padding(
               padding: EdgeInsets.only(bottom: 8.0),
               child: Text(
-                'By QARA',
+                'By Eyby',
                 style: TextStyle(fontSize: 14, color: Colors.black54),
               ),
             ),

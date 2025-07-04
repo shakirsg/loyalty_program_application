@@ -242,7 +242,8 @@ class ApiService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
-    } if (response.statusCode == 404) {
+    }
+    if (response.statusCode == 404) {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to redeem reward: ${response.body}');
@@ -268,9 +269,7 @@ class ApiService {
   }
 
   /// Get total points
-  Future<dynamic> authenticateProduct({
-    required String qrCode,
-  }) async {
+  Future<dynamic> authenticateProduct({required String qrCode}) async {
     final url = Uri.parse(
       '$baseUrl/customers/authenticate-product/?qr_code=${Uri.encodeComponent(qrCode)}',
     );
@@ -280,6 +279,51 @@ class ApiService {
       'User-Agent': 'insomnia/11.0.0',
     };
 
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    }
+    if (response.statusCode == 400) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to authenticate product: ${response.body}');
+    }
+  }
+
+  /// send Otp
+  Future<dynamic> getOtp({required String phoneNumber}) async {
+    final url = Uri.parse(
+      '$baseUrl/customers/otp/get_otp/?phone=${Uri.encodeComponent(phoneNumber)}',
+    );
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.0.0',
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    }
+    if (response.statusCode == 406) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to authenticate product: ${response.body}');
+    }
+  }
+
+  /// send Otp
+  Future<dynamic> verifyOtp({required String otp}) async {
+    final url = Uri.parse(
+      '$baseUrl/customers/otp/verify_otp/?otp=${Uri.encodeComponent(otp)}',
+    );
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.0.0',
+    };
 
     final response = await http.get(url, headers: headers);
 
