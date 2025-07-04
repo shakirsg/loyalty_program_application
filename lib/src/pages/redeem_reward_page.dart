@@ -305,8 +305,21 @@ class RedeemRewardPage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             onPressed: () async {
+                              // Navigator.of(context).pop();
+                              // Show loading dialog
+                              showDialog(
+                                context: context,
+                                barrierDismissible:
+                                    false, // user can't dismiss by tapping outside
+                                builder: (context) =>
+                                    Center(child: CircularProgressIndicator()),
+                              );
+
+
                               await userProvider.redeemRewardById(itemId);
                               await userProvider.getUserPoints();
+                              // Dismiss loading dialog
+                              Navigator.of(context).pop();
                               Navigator.of(context).pop();
 
                               final redeemResult = Provider.of<UserProvider>(
@@ -336,9 +349,7 @@ class RedeemRewardPage extends StatelessWidget {
                                     context: context,
                                     builder: (context) => AlertDialog(
                                       title: Text('Success'),
-                                      content: Text(
-                                        'Points Used: ${points}',
-                                      ),
+                                      content: Text('Points Used: ${points}'),
                                       actions: [
                                         TextButton(
                                           onPressed: () =>

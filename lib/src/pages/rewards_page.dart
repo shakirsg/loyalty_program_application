@@ -38,12 +38,12 @@ class _RewardsPageState extends State<RewardsPage> {
       length: 2, // Number of tabs
       child: Scaffold(
         appBar: AppBar(
-          leading: Navigator.of(context).canPop()
-              ? IconButton(
-                  icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              : null,
+          // leading: Navigator.of(context).canPop()
+          //     ? IconButton(
+          //         icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+          //         onPressed: () => Navigator.of(context).pop(),
+          //       )
+          //     : null,
           title: Text('Rewards'),
           bottom: TabBar(
             indicator: FullTabPillIndicator(
@@ -365,7 +365,8 @@ class _RewardsPageState extends State<RewardsPage> {
   }
 
   Widget _buildRewardsHistoryTab() {
-  final history = context.watch<UserProvider>().redeemedHistory;
+  final userProvider = context.watch<UserProvider>();
+  final history = userProvider.redeemedHistory;
 
   Color _getStatusColor({required bool redeemed, required bool expired}) {
     if (redeemed) return Colors.green;
@@ -385,89 +386,97 @@ class _RewardsPageState extends State<RewardsPage> {
     return 'Pending';
   }
 
-  return ListView.builder(
-    padding: const EdgeInsets.all(16),
-    itemCount: history.length,
-    itemBuilder: (context, index) {
-      final item = history[index];
-      final product = item['product'] ?? 'Unknown';
-      final date = item['created']?.toString().split('T')[0] ?? '';
-      final points = item['points'] ?? 0;
-      final redeemed = item['redeemed'] ?? false;
-      final expired = item['expired'] ?? false;
-      final formatedPoints = points.toStringAsFixed(3);
+  Future<void> _refreshHistory() async {
+    // Call your provider method to refresh the history data.
+    await userProvider.getRedeemedPoints(); // Adjust this to your actual refresh method
+  }
 
+  return RefreshIndicator(
+    onRefresh: _refreshHistory,
+    child: ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: history.length,
+      itemBuilder: (context, index) {
+        final item = history[index];
+        // print(item);
+        final product = item['reward']['description'] ?? 'Unknown';
+        final date = item['created']?.toString().split('T')[0] ?? '';
+        final points = item['reward']['points_required'] ?? 0;
+        final redeemed = true ?? false;
+        final expired = item['expired'] ?? false;
+        final formattedPoints = points.toStringAsFixed(3);
 
-      final statusColor = _getStatusColor(redeemed: redeemed, expired: expired);
-      final statusIcon = _getStatusIcon(redeemed: redeemed, expired: expired);
-      final statusText = _getStatusText(redeemed: redeemed, expired: expired);
+        final statusColor = _getStatusColor(redeemed: redeemed, expired: expired);
+        final statusIcon = _getStatusIcon(redeemed: redeemed, expired: expired);
+        final statusText = _getStatusText(redeemed: redeemed, expired: expired);
 
-      return Card(
-        margin: const EdgeInsets.only(bottom: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        elevation: 3,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(
-                statusIcon,
-                color: statusColor,
-                size: 32,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+        return Card(
+          margin: const EdgeInsets.only(bottom: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 3,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Icon(
+                  statusIcon,
+                  color: statusColor,
+                  size: 32,
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Date: $date',
-                      style: TextStyle(color: Colors.grey[700]),
-                    ),
-                    Text(
-                      'Status: $statusText',
-                      style: TextStyle(
-                        color: statusColor,
-                        fontWeight: FontWeight.w500,
+                      const SizedBox(height: 4),
+                      Text(
+                        'Date: $date',
+                        style: TextStyle(color: Colors.grey[700]),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  '$formatedPoints pts',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                      Text(
+                        'Status: $statusText',
+                        style: TextStyle(
+                          color: statusColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '$formattedPoints pts',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    },
+        );
+      },
+    ),
   );
 }
 }

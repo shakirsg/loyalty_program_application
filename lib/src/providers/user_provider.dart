@@ -152,7 +152,7 @@ class UserProvider with ChangeNotifier {
       print('Redeemed points response: $response');
 
       redeemedPoints = (response['total_points'] ?? 0).toDouble();
-      redeemedHistory = response['points'] ?? [];
+      redeemedHistory = response['redemptions'] ?? [];
 
       print("Redeemed points: $redeemedPoints");
       print("Redeemed history count: ${redeemedHistory.length}");

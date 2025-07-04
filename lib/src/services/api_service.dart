@@ -251,7 +251,7 @@ class ApiService {
 
   /// Get total points
   Future<dynamic> getRedeemedPoints(String token) async {
-    final url = Uri.parse('$baseUrl/customers/redeemed-points');
+    final url = Uri.parse('$baseUrl/customers/reward-redemptions/');
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',

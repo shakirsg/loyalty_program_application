@@ -24,8 +24,9 @@ class QuickActionCard extends StatelessWidget {
         // navProvider.refresh(targetIndex);
         // Navigator.pushReplacementNamed(context, '/main');
 
-        Navigator.pushReplacementNamed(context, '/main');
         navProvider.setIndex_(targetIndex);
+        Navigator.pushReplacementNamed(context, '/main');
+
       },
       child: Card(
         elevation: 4,
