@@ -266,4 +266,30 @@ class ApiService {
       throw Exception('Failed to get redeemed points');
     }
   }
+
+  /// Get total points
+  Future<dynamic> authenticateProduct({
+    required String qrCode,
+  }) async {
+    final url = Uri.parse(
+      '$baseUrl/customers/authenticate-product/?qr_code=${Uri.encodeComponent(qrCode)}',
+    );
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.0.0',
+    };
+
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    }
+    if (response.statusCode == 400) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to authenticate product: ${response.body}');
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:loyalty_program_application/src/pages/history_page.dart';
+import 'package:loyalty_program_application/src/providers/guest_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:loyalty_program_application/src/services/location_service.dart';
 import 'package:provider/provider.dart';
@@ -10,14 +11,14 @@ import 'package:loyalty_program_application/src/components/CornerPainter.dart';
 import 'package:loyalty_program_application/src/pages/history_page.dart';
 import 'package:loyalty_program_application/src/pages/earn_point_page.dart';
 
-class ScannerPage extends StatefulWidget {
-  const ScannerPage({super.key});
+class AuthenticatePage extends StatefulWidget {
+  const AuthenticatePage({super.key});
 
   @override
   _QRViewExampleState createState() => _QRViewExampleState();
 }
 
-class _QRViewExampleState extends State<ScannerPage>
+class _QRViewExampleState extends State<AuthenticatePage>
     with SingleTickerProviderStateMixin {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
@@ -85,8 +86,8 @@ class _QRViewExampleState extends State<ScannerPage>
                 onPressed: () => Navigator.of(context).pop(),
               )
             : null,
-        title: const Text('QR Code Scanner'),
-        actions: [_buildHistoryButton(context)],
+        title: const Text('Authenticate Product'),
+        // actions: [_buildHistoryButton(context)],
       ),
       body: Stack(
         children: [
@@ -240,21 +241,11 @@ class _QRViewExampleState extends State<ScannerPage>
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: () async {
-                    // try {
-                    //   final position =
-                    //       await LocationService.determinePosition();
-                    //   final address =
-                    //       await LocationService.getAddressFromPosition(
-                    //         position,
-                    //       );
+                    final guestProvider = Provider.of<GuestProvider>(
+                      context,
+                      listen: false,
+                    );
 
-                    //   print(
-                    //     'Lat: ${position.latitude}, Lng: ${position.longitude}',
-                    //   );
-                    //   print('Address: $address');
-                    // } catch (e) {
-                    //   print('Error: $e');
-                    // }
                     // Show loading dialog
                     showDialog(
                       context: context,
@@ -262,24 +253,23 @@ class _QRViewExampleState extends State<ScannerPage>
                       builder: (_) =>
                           const Center(child: CircularProgressIndicator()),
                     );
-                    await Provider.of<UserProvider>(
-                      context,
-                      listen: false,
-                    ).claimPointsWithLocation('${result!.code}');
+
+                    await guestProvider.authenticateProductByQR(
+                      '${result!.code}',
+                    );
+
                     // Close the loading dialog
                     Navigator.of(context, rootNavigator: true).pop();
-                    final claimResult = Provider.of<UserProvider>(
-                      context,
-                      listen: false,
-                    ).claimResult;
-                    if (claimResult is Map<String, dynamic>) {
-                      if (claimResult.containsKey('detail')) {
+
+                    final productInfo = guestProvider.productInfo;
+                    if (productInfo is Map<String, dynamic>) {
+                      if (productInfo.containsKey('detail')) {
                         // ❌ Show error dialog
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
                             title: Text('Error'),
-                            content: Text(claimResult['detail']),
+                            content: Text(productInfo['detail']),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),
@@ -294,9 +284,7 @@ class _QRViewExampleState extends State<ScannerPage>
                           context: context,
                           builder: (context) => AlertDialog(
                             title: Text('Success'),
-                            content: Text(
-                              'Points Gained: ${claimResult['points']}',
-                            ),
+                            content: Text('ProductInfo: ${productInfo}'),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),
@@ -322,20 +310,9 @@ class _QRViewExampleState extends State<ScannerPage>
                         ),
                       );
                     }
-
-                    Provider.of<UserProvider>(
-                      context,
-                      listen: false,
-                    ).getUserPoints();
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const HistoryPage(),
-                    //   ),
-                    // );
                   },
-                  icon: const Icon(Icons.trending_up),
-                  label: const Text('Get Points'),
+                  icon: const Icon(Icons.check),
+                  label: const Text('Check Product'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     padding: const EdgeInsets.symmetric(
