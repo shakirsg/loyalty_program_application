@@ -42,13 +42,34 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     if (success) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Registration successful')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle, color: Colors.white),
+              const SizedBox(width: 12),
+              Text('Registration successful'),
+            ],
+          ),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
       _goToLogin();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authProvider.error ?? 'Registration failed')),
+        const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.error, color: Colors.white),
+              SizedBox(width: 12),
+              Text('Registration failed'),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
@@ -166,8 +187,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.public),
                 ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter your country' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Enter your country'
+                    : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
