@@ -14,10 +14,18 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final provider = Provider.of<AuthProvider>(context);
+    final userProfile = Provider.of<AuthProvider>(context).userProfile;
     final fullName = context.watch<AuthProvider>().fullName;
     final email = context.watch<AuthProvider>().email;
 
+    final phone = userProfile?['phone'] ?? 'N/A';
+    final profession = userProfile?['profession'] ?? 'N/A';
+    final city = userProfile?['city'] ?? 'N/A';
+    final county = userProfile?['county'] ?? 'N/A';
+    final country = userProfile?['country'] ?? 'N/A';
+    final idNumber = userProfile?['id_number'] ?? 'N/A';
+    final created = userProfile?['created'] ?? 'N/A';
+    final updated = userProfile?['updated'] ?? 'N/A';
     final points = context.watch<UserProvider>().total_points.toStringAsFixed(
       3,
     );
@@ -132,55 +140,107 @@ class ProfilePage extends StatelessWidget {
                     direction: SkeletonDirection.ltr,
                   )
                 : Card(
-                    margin: EdgeInsets.all(16),
-                    elevation: 5,
+                    margin: const EdgeInsets.all(16),
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(20),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               CircleAvatar(
-                                radius: 30,
+                                radius: 35,
                                 backgroundImage: AssetImage(
-                                  './assets/avatar.png',
+                                  'assets/avatar.png',
                                 ),
                               ),
-                              SizedBox(width: 16),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    fullName ?? 'User',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      fullName ?? 'User',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
                                     ),
-                                  ),
-                                  Text(email ?? 'No email'),
-                                ],
+                                    Text(
+                                      email ?? 'No email',
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Spacer(),
                             ],
                           ),
-                          SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          const SizedBox(height: 20),
+                          const Divider(),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 20,
+                            runSpacing: 10,
                             children: [
-                              Text('Available Points: $points'),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Redeem action
-                                },
-                                child: Text('Redeem'),
+                              _buildInfoTile(Icons.phone, 'Phone', phone),
+                              _buildInfoTile(
+                                Icons.work,
+                                'Profession',
+                                profession,
+                              ),
+                              _buildInfoTile(Icons.location_city, 'City', city),
+                              _buildInfoTile(Icons.map, 'County', county),
+                              _buildInfoTile(Icons.flag, 'Country', country),
+                              _buildInfoTile(
+                                Icons.credit_card,
+                                'ID Number',
+                                idNumber?.isNotEmpty == true ? idNumber : 'N/A',
                               ),
                             ],
+                          ),
+                          const SizedBox(height: 20),
+                          const Divider(),
+                          const SizedBox(height: 10),
+                          // _buildDateRow('Account Created:', created),
+                          // _buildDateRow('Last Updated:', updated),
+                          const SizedBox(height: 20),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Available Points',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  '$points',
+                                  style: const TextStyle(
+                                    color: Colors.blueAccent,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-            // Wrap the settings items inside a Card
+                  ), // Wrap the settings items inside a Card
             Card(
               margin: EdgeInsets.all(16),
               elevation: 5,
@@ -309,6 +369,36 @@ class ProfilePage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Helper widgets:
+  Widget _buildInfoTile(IconData icon, String label, String? value) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 18, color: Colors.grey[600]),
+        const SizedBox(width: 6),
+        Text('$label: ${value ?? 'N/A'}', style: const TextStyle(fontSize: 14)),
+      ],
+    );
+  }
+
+  Widget _buildDateRow(String label, String? date) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              date ?? 'N/A',
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ),
+        ],
       ),
     );
   }
