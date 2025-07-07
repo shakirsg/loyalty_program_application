@@ -39,6 +39,10 @@ class ApiService {
     required String phone,
     required String email,
     required String password,
+    required String city,
+    required String county,
+    required String country,
+    required String profession,
   }) async {
     final url = Uri.parse('$baseUrl/customers/register/');
     final body = jsonEncode({
@@ -47,6 +51,10 @@ class ApiService {
       "phone": phone,
       "email": email,
       "password": password,
+      "city": city,
+      "county": county,
+      "country": country,
+      "profession": profession,
     });
 
     final response = await http.post(url, headers: _headers, body: body);
@@ -334,6 +342,25 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to authenticate product: ${response.body}');
+    }
+  }
+
+  Future<dynamic> getCategories() async {
+    final url = Uri.parse('$baseUrl/products/reward-categories/');
+    final headers = {
+      'Content-Type': 'application/json',
+      'User-Agent': 'insomnia/11.0.0',
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    }
+    if (response.statusCode == 400) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to fetch Categories: ${response.body}');
     }
   }
 }

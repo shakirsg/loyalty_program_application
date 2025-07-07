@@ -23,7 +23,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
 
       ],
-      child: MyApp(initialRoute: token != null ? '/main' : '/standing'),
+      child: MyApp(initialRoute: token != null ? '/main' : '/landing'),
     ),
   );
 }

@@ -168,102 +168,109 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     final authProvider = context.watch<AuthProvider>();
 
     return Scaffold(
-      // appBar: AppBar(
-      //   // title: const Text("Login"),
-      //   // bottom: TabBar(
-      //   //   controller: _tabController,
-      //   //   tabs: const [
-      //   //     Tab(text: "Email Login"),
-      //   //     Tab(text: "Phone Login"),
-      //   //   ],
-      //   // ),
-      // ),
-      body: Column(
+      body: Stack(
         children: [
-          const SizedBox(height: 120),
-          const Text(
-            'Welcome to Eyby Points!',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          Container(
-            padding: const EdgeInsets.all(4),
-            margin: const EdgeInsets.symmetric(horizontal: 24),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedLoginMethod = 0;
-                      });
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: _selectedLoginMethod == 0
-                            ? Colors.white
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Email Login",
-                          style: TextStyle(
+          // Your main content
+          Column(
+            children: [
+              const SizedBox(height: 120),
+              const Text(
+                'Welcome to Eyby Points!',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 40),
+              Container(
+                padding: const EdgeInsets.all(4),
+                margin: const EdgeInsets.symmetric(horizontal: 24),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedLoginMethod = 0;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
                             color: _selectedLoginMethod == 0
-                                ? Theme.of(context).primaryColor
-                                : Colors.black54,
-                            fontWeight: FontWeight.w600,
+                                ? Colors.white
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Email Login",
+                              style: TextStyle(
+                                color: _selectedLoginMethod == 0
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.black54,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _selectedLoginMethod = 1;
-                      });
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: _selectedLoginMethod == 1
-                            ? Colors.white
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Phone Login",
-                          style: TextStyle(
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedLoginMethod = 1;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
                             color: _selectedLoginMethod == 1
-                                ? Theme.of(context).primaryColor
-                                : Colors.black54,
-                            fontWeight: FontWeight.w600,
+                                ? Colors.white
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Phone Login",
+                              style: TextStyle(
+                                color: _selectedLoginMethod == 1
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.black54,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: _selectedLoginMethod == 0
+                    ? _buildEmailLoginTab()
+                    : _buildPhoneLoginTab(),
+              ),
+            ],
           ),
-          // const SizedBox(height: 20),
-          Expanded(
-            child: _selectedLoginMethod == 0
-                ? _buildEmailLoginTab()
-                : _buildPhoneLoginTab(),
+
+          Positioned(
+            top: 0,
+            right: -30,
+            child: GestureDetector(
+              onTap: () {
+                // Do something when logo is tapped
+                // Example: Navigate to settings page
+                Navigator.pushNamed(context, '/landing');
+              },
+              child: Image.asset('assets/eyby.png', width: 200, height: 150),
+            ),
           ),
         ],
       ),

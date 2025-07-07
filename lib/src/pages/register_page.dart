@@ -35,10 +35,10 @@ class _RegisterPageState extends State<RegisterPage> {
       phone: _phoneController.text.trim(),
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
-      // city: _cityController.text.trim(),
-      // county: _countyController.text.trim(),
-      // country: _countryController.text.trim(),
-      // profession: _professionController.text.trim(),
+      city: _cityController.text.trim(),
+      county: _countyController.text.trim(),
+      country: _countryController.text.trim(),
+      profession: _professionController.text.trim(),
     );
 
     if (success) {

@@ -24,6 +24,10 @@ class AuthProvider with ChangeNotifier {
     required String phone,
     required String email,
     required String password,
+    required String city,
+    required String county,
+    required String country,
+    required String profession,
   }) async {
     isLoading = true;
     error = null;
@@ -36,6 +40,10 @@ class AuthProvider with ChangeNotifier {
         phone: phone,
         email: email,
         password: password,
+        city: city,
+        county: county,
+        country: country,
+        profession: profession,
       );
 
       // Check if the response is an error or success
@@ -175,9 +183,10 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
   Map<String, dynamic>? getOtpResponse;
-  
-    /// Request OTP
+
+  /// Request OTP
   Future<void> getOtp(String phoneNumber) async {
     try {
       isLoadingOtp = true;
@@ -219,5 +228,4 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-
 }
