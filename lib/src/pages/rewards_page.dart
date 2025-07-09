@@ -230,26 +230,62 @@ class _RewardsPageState extends State<RewardsPage> {
                         // ),
                         !userProvider.isLoadingRewards
                             ? Column(
-                                children: userProvider.rewards.map((reward) {
-                                  return Column(
-                                    children: [
-                                      _rewardCard(
-                                        itemId:
-                                            int.tryParse(
-                                              reward['id']?.toString() ?? '',
-                                            ) ??
-                                            0,
-                                        imageUrl: reward['image'] ?? '',
-                                        title: reward['description'] ?? '',
-                                        description:
-                                            'Redeem for ${reward['uom']}', // or any custom text
-                                        points: reward['points_required']
-                                            .toString(),
-                                      ),
-                                      const SizedBox(height: 20),
-                                    ],
-                                  );
-                                }).toList(),
+                                children: userProvider.rewards.isEmpty
+                                    ? [
+                                        const SizedBox(height: 80),
+                                        Center(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: const [
+                                              Icon(
+                                                Icons.search_off,
+                                                size: 60,
+                                                color: Colors.grey,
+                                              ),
+                                              SizedBox(height: 20),
+                                              Text(
+                                                'No Results Found',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                              SizedBox(height: 8),
+                                              Text(
+                                                'Try adjusting your search or filters.',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black45,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ]
+                                    : userProvider.rewards.map((reward) {
+                                        return Column(
+                                          children: [
+                                            _rewardCard(
+                                              itemId:
+                                                  int.tryParse(
+                                                    reward['id']?.toString() ??
+                                                        '',
+                                                  ) ??
+                                                  0,
+                                              imageUrl: reward['image'] ?? '',
+                                              title:
+                                                  reward['description'] ?? '',
+                                              description:
+                                                  'Redeem for ${reward['uom']}',
+                                              points: reward['points_required']
+                                                  .toString(),
+                                            ),
+                                            const SizedBox(height: 20),
+                                          ],
+                                        );
+                                      }).toList(),
                               )
                             : Column(
                                 children: List.generate(
@@ -319,6 +355,7 @@ class _RewardsPageState extends State<RewardsPage> {
                 ? ""
                 : label;
 
+            _searchController.text = context.read<UserProvider>().searchValue;
             userProvider.fetchRewardsList();
           });
         },
@@ -385,6 +422,9 @@ class _RewardsPageState extends State<RewardsPage> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
+                        _searchController.text = context
+                            .read<UserProvider>()
+                            .searchValue;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
