@@ -44,6 +44,7 @@ class _MainPageState extends State<MainPage> {
         authProvider.getUserProfile(),
         userProvider.getUserPoints(),
       ]);
+      userProvider.fetchCategoryList();
     } catch (_) {
       // Optional: log error
     } finally {

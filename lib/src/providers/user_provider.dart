@@ -88,6 +88,9 @@ class UserProvider with ChangeNotifier {
   String? redeemError;
   dynamic redeemResult;
 
+  String searchValue = "";
+  String categoryName = "";
+
   /// Fetch list of rewards
   Future<void> fetchRewardsList() async {
     isLoadingRewards = true;
@@ -97,7 +100,7 @@ class UserProvider with ChangeNotifier {
     try {
       token = await LocalStorageService.getToken();
 
-      final response = await _apiService.getRewardsList(token!);
+      final response = await _apiService.getRewardsList(token!, searchValue, categoryName);
       // rewards = response;
       // Use raw map data from the "results" key
       rewards = List<Map<String, dynamic>>.from(response['results']);
@@ -160,6 +163,31 @@ class UserProvider with ChangeNotifier {
       redeemedPointsError = "Failed to fetch redeemed points: ${e.toString()}";
     } finally {
       isLoadingRedeemedPoints = false;
+      notifyListeners();
+    }
+  }
+
+  // categories
+  List<dynamic> categories = [];
+  String? categoriesError;
+  bool isLoadingCategories = false;
+
+  /// Fetch list of rewards
+  Future<void> fetchCategoryList() async {
+    isLoadingCategories = true;
+    categoriesError = null;
+    notifyListeners();
+
+    try {
+      final response = await _apiService.getCategories();
+      // rewards = response;
+      // Use raw map data from the "results" key
+      categories = List<Map<String, dynamic>>.from(response['results']);
+      print(categories);
+    } catch (e) {
+      categoriesError = "Failed to fetch rewards: ${e.toString()}";
+    } finally {
+      isLoadingCategories = false;
       notifyListeners();
     }
   }

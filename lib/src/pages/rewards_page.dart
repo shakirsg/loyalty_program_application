@@ -15,10 +15,29 @@ class RewardsPage extends StatefulWidget {
 class _RewardsPageState extends State<RewardsPage> {
   String _selectedCategory = 'All'; // Default category
 
+  late TextEditingController _searchController;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadRewards());
+
+    // Initialize the controller without text first
+    _searchController = TextEditingController();
+
+    // After first frame, set the controller text from Provider
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final searchText = context.read<UserProvider>().searchValue;
+      _searchController.text = searchText;
+
+      // Load rewards or other logic
+      _loadRewards();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadRewards() async {
@@ -32,7 +51,10 @@ class _RewardsPageState extends State<RewardsPage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
-    final points = context.watch<UserProvider>().total_points.toStringAsFixed(3);
+    final points = context.watch<UserProvider>().total_points.toStringAsFixed(
+      3,
+    );
+    final categories = Provider.of<UserProvider>(context).categories;
 
     return DefaultTabController(
       length: 2, // Number of tabs
@@ -108,6 +130,8 @@ class _RewardsPageState extends State<RewardsPage> {
                           children: [
                             Expanded(
                               child: TextField(
+                                controller: _searchController,
+
                                 decoration: InputDecoration(
                                   hintText: 'Search...',
                                   border: OutlineInputBorder(),
@@ -131,6 +155,12 @@ class _RewardsPageState extends State<RewardsPage> {
                                 ),
                                 onPressed: () {
                                   // Handle search logic
+                                  final searchInput = _searchController.text
+                                      .trim();
+                                  context.read<UserProvider>().searchValue =
+                                      searchInput;
+
+                                  userProvider.fetchRewardsList();
                                 },
                               ),
                             ),
@@ -139,15 +169,26 @@ class _RewardsPageState extends State<RewardsPage> {
                         SizedBox(height: 20),
 
                         // Search Categories (Scroll-x)
+                        // SingleChildScrollView(
+                        //   scrollDirection: Axis.horizontal,
+                        //   child: Row(
+                        //     children: [
+                        //       _categoryButton('All'),
+                        //       _categoryButton('Food'),
+                        //       _categoryButton('Electronics'),
+                        //       _categoryButton('Fashion'),
+                        //       _categoryButton('Clock'),
+                        //     ],
+                        //   ),
+                        // ),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
-                              _categoryButton('All'),
-                              _categoryButton('Food'),
-                              _categoryButton('Electronics'),
-                              _categoryButton('Fashion'),
-                              _categoryButton('Clock'),
+                              _categoryButton('All'), // Optional static button
+                              ...categories
+                                  .map((cat) => _categoryButton(cat['name']))
+                                  .toList(),
                             ],
                           ),
                         ),
@@ -187,13 +228,17 @@ class _RewardsPageState extends State<RewardsPage> {
                         //   description: '15% off your next purchase',
                         //   points: '300',
                         // ),
-                        userProvider.rewards.isNotEmpty
+                        !userProvider.isLoadingRewards
                             ? Column(
                                 children: userProvider.rewards.map((reward) {
                                   return Column(
                                     children: [
                                       _rewardCard(
-                                        itemId: int.tryParse(reward['id']?.toString() ?? '') ?? 0,
+                                        itemId:
+                                            int.tryParse(
+                                              reward['id']?.toString() ?? '',
+                                            ) ??
+                                            0,
                                         imageUrl: reward['image'] ?? '',
                                         title: reward['description'] ?? '',
                                         description:
@@ -263,13 +308,18 @@ class _RewardsPageState extends State<RewardsPage> {
 
   Widget _categoryButton(String label) {
     bool isSelected = _selectedCategory == label;
-
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ElevatedButton(
         onPressed: () {
           setState(() {
             _selectedCategory = label;
+            context.read<UserProvider>().categoryName = (label == "All")
+                ? ""
+                : label;
+
+            userProvider.fetchRewardsList();
           });
         },
         style: ElevatedButton.styleFrom(
@@ -365,118 +415,124 @@ class _RewardsPageState extends State<RewardsPage> {
   }
 
   Widget _buildRewardsHistoryTab() {
-  final userProvider = context.watch<UserProvider>();
-  final history = userProvider.redeemedHistory;
+    final userProvider = context.watch<UserProvider>();
+    final history = userProvider.redeemedHistory;
 
-  Color _getStatusColor({required bool redeemed, required bool expired}) {
-    if (redeemed) return Colors.green;
-    if (expired) return Colors.grey;
-    return Colors.blueGrey;
-  }
+    Color _getStatusColor({required bool redeemed, required bool expired}) {
+      if (redeemed) return Colors.green;
+      if (expired) return Colors.grey;
+      return Colors.blueGrey;
+    }
 
-  IconData _getStatusIcon({required bool redeemed, required bool expired}) {
-    if (redeemed) return Icons.check_circle_outline;
-    if (expired) return Icons.cancel_outlined;
-    return Icons.info_outline;
-  }
+    IconData _getStatusIcon({required bool redeemed, required bool expired}) {
+      if (redeemed) return Icons.check_circle_outline;
+      if (expired) return Icons.cancel_outlined;
+      return Icons.info_outline;
+    }
 
-  String _getStatusText({required bool redeemed, required bool expired}) {
-    if (redeemed) return 'Redeemed';
-    if (expired) return 'Expired';
-    return 'Pending';
-  }
+    String _getStatusText({required bool redeemed, required bool expired}) {
+      if (redeemed) return 'Redeemed';
+      if (expired) return 'Expired';
+      return 'Pending';
+    }
 
-  Future<void> _refreshHistory() async {
-    // Call your provider method to refresh the history data.
-    await userProvider.getRedeemedPoints(); // Adjust this to your actual refresh method
-  }
+    Future<void> _refreshHistory() async {
+      // Call your provider method to refresh the history data.
+      await userProvider
+          .getRedeemedPoints(); // Adjust this to your actual refresh method
+    }
 
-  return RefreshIndicator(
-    onRefresh: _refreshHistory,
-    child: ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: history.length,
-      itemBuilder: (context, index) {
-        final item = history[index];
-        // print(item);
-        final product = item['reward']['description'] ?? 'Unknown';
-        final date = item['created']?.toString().split('T')[0] ?? '';
-        final points = item['reward']['points_required'] ?? 0;
-        final redeemed = true ?? false;
-        final expired = item['expired'] ?? false;
-        final formattedPoints = points.toStringAsFixed(3);
+    return RefreshIndicator(
+      onRefresh: _refreshHistory,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: history.length,
+        itemBuilder: (context, index) {
+          final item = history[index];
+          // print(item);
+          final product = item['reward']['description'] ?? 'Unknown';
+          final date = item['created']?.toString().split('T')[0] ?? '';
+          final points = item['reward']['points_required'] ?? 0;
+          final redeemed = true ?? false;
+          final expired = item['expired'] ?? false;
+          final formattedPoints = points.toStringAsFixed(3);
 
-        final statusColor = _getStatusColor(redeemed: redeemed, expired: expired);
-        final statusIcon = _getStatusIcon(redeemed: redeemed, expired: expired);
-        final statusText = _getStatusText(redeemed: redeemed, expired: expired);
+          final statusColor = _getStatusColor(
+            redeemed: redeemed,
+            expired: expired,
+          );
+          final statusIcon = _getStatusIcon(
+            redeemed: redeemed,
+            expired: expired,
+          );
+          final statusText = _getStatusText(
+            redeemed: redeemed,
+            expired: expired,
+          );
 
-        return Card(
-          margin: const EdgeInsets.only(bottom: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 3,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Icon(
-                  statusIcon,
-                  color: statusColor,
-                  size: 32,
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+          return Card(
+            margin: const EdgeInsets.only(bottom: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            elevation: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Icon(statusIcon, color: statusColor, size: 32),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Date: $date',
-                        style: TextStyle(color: Colors.grey[700]),
-                      ),
-                      Text(
-                        'Status: $statusText',
-                        style: TextStyle(
-                          color: statusColor,
-                          fontWeight: FontWeight.w500,
+                        const SizedBox(height: 4),
+                        Text(
+                          'Date: $date',
+                          style: TextStyle(color: Colors.grey[700]),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '$formattedPoints pts',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                        Text(
+                          'Status: $statusText',
+                          style: TextStyle(
+                            color: statusColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '$formattedPoints pts',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
-    ),
-  );
-}
+          );
+        },
+      ),
+    );
+  }
 }

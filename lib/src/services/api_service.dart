@@ -214,9 +214,16 @@ class ApiService {
     await _googleSignIn.signOut();
   }
 
-  /// Get a list of available rewards
-  Future<dynamic> getRewardsList(String token) async {
-    final url = Uri.parse('$baseUrl/products/rewards/');
+  /// Get a list of available rewards with search and category filters
+  Future<dynamic> getRewardsList(
+    String token,
+    String search,
+    String categoryName,
+  ) async {
+    final url = Uri.parse(
+      '$baseUrl/products/rewards/?search=$search&category__name=$categoryName',
+    );
+
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',
