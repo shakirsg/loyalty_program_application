@@ -484,95 +484,113 @@ class _RewardsPageState extends State<RewardsPage> {
 
     return RefreshIndicator(
       onRefresh: _refreshHistory,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: history.length,
-        itemBuilder: (context, index) {
-          final item = history[index];
-          // print(item);
-          final product = item['reward']['description'] ?? 'Unknown';
-          final date = item['created']?.toString().split('T')[0] ?? '';
-          final points = item['reward']['points_required'] ?? 0;
-          final redeemed = true ?? false;
-          final expired = item['expired'] ?? false;
-          final formattedPoints = points.toStringAsFixed(3);
-
-          final statusColor = _getStatusColor(
-            redeemed: redeemed,
-            expired: expired,
-          );
-          final statusIcon = _getStatusIcon(
-            redeemed: redeemed,
-            expired: expired,
-          );
-          final statusText = _getStatusText(
-            redeemed: redeemed,
-            expired: expired,
-          );
-
-          return Card(
-            margin: const EdgeInsets.only(bottom: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
+      child: history.isEmpty
+          ? const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(statusIcon, color: statusColor, size: 32),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  Icon(Icons.history, size: 60, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text(
+                    'No redemption history found',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: history.length,
+              itemBuilder: (context, index) {
+                final item = history[index];
+                // print(item);
+                final product = item['reward']['description'] ?? 'Unknown';
+                final date = item['created']?.toString().split('T')[0] ?? '';
+                final points = item['reward']['points_required'] ?? 0;
+                final redeemed = true ?? false;
+                final expired = item['expired'] ?? false;
+                final formattedPoints = points.toStringAsFixed(3);
+
+                final statusColor = _getStatusColor(
+                  redeemed: redeemed,
+                  expired: expired,
+                );
+                final statusIcon = _getStatusIcon(
+                  redeemed: redeemed,
+                  expired: expired,
+                );
+                final statusText = _getStatusText(
+                  redeemed: redeemed,
+                  expired: expired,
+                );
+
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
                       children: [
-                        Text(
-                          product,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                        Icon(statusIcon, color: statusColor, size: 32),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Date: $date',
+                                style: TextStyle(color: Colors.grey[700]),
+                              ),
+                              Text(
+                                'Status: $statusText',
+                                style: TextStyle(
+                                  color: statusColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Date: $date',
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                        Text(
-                          'Status: $statusText',
-                          style: TextStyle(
-                            color: statusColor,
-                            fontWeight: FontWeight.w500,
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '$formattedPoints pts',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      '$formattedPoints pts',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/user_provider.dart'; // adjust path as needed
 
-
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
   @override
   State<HistoryPage> createState() => _HistoryState();
 }
-class _HistoryState extends  State<HistoryPage>  {
+
+class _HistoryState extends State<HistoryPage> {
   String formatDateTime(String? dateTimeStr) {
     if (dateTimeStr == null) return '';
 
@@ -87,7 +87,23 @@ class _HistoryState extends  State<HistoryPage>  {
               else if (userProvider.pointHistory.isEmpty)
                 Padding(
                   padding: const EdgeInsets.all(32.0),
-                  child: Text("No history found."),
+                  child: const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.history, size: 60, color: Colors.grey),
+                        SizedBox(height: 16),
+                        Text(
+                          'No scan history found',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 )
               else
                 ListView.builder(

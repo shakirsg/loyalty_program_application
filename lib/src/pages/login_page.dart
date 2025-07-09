@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
+import 'package:loyalty_program_application/src/utils/show_loading_dialog_while.dart';
 import 'package:provider/provider.dart';
 import './forgot_password_page.dart';
 
@@ -29,6 +30,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   void _loginWithEmail() async {
     if (_emailFormKey.currentState!.validate()) {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
+
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       final result = await authProvider.login(
@@ -36,17 +44,29 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         password: _passwordController.text.trim(),
       );
 
+      // Close the loading dialog
+      Navigator.of(context, rootNavigator: true).pop();
+
       _handleLoginResult(result);
     }
   }
 
   void _loginWithOtp() async {
     if (_phoneFormKey.currentState!.validate()) {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final result = await authProvider.loginWithPhoneOtp(
         _phoneController.text.trim(),
         _otpController.text.trim(),
       );
+       // Close the loading dialog
+      Navigator.of(context, rootNavigator: true).pop();
+
 
       _handleLoginResult(result);
     }
@@ -58,7 +78,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     final phone = _phoneController.text.trim();
     if (phone.length >= 8) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      await authProvider.getOtp(phone);
+      await showLoadingDialogWhile(
+        context: context,
+        action: () async {
+          await authProvider.getOtp(phone);
+        },
+      );
       final getOtpResponse = authProvider.getOtpResponse;
       if (getOtpResponse?.containsKey("data") == true) {
         setState(() {
