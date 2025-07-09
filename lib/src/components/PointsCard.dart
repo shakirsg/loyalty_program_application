@@ -12,6 +12,17 @@ class PointsCard extends StatelessWidget {
     final isLoadingUserPoints = userProvider.isLoadingUserPoints;
     final points = userProvider.total_points.toStringAsFixed(3);
 
+    final now = DateTime.now();
+    final startOfWeek = now.subtract(Duration(days: now.weekday - 1)); // Monday
+
+    final thisWeekPoints = userProvider.pointHistory
+        .where((item) {
+          final created =
+              DateTime.tryParse(item['created'] ?? '') ?? DateTime(2000);
+          return created.isAfter(startOfWeek);
+        })
+        .fold<double>(0.0, (sum, item) => sum + (item['points'] ?? 0.0));
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -100,9 +111,9 @@ class PointsCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Text(
-                            'Got 50pts this week',
-                            style: TextStyle(
+                          Text(
+                            'Got ${thisWeekPoints.toStringAsFixed(0)} pts this week',
+                            style: const TextStyle(
                               fontSize: 14,
                               color: Color(0xFF22C55E),
                               fontWeight: FontWeight.bold,
@@ -124,10 +135,7 @@ class PointsCard extends StatelessWidget {
                           const SizedBox(width: 8),
                           const Text(
                             '100pts in 3d',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
+                            style: TextStyle(fontSize: 14, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -145,11 +153,7 @@ class PointsCard extends StatelessWidget {
             child: CircleAvatar(
               backgroundColor: const Color.fromRGBO(254, 236, 231, 1.0),
               radius: 16,
-              child: const Icon(
-                Icons.flash_on,
-                color: Colors.black,
-                size: 20,
-              ),
+              child: const Icon(Icons.flash_on, color: Colors.black, size: 20),
             ),
           ),
         ],

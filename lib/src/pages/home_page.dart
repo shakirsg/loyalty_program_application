@@ -27,12 +27,32 @@ class _HomePageState extends State<HomePage> {
     // });
   }
 
-
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthProvider>(context);
     // final isLoading = provider.isLoading;
     final fullName = context.watch<AuthProvider>().fullName;
+
+    final userProvider = Provider.of<UserProvider>(context);
+    final totalEarnedPoints = userProvider.pointHistory.fold<double>(
+      0.0,
+      (sum, item) => sum + (item['points_available'] ?? 0.0),
+    ).toInt();;
+
+    final now = DateTime.now();
+    final currentMonth = now.month;
+    final currentYear = now.year;
+
+    final monthlyPoints = userProvider.pointHistory.where((item) {
+      final created = DateTime.tryParse(item['created'] ?? '');
+      return created != null &&
+          created.month == currentMonth &&
+          created.year == currentYear;
+    }).fold<double>(
+      0.0,
+      (sum, item) => sum + (item['points_available'] ?? 0.0),
+    ).toInt();;
+
     return Scaffold(
       // backgroundColor: Colors.blue,
       appBar: AppBar(
@@ -83,12 +103,12 @@ class _HomePageState extends State<HomePage> {
                     StatusCard(
                       icon: Icons.trending_up,
                       title: 'Total earned!',
-                      description: '750 pts',
+                      description: '$totalEarnedPoints pts',
                     ),
                     StatusCard(
                       icon: Icons.history,
                       title: 'This month',
-                      description: '250 pts',
+                      description: '$monthlyPoints pts',
                     ),
                   ],
                 ),

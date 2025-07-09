@@ -115,7 +115,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           behavior: SnackBarBehavior.floating,
         ),
       );
-      Navigator.pushReplacementNamed(context, '/main');
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/main',
+        (Route<dynamic> route) => false, // removes all previous routes
+      );
     } else if (result is Map && result.containsKey('non_field_errors')) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

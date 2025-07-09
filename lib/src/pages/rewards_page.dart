@@ -60,12 +60,12 @@ class _RewardsPageState extends State<RewardsPage> {
       length: 2, // Number of tabs
       child: Scaffold(
         appBar: AppBar(
-          // leading: Navigator.of(context).canPop()
-          //     ? IconButton(
-          //         icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
-          //         onPressed: () => Navigator.of(context).pop(),
-          //       )
-          //     : null,
+          leading: Navigator.of(context).canPop()
+              ? IconButton(
+                  icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null,
           title: Text('Rewards'),
           bottom: TabBar(
             indicator: FullTabPillIndicator(

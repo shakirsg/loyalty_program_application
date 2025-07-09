@@ -4,6 +4,7 @@ import 'package:loyalty_program_application/src/pages/manage_account_page.dart';
 import 'package:loyalty_program_application/src/pages/notifications_page.dart';
 import 'package:loyalty_program_application/src/pages/privacy_security_page.dart';
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
+import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:loyalty_program_application/src/services/local_storage_service.dart';
 import 'package:provider/provider.dart';
@@ -241,74 +242,74 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                   ), // Wrap the settings items inside a Card
-            Card(
-              margin: EdgeInsets.all(16),
-              elevation: 5,
-              child: // ... inside the last Card widget's child Column:
-              Column(
-                children: [
-                  // Notifications Item
-                  ListTile(
-                    leading: Icon(Icons.notifications_outlined),
-                    title: Text('Notifications'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircleAvatar(
-                          radius: 10,
-                          backgroundColor: Colors.red,
-                          child: Text(
-                            '3',
-                            style: TextStyle(fontSize: 12, color: Colors.white),
-                          ),
-                        ),
-                        Icon(Icons.arrow_forward_ios),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NotificationsPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  Divider(),
-                  // Privacy & Security Item
-                  ListTile(
-                    leading: Icon(Icons.lock_outline),
-                    title: Text('Privacy & Security'),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PrivacySecurityPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  Divider(),
-                  // Help & Support Item
-                  ListTile(
-                    leading: Icon(Icons.help_outline),
-                    title: Text('Help & Support'),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HelpSupportPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  // Divider(),
-                  // After the last Card widget inside the Column's children:
-                ],
-              ),
-            ),
+            // Card(
+            //   margin: EdgeInsets.all(16),
+            //   elevation: 5,
+            //   child: // ... inside the last Card widget's child Column:
+            //   Column(
+            //     children: [
+            //       // Notifications Item
+            //       ListTile(
+            //         leading: Icon(Icons.notifications_outlined),
+            //         title: Text('Notifications'),
+            //         trailing: Row(
+            //           mainAxisSize: MainAxisSize.min,
+            //           children: [
+            //             CircleAvatar(
+            //               radius: 10,
+            //               backgroundColor: Colors.red,
+            //               child: Text(
+            //                 '3',
+            //                 style: TextStyle(fontSize: 12, color: Colors.white),
+            //               ),
+            //             ),
+            //             Icon(Icons.arrow_forward_ios),
+            //           ],
+            //         ),
+            //         onTap: () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (context) => NotificationsPage(),
+            //             ),
+            //           );
+            //         },
+            //       ),
+            //       Divider(),
+            //       // Privacy & Security Item
+            //       ListTile(
+            //         leading: Icon(Icons.lock_outline),
+            //         title: Text('Privacy & Security'),
+            //         trailing: Icon(Icons.arrow_forward_ios),
+            //         onTap: () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (context) => PrivacySecurityPage(),
+            //             ),
+            //           );
+            //         },
+            //       ),
+            //       Divider(),
+            //       // Help & Support Item
+            //       ListTile(
+            //         leading: Icon(Icons.help_outline),
+            //         title: Text('Help & Support'),
+            //         trailing: Icon(Icons.arrow_forward_ios),
+            //         onTap: () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (context) => HelpSupportPage(),
+            //             ),
+            //           );
+            //         },
+            //       ),
+            //       // Divider(),
+            //       // After the last Card widget inside the Column's children:
+            //     ],
+            //   ),
+            // ),
             SizedBox(height: 16), // spacing before the button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -353,6 +354,8 @@ class ProfilePage extends StatelessWidget {
                               // Optional: Clear auth/user state if using Provider
                               // Provider.of<AuthProvider>(context, listen: false).logout(); ← if you have it
                               // TODO: Add your logout logic here
+                              context.read<NavigationProvider>().setIndex_(0);
+
                               Navigator.pushReplacementNamed(context, '/login');
                             },
                             style: ElevatedButton.styleFrom(
