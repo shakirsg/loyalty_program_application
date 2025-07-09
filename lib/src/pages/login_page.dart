@@ -351,6 +351,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 Checkbox(
                   value: _rememberMe,
                   onChanged: (value) {
+                    context.read<AuthProvider>().isRemember = value ?? false;
+
                     setState(() {
                       _rememberMe = value ?? false;
                     });

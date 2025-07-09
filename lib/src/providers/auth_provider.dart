@@ -6,6 +6,8 @@ import '../services/api_service.dart';
 class AuthProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
 
+  bool isRemember = false;
+
   bool isLoading = false;
   String? error;
   String? token;
@@ -81,7 +83,13 @@ class AuthProvider with ChangeNotifier {
       if (response is Map<String, dynamic> && response.containsKey('key')) {
         token = response['key'];
         print("Login Token: ${token}");
-        await LocalStorageService.saveToken(token!); // Save token
+        await LocalStorageService.saveToken(token!);
+
+        if (isRemember) {
+          await LocalStorageService.saveRemember(true);
+        } else {
+          await LocalStorageService.saveRemember(false);
+        }
 
         return token!; // Return token as a string
       } else {
@@ -100,7 +108,7 @@ class AuthProvider with ChangeNotifier {
     isLoadingUserProfile = true;
     error = null;
     notifyListeners();
-    token = await LocalStorageService.getToken();
+    // token = await LocalStorageService.getToken();
     print("getUserProfile...");
     try {
       final profile = await _apiService.fetchUserProfile(token!);
@@ -171,6 +179,12 @@ class AuthProvider with ChangeNotifier {
       if (response != null && response.containsKey('key')) {
         token = response['key'];
         await LocalStorageService.saveToken(token!);
+
+        if (isRemember) {
+          await LocalStorageService.saveRemember(true);
+        } else {
+          await LocalStorageService.saveRemember(false);
+        }
       } else {
         error = "Google login failed: Unexpected response";
       }
@@ -214,7 +228,13 @@ class AuthProvider with ChangeNotifier {
       // Check if token is returned
       if (result is Map && result.containsKey('key')) {
         token = result['key'];
-        await LocalStorageService.saveToken(token!); // Save token
+        await LocalStorageService.saveToken(token!);
+
+        if (isRemember) {
+          await LocalStorageService.saveRemember(true);
+        } else {
+          await LocalStorageService.saveRemember(false);
+        }
 
         print(token);
         return token;
@@ -227,5 +247,15 @@ class AuthProvider with ChangeNotifier {
       isLoadingOtp = false;
       notifyListeners();
     }
+  }
+
+  Future<void> tryAutoLogin() async {
+    isRemember = await LocalStorageService.getRemember();
+    if (isRemember) {
+      token = await LocalStorageService.getToken();
+    } else {
+      await LocalStorageService.deleteToken();
+    }
+    notifyListeners();
   }
 }

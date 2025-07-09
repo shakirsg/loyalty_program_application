@@ -100,7 +100,11 @@ class UserProvider with ChangeNotifier {
     try {
       token = await LocalStorageService.getToken();
 
-      final response = await _apiService.getRewardsList(token!, searchValue, categoryName);
+      final response = await _apiService.getRewardsList(
+        token!,
+        searchValue,
+        categoryName,
+      );
       // rewards = response;
       // Use raw map data from the "results" key
       rewards = List<Map<String, dynamic>>.from(response['results']);
@@ -190,5 +194,45 @@ class UserProvider with ChangeNotifier {
       isLoadingCategories = false;
       notifyListeners();
     }
+  }
+
+  // Reset everything
+  void reset() {
+    userData = null;
+
+    isLoading = false;
+    error = null;
+    token = null;
+
+    isClaiming = false;
+    errorClaim = null;
+    claimResult = null;
+
+    isLoadingUserPoints = false;
+    pointsData = null;
+    total_points = 0.0;
+    pointHistory = [];
+
+    rewards = [];
+    rewardsError = null;
+    isLoadingRewards = false;
+
+    isRedeeming = false;
+    redeemError = null;
+    redeemResult = null;
+
+    redeemedPoints = 0.0;
+    redeemedHistory = [];
+    redeemedPointsError = null;
+    isLoadingRedeemedPoints = false;
+
+    categories = [];
+    categoriesError = null;
+    isLoadingCategories = false;
+
+    searchValue = "";
+    categoryName = "";
+
+    notifyListeners();
   }
 }

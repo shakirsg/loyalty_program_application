@@ -26,4 +26,14 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.containsKey(_tokenKey);
   }
+
+  static Future<void> saveRemember(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('remember_me', value);
+  }
+
+  static Future<bool> getRemember() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('remember_me') ?? false;
+  }
 }

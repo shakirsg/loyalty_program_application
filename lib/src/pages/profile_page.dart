@@ -350,13 +350,25 @@ class ProfilePage extends StatelessWidget {
                             onPressed: () async {
                               // Clear the token (logout logic)
                               await LocalStorageService.deleteToken();
+                              await LocalStorageService.saveRemember(false);
+
 
                               // Optional: Clear auth/user state if using Provider
                               // Provider.of<AuthProvider>(context, listen: false).logout(); ← if you have it
                               // TODO: Add your logout logic here
                               context.read<NavigationProvider>().setIndex_(0);
+                              final userProvider = Provider.of<UserProvider>(
+                                context,
+                                listen: false,
+                              );
+                              userProvider.reset();
 
-                              Navigator.pushReplacementNamed(context, '/login');
+                              // Then navigate or clean session
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                '/login',
+                                (route) => false,
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFFF05024),
