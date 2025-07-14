@@ -19,10 +19,23 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmController = TextEditingController();
+
   final _cityController = TextEditingController();
   final _countyController = TextEditingController();
   final _countryController = TextEditingController();
   final _professionController = TextEditingController();
+
+  bool _obscurePassword = true;
+  bool _obscureConfirm = true;
+
+  void _togglePasswordVisibility() {
+    setState(() => _obscurePassword = !_obscurePassword);
+  }
+
+  void _toggleConfirmVisibility() {
+    setState(() => _obscureConfirm = !_obscureConfirm);
+  }
 
   void _register() async {
     if (!_formKey.currentState!.validate()) return;
@@ -119,6 +132,53 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               const SizedBox(height: 16),
               TextFormField(
+                controller: _countryController,
+                decoration: const InputDecoration(
+                  labelText: 'Country',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.public),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Enter your country'
+                    : null,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _cityController,
+                decoration: const InputDecoration(
+                  labelText: 'City',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.location_city),
+                ),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Enter your city' : null,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _countyController,
+                decoration: const InputDecoration(
+                  labelText: 'County',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.map),
+                ),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Enter your county' : null,
+              ),
+
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _professionController,
+                decoration: const InputDecoration(
+                  labelText: 'Profession',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.work),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Enter your profession'
+                    : null,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
@@ -145,65 +205,61 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               ),
               const SizedBox(height: 16),
+              // Password Field
               TextFormField(
                 controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
+                obscureText: _obscurePassword,
+                decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: _togglePasswordVisibility,
+                  ),
                 ),
-                validator: (value) => value != null && value.length < 6
-                    ? 'Password too short'
-                    : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a password';
+                  }
+                  if (value.length < 6) {
+                    return 'Password too short';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
+              // Confirm Password Field
               TextFormField(
-                controller: _cityController,
-                decoration: const InputDecoration(
-                  labelText: 'City',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.location_city),
+                controller: _confirmController,
+                obscureText: _obscureConfirm,
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureConfirm ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: _toggleConfirmVisibility,
+                  ),
                 ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter your city' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _countyController,
-                decoration: const InputDecoration(
-                  labelText: 'County',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.map),
-                ),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Enter your county' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _countryController,
-                decoration: const InputDecoration(
-                  labelText: 'Country',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.public),
-                ),
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Enter your country'
-                    : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _professionController,
-                decoration: const InputDecoration(
-                  labelText: 'Profession',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.work),
-                ),
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Enter your profession'
-                    : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please confirm your password';
+                  }
+                  if (value != _passwordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 24),
+
               ElevatedButton(
                 onPressed: _register,
                 child: const Padding(

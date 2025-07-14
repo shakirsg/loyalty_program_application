@@ -180,6 +180,21 @@ class ProfilePage extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.deepOrange,
+                                ),
+                                onPressed: () {
+                                  // TODO: handle edit action
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ManageAccountPage(),
+                                    ),
+                                  );
+                                },
+                              ),
                             ],
                           ),
                           const SizedBox(height: 20),
@@ -351,7 +366,6 @@ class ProfilePage extends StatelessWidget {
                               // Clear the token (logout logic)
                               await LocalStorageService.deleteToken();
                               await LocalStorageService.saveRemember(false);
-
 
                               // Optional: Clear auth/user state if using Provider
                               // Provider.of<AuthProvider>(context, listen: false).logout(); ← if you have it

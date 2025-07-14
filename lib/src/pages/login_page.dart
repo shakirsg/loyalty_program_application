@@ -22,6 +22,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   late TabController _tabController;
   int _selectedLoginMethod = 0; // 0 = Email, 1 = Phone
 
+  bool _obscureText = true;
+
+  void _toggleVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -64,9 +72,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         _phoneController.text.trim(),
         _otpController.text.trim(),
       );
-       // Close the loading dialog
+      // Close the loading dialog
       Navigator.of(context, rootNavigator: true).pop();
-
 
       _handleLoginResult(result);
     }
@@ -331,11 +338,17 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             const SizedBox(height: 20),
             TextFormField(
               controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
+              obscureText: _obscureText,
+              decoration: InputDecoration(
                 labelText: 'Password',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.lock),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: _toggleVisibility,
+                ),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty)
