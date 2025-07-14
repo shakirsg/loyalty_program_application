@@ -23,6 +23,23 @@ class PointsCard extends StatelessWidget {
         })
         .fold<double>(0.0, (sum, item) => sum + (item['points'] ?? 0.0));
 
+    final threeDaysLater = now.add(const Duration(days: 3));
+
+    final thisWeekExpiringPoints = userProvider.pointHistory
+        .where((item) {
+          final expirationDate = DateTime.tryParse(
+            item['expiration_date'] ?? '',
+          );
+          return item['expired'] == false &&
+              expirationDate != null &&
+              expirationDate.isAfter(now) &&
+              expirationDate.isBefore(threeDaysLater);
+        })
+        .fold<double>(
+          0.0,
+          (sum, item) => sum + (item['points_available'] ?? 0.0),
+        );
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -133,8 +150,8 @@ class PointsCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Text(
-                            '100pts in 3d',
+                          Text(
+                            ' ${thisWeekExpiringPoints.toStringAsFixed(0)} ts in 3d',
                             style: TextStyle(fontSize: 14, color: Colors.grey),
                           ),
                         ],

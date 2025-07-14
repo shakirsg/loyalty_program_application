@@ -17,7 +17,7 @@ class AuthProvider with ChangeNotifier {
   bool isLoadingOtp = false;
 
   Map<String, dynamic>? userProfile;
-  String? fullName = "Alex";
+  String? fullName = "";
   String? email;
 
   Future<bool> register({
@@ -108,14 +108,14 @@ class AuthProvider with ChangeNotifier {
     isLoadingUserProfile = true;
     error = null;
     notifyListeners();
-    // token = await LocalStorageService.getToken();
+    token = await LocalStorageService.getToken();
     print("getUserProfile...");
     try {
       final profile = await _apiService.fetchUserProfile(token!);
       userProfile = profile;
 
       // Full name
-      fullName = (userProfile?['full_name'] ?? "Alex");
+      fullName = (userProfile?['full_name'] ?? "");
       print(fullName);
       // Email
       email = (userProfile?['email'] ?? "");

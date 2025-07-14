@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AuthProvider>(context);
+    // final provider = Provider.of<AuthProvider>(context);
     // final isLoading = provider.isLoading;
     final fullName = context.watch<AuthProvider>().fullName;
 
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                 SectionCard(
                   title: 'Points Plus',
                   titleColor: Colors.white,
-                  description: 'Welcome back, $fullName',
+                  description: 'Welcome back! $fullName',
                   descriptionColor: Colors.white,
                   cardCount: 1,
                   cards: [PointsCard()],
