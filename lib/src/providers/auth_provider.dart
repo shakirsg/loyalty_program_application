@@ -30,6 +30,8 @@ class AuthProvider with ChangeNotifier {
     required String county,
     required String country,
     required String profession,
+    required String idNumber,
+
   }) async {
     isLoading = true;
     error = null;
@@ -46,6 +48,7 @@ class AuthProvider with ChangeNotifier {
         county: county,
         country: country,
         profession: profession,
+        idNumber:idNumber,
       );
 
       // Check if the response is an error or success

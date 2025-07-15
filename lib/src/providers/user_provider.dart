@@ -37,6 +37,8 @@ class UserProvider with ChangeNotifier {
         qrCode: qrCode,
         latitude: position.latitude,
         longitude: position.longitude,
+        // latitude: 0.0,
+        // longitude: 0.0,
         address: "address",
       );
 
@@ -192,6 +194,59 @@ class UserProvider with ChangeNotifier {
       categoriesError = "Failed to fetch rewards: ${e.toString()}";
     } finally {
       isLoadingCategories = false;
+      notifyListeners();
+    }
+  }
+
+  bool isEditing = false;
+  String? errorEditing;
+  Future<bool> editUserProfile({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String email,
+    required String password,
+    required String city,
+    required String county,
+    required String country,
+    required String profession,
+    required String idNumber,
+  }) async {
+    isEditing = true;
+    errorEditing = null;
+    notifyListeners();
+
+    try {
+      final response = await _apiService.updateUserProfile(
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        email: email,
+        password: password,
+        city: city,
+        county: county,
+        country: country,
+        profession: profession,
+        idNumber: idNumber,
+      );
+
+      print(response);
+      // // Check if the response is an error or success
+      // if (response is Map<String, dynamic> && response.containsKey('id')) {
+      //   // Registration successful
+      //   return true;
+      // } else if (response is String && response.contains("duplicate key")) {
+      //   errorEditing = "Email already exists. Please try a different one.";
+      // } else {
+      //   errorEditing = "Registration failed. Please try again.";
+      // }
+
+      return false;
+    } catch (e) {
+      errorEditing = "Something went wrong: ${e.toString()}";
+      return false;
+    } finally {
+      isEditing = false;
       notifyListeners();
     }
   }

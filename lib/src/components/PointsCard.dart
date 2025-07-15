@@ -151,7 +151,7 @@ class PointsCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            ' ${thisWeekExpiringPoints.toStringAsFixed(0)} ts in 3d',
+                            ' ${thisWeekExpiringPoints.toStringAsFixed(0)} pts in 3d',
                             style: TextStyle(fontSize: 14, color: Colors.grey),
                           ),
                         ],

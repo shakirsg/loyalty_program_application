@@ -32,6 +32,42 @@ class ApiService {
     }
   }
 
+  /// Update UserProfiles
+  Future<dynamic> updateUserProfile({
+    required String firstName,
+    required String lastName,
+    required String phone,
+    required String email,
+    required String password,
+    required String city,
+    required String county,
+    required String country,
+    required String profession,
+    required String idNumber,
+  }) async {
+    final url = Uri.parse('$baseUrl/customers/profile/');
+    final body = jsonEncode({
+      "first_name": firstName,
+      "last_name": lastName,
+      "phone": phone,
+      "email": email,
+      "password": password,
+      "city": city,
+      "county": county,
+      "country": country,
+      "profession": profession,
+      "idNumber": idNumber,
+    });
+
+    final response = await http.patch(url, headers: _headers, body: body);
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to update Profile: ${response.body}');
+    }
+  }
+
   /// Register a new customer
   Future<dynamic> registerCustomer({
     required String firstName,
@@ -43,6 +79,7 @@ class ApiService {
     required String county,
     required String country,
     required String profession,
+    required String idNumber,
   }) async {
     final url = Uri.parse('$baseUrl/customers/register/');
     final body = jsonEncode({
@@ -55,6 +92,7 @@ class ApiService {
       "county": county,
       "country": country,
       "profession": profession,
+      "idNumber": idNumber,
     });
 
     final response = await http.post(url, headers: _headers, body: body);

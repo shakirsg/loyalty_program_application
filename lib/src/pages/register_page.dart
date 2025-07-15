@@ -25,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _countyController = TextEditingController();
   final _countryController = TextEditingController();
   final _professionController = TextEditingController();
+  final _idNumberController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
@@ -52,6 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
       county: _countyController.text.trim(),
       country: _countryController.text.trim(),
       profession: _professionController.text.trim(),
+      idNumber: _idNumberController.text.trim(),
     );
 
     if (success) {
@@ -178,6 +180,24 @@ class _RegisterPageState extends State<RegisterPage> {
                     : null,
               ),
               const SizedBox(height: 16),
+              // ID Number / Passport Number
+              TextFormField(
+                controller: _idNumberController,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  labelText: 'ID Number / Passport Number',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(
+                    Icons.badge,
+                  ), // or Icons.credit_card, choose what fits
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Enter ID or Passport number'
+                    : null,
+              ),
+
+              const SizedBox(height: 16),
+
               TextFormField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
