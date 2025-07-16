@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:loyalty_program_application/src/services/local_storage_service.dart';
+import 'package:metsec_loyalty_app/src/services/local_storage_service.dart';
 import '../services/api_service.dart';
 
 class AuthProvider with ChangeNotifier {

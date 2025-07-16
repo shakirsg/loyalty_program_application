@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/forgot_password_page.dart';
-import 'package:loyalty_program_application/src/providers/auth_provider.dart';
-import 'package:loyalty_program_application/src/utils/show_loading_dialog_while.dart';
+import 'package:metsec_loyalty_app/src/pages/forgot_password_page.dart';
+import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
+import 'package:metsec_loyalty_app/src/utils/show_loading_dialog_while.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {

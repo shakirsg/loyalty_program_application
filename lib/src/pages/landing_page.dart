@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:loyalty_program_application/src/widgets/cards/card_widget.dart';
+import 'package:metsec_loyalty_app/src/widgets/cards/card_widget.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});

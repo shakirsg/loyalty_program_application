@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/providers/auth_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {

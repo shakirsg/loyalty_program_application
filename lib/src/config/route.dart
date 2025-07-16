@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/standing_page.dart';
-import 'package:loyalty_program_application/src/pages/login_page.dart';
-import 'package:loyalty_program_application/src/pages/register_page.dart';
-import 'package:loyalty_program_application/src/pages/landing_page.dart';
-import 'package:loyalty_program_application/src/pages/main_page.dart';
-import 'package:loyalty_program_application/src/pages/test_page.dart';
+import 'package:metsec_loyalty_app/src/pages/standing_page.dart';
+import 'package:metsec_loyalty_app/src/pages/login_page.dart';
+import 'package:metsec_loyalty_app/src/pages/register_page.dart';
+import 'package:metsec_loyalty_app/src/pages/landing_page.dart';
+import 'package:metsec_loyalty_app/src/pages/main_page.dart';
+import 'package:metsec_loyalty_app/src/pages/test_page.dart';
 
 
 final Map<String, WidgetBuilder> appRoutes = {

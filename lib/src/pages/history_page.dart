@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});

@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:loyalty_program_application/src/pages/history_page.dart';
-import 'package:loyalty_program_application/src/pages/product_info_page.dart';
-import 'package:loyalty_program_application/src/providers/guest_provider.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'package:metsec_loyalty_app/src/pages/history_page.dart';
+import 'package:metsec_loyalty_app/src/pages/product_info_page.dart';
+import 'package:metsec_loyalty_app/src/providers/guest_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import 'package:loyalty_program_application/src/components/corner_painter.dart';
+import 'package:metsec_loyalty_app/src/components/corner_painter.dart';
 
 class AuthenticatePage extends StatefulWidget {
   const AuthenticatePage({super.key});

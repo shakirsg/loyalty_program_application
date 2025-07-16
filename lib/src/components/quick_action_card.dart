@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/navigation_provider.dart';
 import 'package:provider/provider.dart';
 
 class QuickActionCard extends StatelessWidget {
