@@ -203,7 +203,6 @@ class ApiService {
     try {
       return await _googleSignIn.signIn();
     } catch (e) {
-      print("Google Sign-In error: $e");
       return null;
     }
   }

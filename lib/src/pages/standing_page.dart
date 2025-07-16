@@ -12,11 +12,9 @@ class _StandingPage extends State<StandingPage> {
   void _onRegister() {
     Navigator.pushReplacementNamed(context, '/login');
 
-    print('Register button tapped');
   }
 
   void _onCallSupport() {
-    print('Call support tapped');
   }
 
   void _onScanQRCode() {
@@ -24,11 +22,9 @@ class _StandingPage extends State<StandingPage> {
       context,
       MaterialPageRoute(builder: (_) => AuthenticatePage()),
     );
-    print('QR Scan tapped');
   }
 
   void _onShowInfo() {
-    print('Info tapped');
   }
 
   @override

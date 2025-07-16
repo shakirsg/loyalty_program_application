@@ -51,7 +51,6 @@ class QRViewExampleState extends State<AuthenticatePage>
   @override
   void reassemble() {
     super.reassemble();
-    print("resum -----------");
     if (Platform.isAndroid) {
       controller?.pauseCamera();
     } else if (Platform.isIOS) {
