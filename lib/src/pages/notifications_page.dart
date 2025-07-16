@@ -70,6 +70,8 @@ class NotificationsPage extends StatelessWidget {
 }
 
 class NotificationCard extends StatelessWidget {
+  const NotificationCard({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Card(

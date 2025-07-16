@@ -9,16 +9,16 @@ import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:loyalty_program_application/src/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
-final GlobalKey<_MainPageState> mainPageKey = GlobalKey<_MainPageState>();
+final GlobalKey<MainPageState> mainPageKey = GlobalKey<MainPageState>();
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainPage> createState() => MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class MainPageState extends State<MainPage> {
   bool _isLoading = false;
 
   final List<Widget> _pages = const [
@@ -47,7 +47,7 @@ class _MainPageState extends State<MainPage> {
     } catch (_) {
       // Optional: log error
     } finally {
-      if (mounted){
+      if (mounted) {
         setState(() => _isLoading = false);
       }
     }
@@ -63,7 +63,8 @@ class _MainPageState extends State<MainPage> {
             body: _pages[currentIndex],
             bottomNavigationBar: BottomNavBar(
               currentIndex: currentIndex,
-              onTap: (index) => context.read<NavigationProvider>().setIndex(index),
+              onTap: (index) =>
+                  context.read<NavigationProvider>().setIndex(index),
             ),
           );
   }

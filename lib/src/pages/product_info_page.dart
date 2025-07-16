@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class ProductInfoPage extends StatelessWidget {
   final Map<String, dynamic> productInfo;
 
-  const ProductInfoPage({Key? key, required this.productInfo})
-    : super(key: key);
+  const ProductInfoPage({super.key, required this.productInfo});
 
   @override
   Widget build(BuildContext context) {

@@ -13,10 +13,10 @@ class AuthenticatePage extends StatefulWidget {
   const AuthenticatePage({super.key});
 
   @override
-  _QRViewExampleState createState() => _QRViewExampleState();
+  QRViewExampleState createState() => QRViewExampleState();
 }
 
-class _QRViewExampleState extends State<AuthenticatePage>
+class QRViewExampleState extends State<AuthenticatePage>
     with SingleTickerProviderStateMixin {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;

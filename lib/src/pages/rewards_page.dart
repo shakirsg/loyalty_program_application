@@ -8,10 +8,10 @@ class RewardsPage extends StatefulWidget {
   const RewardsPage({super.key});
 
   @override
-  _RewardsPageState createState() => _RewardsPageState();
+  RewardsPageState createState() => RewardsPageState();
 }
 
-class _RewardsPageState extends State<RewardsPage> {
+class RewardsPageState extends State<RewardsPage> {
   String _selectedCategory = 'All'; // Default category
 
   late TextEditingController _searchController;
