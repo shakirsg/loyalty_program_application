@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/components/QuickActionCard.dart';
-import 'package:loyalty_program_application/src/components/PointsCard.dart';
-import 'package:loyalty_program_application/src/components/RecentActivityCard.dart';
-import 'package:loyalty_program_application/src/components/StatusCard.dart';
+import 'package:loyalty_program_application/src/components/quick_action_card.dart';
+import 'package:loyalty_program_application/src/components/points_card.dart';
+import 'package:loyalty_program_application/src/components/status_card.dart';
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -15,16 +14,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // bool _isLoading = true;
-  bool _showImage = false;
 
   @override
   void initState() {
     super.initState();
-    // Future.delayed(const Duration(seconds: 3), () {
-    //   _showImage = false;
-    //   setState(() {});
-    // });
   }
 
   @override
@@ -37,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     final totalEarnedPoints = userProvider.pointHistory.fold<double>(
       0.0,
       (sum, item) => sum + (item['points_available'] ?? 0.0),
-    ).toInt();;
+    ).toInt();
 
     final now = DateTime.now();
     final currentMonth = now.month;
@@ -51,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     }).fold<double>(
       0.0,
       (sum, item) => sum + (item['points_available'] ?? 0.0),
-    ).toInt();;
+    ).toInt();
 
     return Scaffold(
       // backgroundColor: Colors.blue,

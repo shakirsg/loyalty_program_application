@@ -6,7 +6,6 @@ import 'package:loyalty_program_application/src/pages/scanner_page.dart';
 import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
-import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
 import 'package:loyalty_program_application/src/widgets/BottomNavigationBar/bottom_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -48,8 +47,9 @@ class _MainPageState extends State<MainPage> {
     } catch (_) {
       // Optional: log error
     } finally {
-      if (!mounted) return;
-      setState(() => _isLoading = false);
+      if (mounted){
+        setState(() => _isLoading = false);
+      }
     }
   }
 

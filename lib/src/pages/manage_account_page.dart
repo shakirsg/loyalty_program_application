@@ -398,12 +398,12 @@ class _ManageAccountPageState extends State<ManageAccountPage> {
                       },
                     );
                   },
-                  child: Text('Save Changes'),
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: Color(0xFFF05024),
                     textStyle: TextStyle(fontSize: 18),
                   ),
+                  child: Text('Save Changes'),
                 ),
               ),
             ),

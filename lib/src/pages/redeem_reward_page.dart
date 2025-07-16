@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/rewards_success_page.dart';
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +24,7 @@ class RedeemRewardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final userProvider = context.watch<UserProvider>();
-    final totalPoints = context.watch<UserProvider>().total_points;
+    final totalPoints = context.watch<UserProvider>().totalPoints;
     String totalPoints_ = totalPoints.toStringAsFixed(3);
     double remaining = totalPoints - double.parse(points);
     String formatted = remaining.toStringAsFixed(3); // "83092.00"
@@ -349,7 +348,7 @@ class RedeemRewardPage extends StatelessWidget {
                                     context: context,
                                     builder: (context) => AlertDialog(
                                       title: Text('Success'),
-                                      content: Text('Points Used: ${points}'),
+                                      content: Text('Points Used: $points'),
                                       actions: [
                                         TextButton(
                                           onPressed: () =>

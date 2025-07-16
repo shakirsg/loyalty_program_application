@@ -19,7 +19,7 @@ class UserProvider with ChangeNotifier {
   bool isLoadingUserPoints = false;
 
   dynamic pointsData;
-  double total_points = 0.0;
+  double totalPoints = 0.0;
   List<dynamic> pointHistory = [];
 
   Future<void> claimPointsWithLocation(String qrCode) async {
@@ -43,12 +43,10 @@ class UserProvider with ChangeNotifier {
       );
 
       claimResult = result;
-      print(claimResult);
       // Optionally update user points again here
       // await getUserPoints();
     } catch (e) {
       error = e.toString();
-      print(error);
     } finally {
       isClaiming = false;
       notifyListeners();
@@ -62,17 +60,13 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
 
     token = await LocalStorageService.getToken();
-    print("getUserPoints...");
 
     try {
       pointsData = await _apiService.getPoints(token!);
-      print('Raw API response: $pointsData');
-      // total_points
-      total_points = (pointsData?['total_points'] ?? 0).toDouble();
+      // totalPoints
+      totalPoints = (pointsData?['total_points'] ?? 0).toDouble();
       // Historys
       pointHistory = pointsData?['points'] ?? [];
-      print("User points: $total_points");
-      print("History count: ${pointHistory.length}");
     } catch (e) {
       error = "Failed to fetch points: ${e.toString()}";
     } finally {
@@ -133,7 +127,6 @@ class UserProvider with ChangeNotifier {
       );
 
       redeemResult = response;
-      print(redeemResult);
       // Optionally refresh user points
       // await getUserPoints();
     } catch (e) {
@@ -158,13 +151,10 @@ class UserProvider with ChangeNotifier {
     try {
       token = await LocalStorageService.getToken();
       final response = await _apiService.getRedeemedPoints(token!);
-      print('Redeemed points response: $response');
 
       redeemedPoints = (response['total_points'] ?? 0).toDouble();
       redeemedHistory = response['redemptions'] ?? [];
 
-      print("Redeemed points: $redeemedPoints");
-      print("Redeemed history count: ${redeemedHistory.length}");
     } catch (e) {
       redeemedPointsError = "Failed to fetch redeemed points: ${e.toString()}";
     } finally {
@@ -189,7 +179,6 @@ class UserProvider with ChangeNotifier {
       // rewards = response;
       // Use raw map data from the "results" key
       categories = List<Map<String, dynamic>>.from(response['results']);
-      print(categories);
     } catch (e) {
       categoriesError = "Failed to fetch rewards: ${e.toString()}";
     } finally {
@@ -230,7 +219,6 @@ class UserProvider with ChangeNotifier {
         idNumber: idNumber,
       );
 
-      print(response);
       // // Check if the response is an error or success
       // if (response is Map<String, dynamic> && response.containsKey('id')) {
       //   // Registration successful
@@ -265,7 +253,7 @@ class UserProvider with ChangeNotifier {
 
     isLoadingUserPoints = false;
     pointsData = null;
-    total_points = 0.0;
+    totalPoints = 0.0;
     pointHistory = [];
 
     rewards = [];

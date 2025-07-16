@@ -16,13 +16,10 @@ class _StandingPage extends State<StandingPage> {
   }
 
   void _onCallSupport() {
-    // TODO: Launch phone dialer
     print('Call support tapped');
   }
 
   void _onScanQRCode() {
-    // TODO: Open QR code scanner
-    // TODO: Navigate to registration screen
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => AuthenticatePage()),
@@ -31,7 +28,6 @@ class _StandingPage extends State<StandingPage> {
   }
 
   void _onShowInfo() {
-    // TODO: Show app info
     print('Info tapped');
   }
 

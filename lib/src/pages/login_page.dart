@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               children: [
                 const Icon(Icons.error, color: Colors.white),
                 const SizedBox(width: 12),
-                Text(getOtpResponse!["detail"] ?? "No message"),
+                Text(getOtpResponse["detail"] ?? "No message"),
               ],
             ),
             backgroundColor: Colors.red,
@@ -329,8 +329,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 prefixIcon: Icon(Icons.email),
               ),
               validator: (value) {
-                if (value == null || value.isEmpty)
+                if (value == null || value.isEmpty) {
                   return 'Please enter your email';
+                }
                 if (!value.contains('@')) return 'Enter a valid email';
                 return null;
               },
@@ -351,10 +352,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 ),
               ),
               validator: (value) {
-                if (value == null || value.isEmpty)
+                if (value == null || value.isEmpty) {
                   return 'Please enter your password';
-                if (value.length < 6)
+                }
+                if (value.length < 6) {
                   return 'Password must be at least 6 characters';
+                }
                 return null;
               },
             ),

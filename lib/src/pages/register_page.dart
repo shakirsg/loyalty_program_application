@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:loyalty_program_application/src/providers/auth_provider.dart';
-import 'dart:convert';
-
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {

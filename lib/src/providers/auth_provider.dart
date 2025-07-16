@@ -85,7 +85,6 @@ class AuthProvider with ChangeNotifier {
 
       if (response is Map<String, dynamic> && response.containsKey('key')) {
         token = response['key'];
-        print("Login Token: ${token}");
         await LocalStorageService.saveToken(token!);
 
         if (isRemember) {
@@ -112,14 +111,12 @@ class AuthProvider with ChangeNotifier {
     error = null;
     notifyListeners();
     token = await LocalStorageService.getToken();
-    print("getUserProfile...");
     try {
       final profile = await _apiService.fetchUserProfile(token!);
       userProfile = profile;
 
       // Full name
       fullName = (userProfile?['full_name'] ?? "");
-      print(fullName);
       // Email
       email = (userProfile?['email'] ?? "");
     } catch (e) {
@@ -138,12 +135,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> signIn() async {
     _user = await _apiService.signInWithGoogle();
     if (_user != null) {
-      print('Name: ${_user!.displayName}');
-      print('Email: ${_user!.email}');
-      print('ID: ${_user!.id}');
-      print('Photo URL: ${_user!.photoUrl}');
     } else {
-      print('Google Sign-In failed or was cancelled.');
     }
     notifyListeners();
   }
@@ -239,7 +231,6 @@ class AuthProvider with ChangeNotifier {
           await LocalStorageService.saveRemember(false);
         }
 
-        print(token);
         return token;
       } else {
         return result;

@@ -5,12 +5,9 @@ import 'package:loyalty_program_application/src/pages/history_page.dart';
 import 'package:loyalty_program_application/src/pages/product_info_page.dart';
 import 'package:loyalty_program_application/src/providers/guest_provider.dart';
 import 'package:loyalty_program_application/src/providers/user_provider.dart';
-import 'package:loyalty_program_application/src/services/location_service.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import 'package:loyalty_program_application/src/components/CornerPainter.dart';
-import 'package:loyalty_program_application/src/pages/history_page.dart';
-import 'package:loyalty_program_application/src/pages/earn_point_page.dart';
+import 'package:loyalty_program_application/src/components/corner_painter.dart';
 
 class AuthenticatePage extends StatefulWidget {
   const AuthenticatePage({super.key});
@@ -47,7 +44,6 @@ class _QRViewExampleState extends State<AuthenticatePage>
 
   @override
   void dispose() {
-    controller?.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -68,7 +64,6 @@ class _QRViewExampleState extends State<AuthenticatePage>
       icon: const Icon(Icons.work_history, color: Colors.white),
       tooltip: 'History',
       onPressed: () {
-        // TODO: Navigate to history details page
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => HistoryPage()),
