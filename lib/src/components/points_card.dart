@@ -10,7 +10,7 @@ class PointsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
     final isLoadingUserPoints = userProvider.isLoadingUserPoints;
-    final points = userProvider.total_points.toStringAsFixed(3);
+    final points = userProvider.totalPoints.toStringAsFixed(3);
 
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1)); // Monday
