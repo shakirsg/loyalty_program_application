@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       final result = await authProvider.login(
-        username: _emailController.text.trim(),
+        email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
@@ -196,7 +196,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   void _signInWithGoogle() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await authProvider.loginWithGoogle();
+    final result = await authProvider.loginWithGoogle();
+
+    if (result != null) {
+      authProvider.getUserProfile().then((_) => _handleLoginResult(result));
+    }
   }
 
   @override
