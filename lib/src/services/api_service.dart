@@ -1,18 +1,15 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:metsec_loyalty_app/src/services/local_storage_service.dart';
 
 class ApiService {
-  final String baseUrl =
-      'http://68.183.83.230:8000/api'; // from Insomnia environment
-  final String token =
-      'e8c5dd2880884862a0ec4edb1fa028f0aec35d01'; // from Insomnia environment
+  final String baseUrl = 'https://dev.eyby.com/api';
 
-  Map<String, String> get _headers => {
-    'Authorization': 'Token $token',
-    'Content-Type': 'application/json',
-    'User-Agent': 'insomnia/11.0.0',
-  };
+  Map<String, String> get _headers => {'Content-Type': 'application/json'};
+
+  Future<String?> getToken() async => await LocalStorageService.getToken();
 
   /// Get user profile
   Future<dynamic> fetchUserProfile(String token) async {
@@ -20,7 +17,6 @@ class ApiService {
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
     };
 
     final response = await http.get(url, headers: headers);
@@ -59,7 +55,13 @@ class ApiService {
       "idNumber": idNumber,
     });
 
-    final response = await http.patch(url, headers: _headers, body: body);
+    final token = await getToken();
+
+    final response = await http.patch(
+      url,
+      headers: {..._headers, 'Authorization': 'Token $token'},
+      body: body,
+    );
 
     if (response.statusCode == 201 || response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -120,7 +122,6 @@ class ApiService {
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
     };
 
     final body = jsonEncode({
@@ -147,7 +148,6 @@ class ApiService {
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
     };
 
     final response = await http.get(url, headers: headers);
@@ -160,18 +160,11 @@ class ApiService {
   }
 
   /// Login user
-  Future<dynamic> login(String username, String password) async {
+  Future<dynamic> login(String email, String password) async {
     final url = Uri.parse('$baseUrl/dj-rest-auth/login/');
-    final body = jsonEncode({'username': username, 'password': password});
+    final body = jsonEncode({'email': email, 'password': password});
 
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'insomnia/11.0.0',
-      },
-      body: body,
-    );
+    final response = await http.post(url, headers: _headers, body: body);
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body); // You'll get token here
@@ -182,8 +175,13 @@ class ApiService {
 
   /// Get product points
   Future<dynamic> getProductPoints() async {
+    final token = await getToken();
+
     final url = Uri.parse('$baseUrl/customers/product-points/');
-    final response = await http.get(url, headers: _headers);
+    final response = await http.get(
+      url,
+      headers: {..._headers, 'Authorization': 'Token $token'},
+    );
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -193,18 +191,51 @@ class ApiService {
   }
 
   // Google SignIn
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email', 'profile'],
-    clientId:
-        '388610220112-no1q7frmmdmimcu0a4608cp5qg1c9ug4.apps.googleusercontent.com', // ⬅️ From Google Cloud Console
-  );
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
 
-  Future<GoogleSignInAccount?> signInWithGoogle() async {
+  // Future<GoogleSignInAccount?> signInWithGoogle() async {
+  //   try {
+  //     return await _googleSignIn.signIn();
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
+
+  Future<String?> signInWithGoogle() async {
     try {
-      return await _googleSignIn.signIn();
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return null;
+
+      final googleAuth = await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+
+      debugPrint('Access token: $accessToken');
+
+      if (accessToken == null) throw Exception("Access token is null");
+
+      final response = await http.post(
+        Uri.parse("$baseUrl/users/social/google/"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"access_token": accessToken}),
+      );
+
+      print('response: $response');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['key'] ?? data['access'];
+
+        debugPrint("Logged in! Token: $token");
+
+        return token;
+      } else {
+        debugPrint("Login failed:");
+      }
     } catch (e) {
-      return null;
+      debugPrint("Error: $e");
     }
+
+    return null;
   }
 
   Future<dynamic> loginWithGoogle(
@@ -231,11 +262,7 @@ class ApiService {
 
     final response = await http.post(
       url,
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent':
-            'insomnia/11.0.0', // You can change this to something more appropriate if needed
-      },
+      headers: {'Content-Type': 'application/json'},
       body: body,
     );
 
@@ -264,7 +291,6 @@ class ApiService {
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
     };
 
     final response = await http.get(url, headers: headers);
@@ -285,7 +311,6 @@ class ApiService {
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
     };
 
     final body = jsonEncode({'reward_id': rewardId});
@@ -308,7 +333,6 @@ class ApiService {
     final headers = {
       'Authorization': 'Token $token',
       'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
     };
 
     final response = await http.get(url, headers: headers);
@@ -326,10 +350,7 @@ class ApiService {
       '$baseUrl/customers/authenticate-product/?qr_code=${Uri.encodeComponent(qrCode)}',
     );
 
-    final headers = {
-      'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
-    };
+    final headers = {'Content-Type': 'application/json'};
 
     final response = await http.get(url, headers: headers);
 
@@ -349,10 +370,7 @@ class ApiService {
       '$baseUrl/customers/otp/get_otp/?phone=${Uri.encodeComponent(phoneNumber)}',
     );
 
-    final headers = {
-      'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
-    };
+    final headers = {'Content-Type': 'application/json'};
 
     final response = await http.get(url, headers: headers);
 
@@ -372,10 +390,7 @@ class ApiService {
       '$baseUrl/customers/otp/verify_otp/?otp=${Uri.encodeComponent(otp)}',
     );
 
-    final headers = {
-      'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
-    };
+    final headers = {'Content-Type': 'application/json'};
 
     final response = await http.get(url, headers: headers);
 
@@ -391,10 +406,7 @@ class ApiService {
 
   Future<dynamic> getCategories() async {
     final url = Uri.parse('$baseUrl/products/reward-categories/');
-    final headers = {
-      'Content-Type': 'application/json',
-      'User-Agent': 'insomnia/11.0.0',
-    };
+    final headers = {'Content-Type': 'application/json'};
 
     final response = await http.get(url, headers: headers);
 
