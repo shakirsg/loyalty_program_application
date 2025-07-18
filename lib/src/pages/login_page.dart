@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       );
 
       // Close the loading dialog
-      Navigator.of(context, rootNavigator: true).pop();
+      if (mounted) Navigator.of(context, rootNavigator: true).pop();
 
       _handleLoginResult(result);
     }
@@ -205,8 +205,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-
     return Scaffold(
       body: Stack(
         children: [
@@ -318,6 +316,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   Widget _buildEmailLoginTab() {
+    final authProvider = context.watch<AuthProvider>();
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Form(
@@ -398,15 +398,23 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _signInWithGoogle,
-              icon: const Icon(Icons.account_circle),
-              label: const Text('Continue with Google'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                padding: const EdgeInsets.symmetric(vertical: 18.0),
-              ),
-            ),
+            authProvider.isSigningWithGoogle
+                ? SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: Center(
+                      child: const CircularProgressIndicator(color: Colors.red),
+                    ),
+                  )
+                : ElevatedButton.icon(
+                    onPressed: _signInWithGoogle,
+                    icon: Icon(Icons.account_circle),
+                    label: const Text('Continue with Google'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(vertical: 18.0),
+                    ),
+                  ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
