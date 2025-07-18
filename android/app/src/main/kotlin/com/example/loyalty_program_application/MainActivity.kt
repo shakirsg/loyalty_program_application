@@ -1,4 +1,4 @@
-package com.example.loyalty_program_application
+package com.metsec.metsec_loyalty_app
 
 import io.flutter.embedding.android.FlutterActivity
 

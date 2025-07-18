@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/forgot_password_page.dart';
-import 'package:loyalty_program_application/src/providers/auth_provider.dart';
-import 'package:loyalty_program_application/src/utils/show_loading_dialog_while.dart';
+import 'package:metsec_loyalty_app/src/pages/forgot_password_page.dart';
+import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
+import 'package:metsec_loyalty_app/src/utils/show_loading_dialog_while.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -48,12 +48,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       final result = await authProvider.login(
-        username: _emailController.text.trim(),
+        email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
       // Close the loading dialog
-      Navigator.of(context, rootNavigator: true).pop();
+      if (mounted) Navigator.of(context, rootNavigator: true).pop();
 
       _handleLoginResult(result);
     }
@@ -196,13 +196,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   void _signInWithGoogle() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await authProvider.loginWithGoogle();
+    final result = await authProvider.loginWithGoogle();
+
+    if (result != null) {
+      authProvider.getUserProfile().then((_) => _handleLoginResult(result));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-
     return Scaffold(
       body: Stack(
         children: [
@@ -314,6 +316,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   Widget _buildEmailLoginTab() {
+    final authProvider = context.watch<AuthProvider>();
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Form(
@@ -394,15 +398,23 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _signInWithGoogle,
-              icon: const Icon(Icons.account_circle),
-              label: const Text('Continue with Google'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                padding: const EdgeInsets.symmetric(vertical: 18.0),
-              ),
-            ),
+            authProvider.isSigningWithGoogle
+                ? SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: Center(
+                      child: const CircularProgressIndicator(color: Colors.red),
+                    ),
+                  )
+                : ElevatedButton.icon(
+                    onPressed: _signInWithGoogle,
+                    icon: Icon(Icons.account_circle),
+                    label: const Text('Continue with Google'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(vertical: 18.0),
+                    ),
+                  ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/redeem_reward_page.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
-import 'package:loyalty_program_application/src/widgets/topTabBar/waveBar.dart';
+import 'package:metsec_loyalty_app/src/pages/redeem_reward_page.dart';
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
+import 'package:metsec_loyalty_app/src/widgets/topTabBar/waveBar.dart';
 import 'package:provider/provider.dart';
 
 class RewardsPage extends StatefulWidget {

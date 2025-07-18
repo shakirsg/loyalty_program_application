@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/services/local_storage_service.dart';
-import 'package:loyalty_program_application/src/services/location_service.dart';
+import 'package:metsec_loyalty_app/src/services/local_storage_service.dart';
+import 'package:metsec_loyalty_app/src/services/location_service.dart';
 import '../services/api_service.dart';
 
 class UserProvider with ChangeNotifier {

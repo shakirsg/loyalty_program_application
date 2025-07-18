@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/authenticate_page.dart';
+import 'package:metsec_loyalty_app/src/pages/authenticate_page.dart';
 
 class StandingPage extends StatefulWidget {
   const StandingPage({super.key});

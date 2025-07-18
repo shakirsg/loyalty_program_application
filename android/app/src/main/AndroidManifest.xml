@@ -8,7 +8,7 @@
     <application
         android:usesCleartextTraffic="true"
          android:enableOnBackInvokedCallback="true"
-        android:label="loyalty_program_application"
+        android:label="metsec_loyalty_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

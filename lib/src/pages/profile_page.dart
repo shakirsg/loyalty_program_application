@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/manage_account_page.dart';
-import 'package:loyalty_program_application/src/providers/auth_provider.dart';
-import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
-import 'package:loyalty_program_application/src/services/local_storage_service.dart';
+import 'package:metsec_loyalty_app/src/pages/manage_account_page.dart';
+import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/navigation_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
+import 'package:metsec_loyalty_app/src/services/local_storage_service.dart';
 import 'package:provider/provider.dart';
 import 'package:skeleton_loader/skeleton_loader.dart';
 
