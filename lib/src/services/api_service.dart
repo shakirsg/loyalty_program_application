@@ -52,7 +52,7 @@ class ApiService {
       "county": county,
       "country": country,
       "profession": profession,
-      "idNumber": idNumber,
+      "id_number": idNumber,
     });
 
     final token = await getToken();
@@ -94,7 +94,7 @@ class ApiService {
       "county": county,
       "country": country,
       "profession": profession,
-      "idNumber": idNumber,
+      "id_number": idNumber,
     });
 
     final response = await http.post(url, headers: _headers, body: body);
@@ -218,8 +218,6 @@ class ApiService {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"access_token": accessToken}),
       );
-
-      print('response: $response');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
