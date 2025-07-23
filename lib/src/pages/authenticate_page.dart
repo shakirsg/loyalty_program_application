@@ -169,7 +169,7 @@ class QRViewExampleState extends State<AuthenticatePage>
 
     return Positioned.fill(
       child: Container(
-        color: Colors.black.withOpacity(0.85),
+        color: Colors.black.withValues(alpha: 0.85),
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -254,25 +254,28 @@ class QRViewExampleState extends State<AuthenticatePage>
                     );
 
                     // Close the loading dialog
-                    Navigator.of(context, rootNavigator: true).pop();
+                    if (mounted) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
 
                     final productInfo = guestProvider.productInfo;
                     if (productInfo is Map<String, dynamic>) {
                       if (productInfo.containsKey('detail')) {
-                        // ❌ Show error dialog
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('Error'),
-                            content: Text(productInfo['detail']),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
+                        if (mounted) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Error'),
+                              content: Text(productInfo['detail']),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       } else {
                         // // ✅ Show success dialog with points
                         // showDialog(
@@ -288,29 +291,32 @@ class QRViewExampleState extends State<AuthenticatePage>
                         //     ],
                         //   ),
                         // );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ProductInfoPage(productInfo: productInfo),
+                        if (mounted) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  ProductInfoPage(productInfo: productInfo),
+                            ),
+                          );
+                        }
+                      }
+                    } else {
+                      if (mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Error'),
+                            content: Text('Unexpected response format.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('OK'),
+                              ),
+                            ],
                           ),
                         );
                       }
-                    } else {
-                      // 🚫 Show unexpected format dialog
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Error'),
-                          content: Text('Unexpected response format.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
                     }
                   },
                   icon: const Icon(Icons.check),
