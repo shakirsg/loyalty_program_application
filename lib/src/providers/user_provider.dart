@@ -206,7 +206,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await _apiService.updateUserProfile(
+      await _apiService.updateUserProfile(
         firstName: firstName,
         lastName: lastName,
         phone: phone,
@@ -218,16 +218,6 @@ class UserProvider with ChangeNotifier {
         profession: profession,
         idNumber: idNumber,
       );
-
-      // // Check if the response is an error or success
-      // if (response is Map<String, dynamic> && response.containsKey('id')) {
-      //   // Registration successful
-      //   return true;
-      // } else if (response is String && response.contains("duplicate key")) {
-      //   errorEditing = "Email already exists. Please try a different one.";
-      // } else {
-      //   errorEditing = "Registration failed. Please try again.";
-      // }
 
       return false;
     } catch (e) {
