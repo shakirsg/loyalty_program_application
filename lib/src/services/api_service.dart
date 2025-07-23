@@ -192,8 +192,6 @@ class ApiService {
       final googleAuth = await googleUser.authentication;
       final accessToken = googleAuth.accessToken;
 
-      debugPrint('Access token: $accessToken');
-
       if (accessToken == null) throw Exception("Access token is null");
 
       final response = await http.post(
@@ -205,8 +203,6 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final token = data['key'] ?? data['access'];
-
-        debugPrint("Logged in! Token: $token");
 
         return token;
       } else {
