@@ -14,10 +14,7 @@ class ApiService {
   /// Get user profile
   Future<dynamic> fetchUserProfile(String token) async {
     final url = Uri.parse('$baseUrl/customers/profile');
-    final headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json',
-    };
+    final headers = {..._headers, 'Authorization': 'Token $token'};
 
     final response = await http.get(url, headers: headers);
 
@@ -119,10 +116,7 @@ class ApiService {
       '$baseUrl/customers/claim-points/?qr_code=${Uri.encodeComponent(qrCode)}',
     );
 
-    final headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json',
-    };
+    final headers = {..._headers, 'Authorization': 'Token $token'};
 
     final body = jsonEncode({
       'latitude': latitude,
@@ -145,10 +139,7 @@ class ApiService {
   /// Get total points
   Future<dynamic> getPoints(String token) async {
     final url = Uri.parse('$baseUrl/customers/points');
-    final headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json',
-    };
+    final headers = {..._headers, 'Authorization': 'Token $token'};
 
     final response = await http.get(url, headers: headers);
 
@@ -193,14 +184,6 @@ class ApiService {
   // Google SignIn
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
 
-  // Future<GoogleSignInAccount?> signInWithGoogle() async {
-  //   try {
-  //     return await _googleSignIn.signIn();
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
-
   Future<String?> signInWithGoogle() async {
     try {
       final googleUser = await _googleSignIn.signIn();
@@ -215,7 +198,7 @@ class ApiService {
 
       final response = await http.post(
         Uri.parse("$baseUrl/users/social/google/"),
-        headers: {"Content-Type": "application/json"},
+        headers: _headers,
         body: jsonEncode({"access_token": accessToken}),
       );
 
@@ -258,11 +241,7 @@ class ApiService {
       'password': password,
     });
 
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: body,
-    );
+    final response = await http.post(url, headers: _headers, body: body);
 
     // Check the response status
     if (response.statusCode == 200) {
@@ -286,10 +265,7 @@ class ApiService {
       '$baseUrl/products/rewards/?search=$search&category__name=$categoryName',
     );
 
-    final headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json',
-    };
+    final headers = {..._headers, 'Authorization': 'Token $token'};
 
     final response = await http.get(url, headers: headers);
 
@@ -306,10 +282,7 @@ class ApiService {
     required int rewardId,
   }) async {
     final url = Uri.parse('$baseUrl/customers/redeem-reward/');
-    final headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json',
-    };
+    final headers = {..._headers, 'Authorization': 'Token $token'};
 
     final body = jsonEncode({'reward_id': rewardId});
 
@@ -328,10 +301,7 @@ class ApiService {
   /// Get total points
   Future<dynamic> getRedeemedPoints(String token) async {
     final url = Uri.parse('$baseUrl/customers/reward-redemptions/');
-    final headers = {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json',
-    };
+    final headers = {..._headers, 'Authorization': 'Token $token'};
 
     final response = await http.get(url, headers: headers);
 
@@ -348,9 +318,9 @@ class ApiService {
       '$baseUrl/customers/authenticate-product/?qr_code=${Uri.encodeComponent(qrCode)}',
     );
 
-    final headers = {'Content-Type': 'application/json'};
+    final response = await http.get(url, headers: _headers);
 
-    final response = await http.get(url, headers: headers);
+    print(response.body);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
@@ -368,9 +338,7 @@ class ApiService {
       '$baseUrl/customers/otp/get_otp/?phone=${Uri.encodeComponent(phoneNumber)}',
     );
 
-    final headers = {'Content-Type': 'application/json'};
-
-    final response = await http.get(url, headers: headers);
+    final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
@@ -388,9 +356,7 @@ class ApiService {
       '$baseUrl/customers/otp/verify_otp/?otp=${Uri.encodeComponent(otp)}',
     );
 
-    final headers = {'Content-Type': 'application/json'};
-
-    final response = await http.get(url, headers: headers);
+    final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
@@ -404,9 +370,8 @@ class ApiService {
 
   Future<dynamic> getCategories() async {
     final url = Uri.parse('$baseUrl/products/reward-categories/');
-    final headers = {'Content-Type': 'application/json'};
 
-    final response = await http.get(url, headers: headers);
+    final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
