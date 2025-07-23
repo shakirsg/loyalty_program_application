@@ -22,7 +22,6 @@ class RedeemRewardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
     final userProvider = context.watch<UserProvider>();
     final totalPoints = context.watch<UserProvider>().totalPoints;
     String totalPoints_ = totalPoints.toStringAsFixed(3);
@@ -62,8 +61,8 @@ class RedeemRewardPage extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.4),
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withValues(alpha: 0.4),
+                    Colors.black.withValues(alpha: 0.7),
                   ],
                 ),
                 borderRadius: BorderRadius.only(
