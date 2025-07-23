@@ -10,9 +10,7 @@ Future<void> showLoadingDialogWhile({
   showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (_) => const Center(
-      child: CircularProgressIndicator(),
-    ),
+    builder: (_) => const Center(child: CircularProgressIndicator()),
   );
 
   try {
@@ -20,6 +18,6 @@ Future<void> showLoadingDialogWhile({
     await action();
   } finally {
     // Close the loading dialog
-    Navigator.of(context, rootNavigator: true).pop();
+    if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
   }
 }
