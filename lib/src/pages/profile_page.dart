@@ -24,9 +24,7 @@ class ProfilePage extends StatelessWidget {
     final idNumber = userProfile?['id_number'] ?? 'N/A';
     final created = userProfile?['created'] ?? 'N/A';
     final updated = userProfile?['updated'] ?? 'N/A';
-    final points = context.watch<UserProvider>().totalPoints.toStringAsFixed(
-      3,
-    );
+    final points = context.watch<UserProvider>().totalPoints.toStringAsFixed(3);
     final isLoadingUserProfile = context
         .watch<AuthProvider>()
         .isLoadingUserProfile;
@@ -35,16 +33,7 @@ class ProfilePage extends StatelessWidget {
         .isLoadingUserPoints;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: Navigator.of(context).canPop()
-            ? IconButton(
-                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null, // no back button on root page
-        title: Text('Profile'),
-      ),
-
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -365,19 +354,21 @@ class ProfilePage extends StatelessWidget {
 
                               // Optional: Clear auth/user state if using Provider
                               // Provider.of<AuthProvider>(context, listen: false).logout(); ← if you have it
-                              context.read<NavigationProvider>().setIndex_(0);
-                              final userProvider = Provider.of<UserProvider>(
-                                context,
-                                listen: false,
-                              );
-                              userProvider.reset();
+                              if (context.mounted) {
+                                context.read<NavigationProvider>().setIndex_(0);
+                                final userProvider = Provider.of<UserProvider>(
+                                  context,
+                                  listen: false,
+                                );
+                                userProvider.reset();
 
-                              // Then navigate or clean session
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                '/login',
-                                (route) => false,
-                              );
+                                // Then navigate or clean session
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  '/login',
+                                  (route) => false,
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFFF05024),

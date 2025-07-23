@@ -19,7 +19,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final _phoneController = TextEditingController();
   final _otpController = TextEditingController();
   bool _rememberMe = false;
-  late TabController _tabController;
   int _selectedLoginMethod = 0; // 0 = Email, 1 = Phone
 
   bool _obscureText = true;
@@ -33,7 +32,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
   }
 
   void _loginWithEmail() async {
@@ -73,7 +71,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         _otpController.text.trim(),
       );
       // Close the loading dialog
-      Navigator.of(context, rootNavigator: true).pop();
+      if (mounted) Navigator.of(context, rootNavigator: true).pop();
 
       _handleLoginResult(result);
     }
@@ -92,7 +90,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         },
       );
       final getOtpResponse = authProvider.getOtpResponse;
-      if (getOtpResponse?.containsKey("data") == true) {
+      if (getOtpResponse?.containsKey("data") == true && mounted) {
         setState(() {
           _isOtpSent = true;
         });
@@ -110,7 +108,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             behavior: SnackBarBehavior.floating,
           ),
         );
-      } else if (getOtpResponse!.containsKey("detail")) {
+      } else if (getOtpResponse!.containsKey("detail") && mounted) {
         setState(() {
           _isOtpSent = false;
         });

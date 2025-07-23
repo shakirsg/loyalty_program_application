@@ -48,15 +48,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       // backgroundColor: Colors.blue,
-      appBar: AppBar(
-        leading: Navigator.of(context).canPop()
-            ? IconButton(
-                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null,
-        title: const Text('Home'),
-      ),
+      appBar: AppBar(),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -65,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                 // Remove the image from here since it will be on top now
                 // Your other sections here...
                 SectionCard(
-                  title: 'Points Plus',
+                  title: 'M-Fundi',
                   titleColor: Colors.white,
                   description: 'Welcome back! $fullName',
                   descriptionColor: Colors.white,

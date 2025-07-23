@@ -80,7 +80,7 @@ class QRViewExampleState extends State<ScannerPage>
                 onPressed: () => Navigator.of(context).pop(),
               )
             : null,
-        title: const Text('QR Code Scanner'),
+        title: const Text('Scan QR Code to Redeem Points'),
         actions: [_buildHistoryButton(context)],
       ),
       body: Stack(
@@ -168,7 +168,7 @@ class QRViewExampleState extends State<ScannerPage>
 
     return Positioned.fill(
       child: Container(
-        color: Colors.black.withOpacity(0.85),
+        color: Colors.black.withValues(alpha: 0.85),
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -262,6 +262,7 @@ class QRViewExampleState extends State<ScannerPage>
                       listen: false,
                     ).claimPointsWithLocation('${result!.code}');
                     // Close the loading dialog
+                    // if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
                     final claimResult = Provider.of<UserProvider>(
                       context,
@@ -273,8 +274,19 @@ class QRViewExampleState extends State<ScannerPage>
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text('Error'),
-                            content: Text(claimResult['detail']),
+                            title: Row(
+                              children: [
+                                Icon(Icons.error, color: Colors.red),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Unable to claim points, ${claimResult['detail']}',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),
@@ -288,14 +300,23 @@ class QRViewExampleState extends State<ScannerPage>
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text('Success'),
-                            content: Text(
-                              'Points Gained: ${claimResult['points']}',
+                            title: Row(
+                              children: [
+                                Icon(Icons.celebration, color: Colors.green),
+                                SizedBox(width: 8),
+                                Text(
+                                  'You have earned ${claimResult['points']} points',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),
-                                child: Text('OK'),
+                                child: Text('OK', style: TextStyle(color: Colors.green)),
                               ),
                             ],
                           ),
@@ -322,12 +343,6 @@ class QRViewExampleState extends State<ScannerPage>
                       context,
                       listen: false,
                     ).getUserPoints();
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const HistoryPage(),
-                    //   ),
-                    // );
                   },
                   icon: const Icon(Icons.trending_up),
                   label: const Text('Get Points'),

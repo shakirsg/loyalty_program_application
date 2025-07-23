@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:metsec_loyalty_app/src/pages/redeem_reward_page.dart';
 import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
-import 'package:metsec_loyalty_app/src/widgets/topTabBar/waveBar.dart';
+import 'package:metsec_loyalty_app/src/widgets/topTabBar/wave_bar.dart';
 import 'package:provider/provider.dart';
 
 class RewardsPage extends StatefulWidget {
@@ -50,27 +50,16 @@ class RewardsPageState extends State<RewardsPage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
-    final points = context.watch<UserProvider>().totalPoints.toStringAsFixed(
-      3,
-    );
+    final points = context.watch<UserProvider>().totalPoints.toStringAsFixed(3);
     final categories = Provider.of<UserProvider>(context).categories;
 
     return DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
         appBar: AppBar(
-          leading: Navigator.of(context).canPop()
-              ? IconButton(
-                  icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              : null,
-          title: Text('Rewards'),
           bottom: TabBar(
             indicator: FullTabPillIndicator(
-              color: Colors.white.withOpacity(
-                0.3,
-              ), // semi-transparent white fill
+              color: Colors.white.withValues(alpha: 0.3),
               radius: 0,
             ),
             tabs: const [
@@ -184,10 +173,10 @@ class RewardsPageState extends State<RewardsPage> {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
-                              _categoryButton('All'), // Optional static button
-                              ...categories
-                                  .map((cat) => _categoryButton(cat['name']))
-                                  .toList(),
+                              _categoryButton('All'),
+                              ...categories.map(
+                                (cat) => _categoryButton(cat['name']),
+                              ),
                             ],
                           ),
                         ),
@@ -276,8 +265,6 @@ class RewardsPageState extends State<RewardsPage> {
                                               imageUrl: reward['image'] ?? '',
                                               title:
                                                   reward['description'] ?? '',
-                                              description:
-                                                  'Redeem for ${reward['uom']}',
                                               points: reward['points_required']
                                                   .toString(),
                                             ),
@@ -382,7 +369,7 @@ class RewardsPageState extends State<RewardsPage> {
 
     required String imageUrl,
     required String title,
-    required String description,
+    String? description,
     required String points,
   }) {
     return Card(
@@ -414,8 +401,10 @@ class RewardsPageState extends State<RewardsPage> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 8),
-                Text(description),
-                SizedBox(height: 8),
+                if (description != null) ...{
+                  Text(description),
+                  SizedBox(height: 8),
+                },
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -431,7 +420,7 @@ class RewardsPageState extends State<RewardsPage> {
                               itemId: itemId,
                               imageUrl: imageUrl,
                               title: title,
-                              description: description,
+                              description: description ?? '',
                               points: points,
                             ),
                           ),
