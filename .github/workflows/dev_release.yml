@@ -40,9 +40,9 @@ jobs:
           echo "Updated pubspec.yaml version:"
           grep version pubspec.yaml
 
-      # - name: Decode keystore
-      #   run: |
-      #     echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/key.jks
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/key.jks
 
       - name: Create key.properties
         run: |
