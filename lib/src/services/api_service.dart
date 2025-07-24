@@ -316,8 +316,6 @@ class ApiService {
 
     final response = await http.get(url, headers: _headers);
 
-    print(response.body);
-
     if (response.statusCode == 200 || response.statusCode == 201) {
       return jsonDecode(response.body);
     }
