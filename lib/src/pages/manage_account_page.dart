@@ -80,7 +80,7 @@ class _ManageAccountPageState extends State<ManageAccountPage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final userProfile = authProvider.userProfile ?? {};
+    // final userProfile = authProvider.userProfile ?? {};
     final fullName = authProvider.fullName ?? '';
     return Scaffold(
       appBar: AppBar(

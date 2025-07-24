@@ -1,5 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
 import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 

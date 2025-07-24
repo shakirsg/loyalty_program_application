@@ -22,8 +22,8 @@ class ProfilePage extends StatelessWidget {
     final county = userProfile?['county'] ?? 'N/A';
     final country = userProfile?['country'] ?? 'N/A';
     final idNumber = userProfile?['id_number'] ?? 'N/A';
-    final created = userProfile?['created'] ?? 'N/A';
-    final updated = userProfile?['updated'] ?? 'N/A';
+    // final created = userProfile?['created'] ?? 'N/A';
+    // final updated = userProfile?['updated'] ?? 'N/A';
     final points = context.watch<UserProvider>().totalPoints.toStringAsFixed(3);
     final isLoadingUserProfile = context
         .watch<AuthProvider>()
@@ -400,21 +400,21 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildDateRow(String label, String? date) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              date ?? 'N/A',
-              style: const TextStyle(color: Colors.grey),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+//   Widget _buildDateRow(String label, String? date) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(vertical: 4),
+//       child: Row(
+//         children: [
+//           Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+//           const SizedBox(width: 6),
+//           Expanded(
+//             child: Text(
+//               date ?? 'N/A',
+//               style: const TextStyle(color: Colors.grey),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
 }
