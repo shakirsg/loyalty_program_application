@@ -1,6 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:metsec_loyalty_app/src/pages/history_page.dart';
 import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,7 @@ class QRViewExampleState extends State<ScannerPage>
 
   @override
   void dispose() {
+    // ignore: deprecated_member_use
     controller?.dispose();
     _animationController.dispose();
     super.dispose();
@@ -164,7 +166,7 @@ class QRViewExampleState extends State<ScannerPage>
   }
 
   Widget _buildResultOverlay() {
-    final isClaiming = context.watch<UserProvider>().isClaiming;
+    // final isClaiming = context.watch<UserProvider>().isClaiming;
 
     return Positioned.fill(
       child: Container(
@@ -197,7 +199,7 @@ class QRViewExampleState extends State<ScannerPage>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Barcode Type: ${describeEnum(result!.format)}\nData: ${result!.code}',
+                    'Barcode Type: ${result!.format.name}\nData: ${result!.code}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.white70),
                   ),
@@ -316,7 +318,10 @@ class QRViewExampleState extends State<ScannerPage>
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),
-                                child: Text('OK', style: TextStyle(color: Colors.green)),
+                                child: Text(
+                                  'OK',
+                                  style: TextStyle(color: Colors.green),
+                                ),
                               ),
                             ],
                           ),

@@ -1,10 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:metsec_loyalty_app/src/pages/history_page.dart';
 import 'package:metsec_loyalty_app/src/pages/product_info_page.dart';
 import 'package:metsec_loyalty_app/src/providers/guest_provider.dart';
-import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:metsec_loyalty_app/src/components/corner_painter.dart';
@@ -58,18 +55,18 @@ class QRViewExampleState extends State<AuthenticatePage>
     }
   }
 
-  Widget _buildHistoryButton(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.work_history, color: Colors.white),
-      tooltip: 'History',
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => HistoryPage()),
-        );
-      },
-    );
-  }
+  // Widget _buildHistoryButton(BuildContext context) {
+  //   return IconButton(
+  //     icon: const Icon(Icons.work_history, color: Colors.white),
+  //     tooltip: 'History',
+  //     onPressed: () {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (_) => HistoryPage()),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +162,7 @@ class QRViewExampleState extends State<AuthenticatePage>
   }
 
   Widget _buildResultOverlay() {
-    final isClaiming = context.watch<UserProvider>().isClaiming;
+    // final isClaiming = context.watch<UserProvider>().isClaiming;
 
     return Positioned.fill(
       child: Container(
@@ -198,7 +195,7 @@ class QRViewExampleState extends State<AuthenticatePage>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Barcode Type: ${describeEnum(result!.format)}\nData: ${result!.code}',
+                    'Barcode Type: ${result!.format.name}\nData: ${result!.code}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.white70),
                   ),
