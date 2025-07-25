@@ -63,14 +63,14 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
-      # - name: Rename APK with version
-        # run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-${{ env.VERSION_NAME }}.apk
+      - name: Rename APK with version
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-${{ env.VERSION_NAME }}.apk
         # run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-${{ env.VERSION_NAME }}.apk
 
-      # - name: Upload to Firebase App Distribution
-      #   run: |
-      #     dart pub global activate firebase_tools
-      #     firebase appdistribution:distribute build/app/outputs/flutter-apk/app-${{ env.VERSION_NAME }}.apk \
-      #       --app ${{ secrets.FIREBASE_APP_ID }} \
-      #       --token ${{ secrets.FIREBASE_TOKEN }} \
-      #       --groups testers
+      - name: Upload to Firebase App Distribution
+        run: |
+          dart pub global activate firebase_tools
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-${{ env.VERSION_NAME }}.apk \
+            --app ${{ secrets.FIREBASE_APP_ID }} \
+            --token ${{ secrets.FIREBASE_TOKEN }} \
+            --groups testers
