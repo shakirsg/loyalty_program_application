@@ -24,21 +24,26 @@ jobs:
           flutter-version: '3.32.6'
           channel: 'stable'
 
-      - name: Extract version from Git tag (fallback to 0.1.0)
-        id: versioning
+      - name: Decode google-services.json
         run: |
-          TAG_NAME=$(git describe --tags --abbrev=0 || echo "v0.1.0")
-          VERSION_NAME=${TAG_NAME#v}
-          VERSION_CODE=${{ github.run_number }}
-          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
-          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
-          echo "Using version: $VERSION_NAME+$VERSION_CODE"
+          mkdir -p android/app
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -d > android/app/google-services.json
 
-      - name: Inject version into pubspec.yaml
-        run: |
-          sed -i "s/^version: .*/version: $VERSION_NAME+$VERSION_CODE/" pubspec.yaml
-          echo "Updated pubspec.yaml version:"
-          grep version pubspec.yaml
+      # - name: Extract version from Git tag (fallback to 0.1.0)
+      #   id: versioning
+      #   run: |
+      #     TAG_NAME=$(git describe --tags --abbrev=0 || echo "v0.1.0")
+      #     VERSION_NAME=${TAG_NAME#v}
+      #     VERSION_CODE=${{ github.run_number }}
+      #     echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+      #     echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+      #     echo "Using version: $VERSION_NAME+$VERSION_CODE"
+
+      # - name: Inject version into pubspec.yaml
+      #   run: |
+      #     sed -i "s/^version: .*/version: $VERSION_NAME+$VERSION_CODE/" pubspec.yaml
+      #     echo "Updated pubspec.yaml version:"
+      #     grep version pubspec.yaml
 
       - name: Decode keystore
         run: |
@@ -64,13 +69,13 @@ jobs:
         run: flutter build apk --release
 
       - name: Rename APK with version
-        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-${{ env.VERSION_NAME }}.apk
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/m-fundi.apk
         # run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-${{ env.VERSION_NAME }}.apk
 
       - name: Upload to Firebase App Distribution
         run: |
           dart pub global activate firebase_tools
-          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-${{ env.VERSION_NAME }}.apk \
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/m-fundi.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --token ${{ secrets.FIREBASE_TOKEN }} \
             --groups testers
