@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "658375643938",
+    "firebase_url": "https://eybycom-default-rtdb.firebaseio.com",
+    "project_id": "eybycom",
+    "storage_bucket": "eybycom.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658375643938:android:690a9eab3041fe78fd8b7b",
+        "android_client_info": {
+          "package_name": "com.metsec.metsec_loyalty_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "658375643938-rb01dm7euiao8tc11th0a85e5mtcae85.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.metsec.metsec_loyalty_app",
+            "certificate_hash": "bf12f34bda366441f4769a68e12bf7a6168c38fd"
+          }
+        },
+        {
+          "client_id": "658375643938-u0603g4oj9nkmf40n6ejr31r1s5b3cor.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABlN0TZrZCmoyP6AMuy7NSREYjBwjsML4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "658375643938-11enhks2n0krfhjjt8hn3fsiv0tnf322.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
