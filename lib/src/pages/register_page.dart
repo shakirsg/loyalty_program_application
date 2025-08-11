@@ -40,6 +40,23 @@ class _RegisterPageState extends State<RegisterPage> {
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
+    if (!authProvider.termsAccepted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.error, color: Colors.white),
+              SizedBox(width: 12),
+              Text('You must accept terms and conditions'),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
     final success = await authProvider.register(
       firstName: _firstNameController.text.trim(),
       lastName: _lastNameController.text.trim(),
@@ -90,6 +107,21 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _goToLogin() {
     Navigator.pushReplacementNamed(context, '/login');
+  }
+
+  void _goToTnC() {
+    Navigator.pushReplacementNamed(context, '/tnc');
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _confirmController.dispose();
+    super.dispose();
   }
 
   @override
@@ -280,7 +312,13 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 24),
 
               ElevatedButton(
-                onPressed: _register,
+                onPressed: _goToTnC,
+                child: Text('Terms & Conditions'),
+              ),
+              const SizedBox(height: 24),
+
+              ElevatedButton(
+                onPressed: () => _register(),
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   child: Text('Register', style: TextStyle(fontSize: 18)),

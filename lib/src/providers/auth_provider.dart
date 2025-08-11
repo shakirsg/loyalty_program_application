@@ -20,6 +20,9 @@ class AuthProvider with ChangeNotifier {
   String? fullName = "";
   String? email;
 
+  bool termsAccepted = false;
+
+
   Future<bool> register({
     required String firstName,
     required String lastName,

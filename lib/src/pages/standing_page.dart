@@ -42,7 +42,7 @@ class _StandingPage extends State<StandingPage> {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets/images/energya_logo.png', // Replace with your logo path
+                    'assets/eyby.png',
                     height: 80,
                   ),
                   const SizedBox(height: 8),

@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Loyalty App',
+      title: 'M-Fundi',
       theme: lightTheme,
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
