@@ -20,7 +20,12 @@ class AuthProvider with ChangeNotifier {
   String? fullName = "";
   String? email;
 
-  bool termsAccepted = false;
+  bool _termsAccepted = false;
+  bool get termsAccepted => _termsAccepted;
+  set termsAccepted(bool value) {
+    _termsAccepted = value;
+    notifyListeners();
+  }
 
 
   Future<bool> register({
