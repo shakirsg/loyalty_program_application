@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
+import 'package:metsec_loyalty_app/src/themes/light_color.dart';
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -47,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               Icon(Icons.error, color: Colors.white),
               SizedBox(width: 12),
-              Text('You must accept terms and conditions'),
+              Text('To complete registration you need to read and accept ourterms and conditions'),
             ],
           ),
           backgroundColor: Colors.red,
@@ -149,6 +151,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.person),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Enter first name' : null,
               ),
@@ -160,6 +163,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.person_outline),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Enter last name' : null,
               ),
@@ -171,6 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.public),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) => value == null || value.isEmpty
                     ? 'Enter your country'
                     : null,
@@ -183,6 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.location_city),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Enter your city' : null,
               ),
@@ -194,6 +200,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.map),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Enter your county' : null,
               ),
@@ -206,12 +213,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.work),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) => value == null || value.isEmpty
                     ? 'Enter your profession'
                     : null,
               ),
               const SizedBox(height: 16),
-              // ID Number / Passport Number
               TextFormField(
                 controller: _idNumberController,
                 keyboardType: TextInputType.text,
@@ -220,15 +227,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(
                     Icons.badge,
-                  ), // or Icons.credit_card, choose what fits
+                  ),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) => value == null || value.isEmpty
                     ? 'Enter ID or Passport number'
                     : null,
               ),
-
               const SizedBox(height: 16),
-
               TextFormField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
@@ -237,6 +243,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.phone),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) => value == null || value.isEmpty
                     ? 'Enter phone number'
                     : null,
@@ -249,6 +256,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.email),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) {
                   if (value == null || value.isEmpty) return 'Enter your email';
                   if (!value.contains('@')) return 'Invalid email';
@@ -273,6 +281,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: _togglePasswordVisibility,
                   ),
                 ),
+                textInputAction: TextInputAction.next,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a password';
@@ -284,7 +293,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               ),
               const SizedBox(height: 16),
-              // Confirm Password Field
               TextFormField(
                 controller: _confirmController,
                 obscureText: _obscureConfirm,
@@ -299,6 +307,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onPressed: _toggleConfirmVisibility,
                   ),
                 ),
+                textInputAction: TextInputAction.done,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please confirm your password';
@@ -310,11 +319,36 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               ),
               const SizedBox(height: 24),
-
-              ElevatedButton(
-                onPressed: _goToTnC,
-                child: Text('Terms & Conditions'),
+              Consumer<AuthProvider>(
+                builder: (context, auth, _) {
+                  return RichText(
+                    text: TextSpan(
+                      style: const TextStyle(color: Colors.black),
+                      children: [
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Checkbox(
+                            value: auth.termsAccepted,
+                            onChanged: (value) {
+                                auth.termsAccepted = value ?? false;
+                            },
+                          ),
+                        ),
+                        const TextSpan(text: "I have read and agreed to the "),
+                        TextSpan(
+                          text: "terms and conditions",
+                          style: const TextStyle(
+                            color: LightColor.orange,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()..onTap = _goToTnC,
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
+
               const SizedBox(height: 24),
 
               ElevatedButton(
