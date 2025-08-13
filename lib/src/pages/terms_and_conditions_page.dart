@@ -29,7 +29,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
     Navigator.popAndPushNamed(context, '/register');
   }
 
-  void _handleDeclineTerms() => Navigator.pop(context);
+  void _handleDeclineTerms() => Navigator.popAndPushNamed(context, '/login');
 
   Future<TermsAndConditions> _loadTerms() async {
     final String jsonString = await rootBundle.loadString(
@@ -41,10 +41,6 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-
-    // print(authProvider.termsAccepted);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Terms and Conditions'),
