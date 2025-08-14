@@ -1,0 +1,36 @@
+name: Build and Publish
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-playstore:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  flutter-version: '3.22.2'
+
+            - name: Install dependencies
+              run: flutter pub get
+
+            - name: Auto versioning
+              run: .github/scripts/set_version.sh prod
+
+            - name: Build AAB for Play Store
+              run: flutter build appbundle --release
+
+            - name: Upload to Play Store Internal Track
+              uses: r0adkll/upload-google-play@v1
+              with:
+                  serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+                  packageName: com.metsec.metsec_loyalty_app
+                  releaseFile: build/app/outputs/bundle/release/app-release.aab
+                  track: internal
+                  status: completed
