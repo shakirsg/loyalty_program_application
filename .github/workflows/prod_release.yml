@@ -41,11 +41,20 @@ jobs:
             - name: Build AAB for Play Store
               run: flutter build appbundle --release
 
+            - name: Verify AAB exists
+              run: |
+                FILE=build/app/outputs/bundle/release/app-release.aab
+                if [ ! -f "$FILE" ]; then
+                  echo "ERROR: AAB file not found at $FILE"
+                  exit 1
+                fi
+                echo "Found AAB file: $FILE"
+
             - name: Upload to Play Store Internal Track
               uses: r0adkll/upload-google-play@v1
               with:
                   serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
                   packageName: com.metsec.metsec_loyalty_app
-                  releaseFile: build/app/outputs/bundle/release/app-release.aab
+                  releaseFiles: build/app/outputs/bundle/release/app-release.aab
                   track: internal
                   status: completed
