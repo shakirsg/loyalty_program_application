@@ -8,8 +8,7 @@ on:
       - 'v*'
 
 jobs:
-  build:
-    name: Build Android APK
+  firebase-distribute:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,21 +28,8 @@ jobs:
       #     mkdir -p android/app
       #     echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -d > android/app/google-services.json
 
-      # - name: Extract version from Git tag (fallback to 0.1.0)
-      #   id: versioning
-      #   run: |
-      #     TAG_NAME=$(git describe --tags --abbrev=0 || echo "v0.1.0")
-      #     VERSION_NAME=${TAG_NAME#v}
-      #     VERSION_CODE=${{ github.run_number }}
-      #     echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
-      #     echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
-      #     echo "Using version: $VERSION_NAME+$VERSION_CODE"
-
-      # - name: Inject version into pubspec.yaml
-      #   run: |
-      #     sed -i "s/^version: .*/version: $VERSION_NAME+$VERSION_CODE/" pubspec.yaml
-      #     echo "Updated pubspec.yaml version:"
-      #     grep version pubspec.yaml
+      - name: Auto versioning
+        run: .github/scripts/set_version.sh dev
 
       - name: Decode keystore
         run: |
