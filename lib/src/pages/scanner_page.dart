@@ -1,23 +1,21 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:loyalty_program_application/src/pages/history_page.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
-import 'package:loyalty_program_application/src/services/location_service.dart';
+import 'package:metsec_loyalty_app/src/pages/history_page.dart';
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import 'package:loyalty_program_application/src/components/CornerPainter.dart';
-import 'package:loyalty_program_application/src/pages/history_page.dart';
-import 'package:loyalty_program_application/src/pages/earn_point_page.dart';
+import 'package:metsec_loyalty_app/src/components/corner_painter.dart';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({super.key});
 
   @override
-  _QRViewExampleState createState() => _QRViewExampleState();
+  QRViewExampleState createState() => QRViewExampleState();
 }
 
-class _QRViewExampleState extends State<ScannerPage>
+class QRViewExampleState extends State<ScannerPage>
     with SingleTickerProviderStateMixin {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
@@ -45,6 +43,7 @@ class _QRViewExampleState extends State<ScannerPage>
 
   @override
   void dispose() {
+    // ignore: deprecated_member_use
     controller?.dispose();
     _animationController.dispose();
     super.dispose();
@@ -53,7 +52,6 @@ class _QRViewExampleState extends State<ScannerPage>
   @override
   void reassemble() {
     super.reassemble();
-    print("resum -----------");
     if (Platform.isAndroid) {
       controller?.pauseCamera();
     } else if (Platform.isIOS) {
@@ -66,7 +64,6 @@ class _QRViewExampleState extends State<ScannerPage>
       icon: const Icon(Icons.work_history, color: Colors.white),
       tooltip: 'History',
       onPressed: () {
-        // TODO: Navigate to history details page
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => HistoryPage()),
@@ -85,7 +82,7 @@ class _QRViewExampleState extends State<ScannerPage>
                 onPressed: () => Navigator.of(context).pop(),
               )
             : null,
-        title: const Text('QR Code Scanner'),
+        title: const Text('Scan QR Code to Redeem Points'),
         actions: [_buildHistoryButton(context)],
       ),
       body: Stack(
@@ -169,11 +166,11 @@ class _QRViewExampleState extends State<ScannerPage>
   }
 
   Widget _buildResultOverlay() {
-    final isClaiming = context.watch<UserProvider>().isClaiming;
+    // final isClaiming = context.watch<UserProvider>().isClaiming;
 
     return Positioned.fill(
       child: Container(
-        color: Colors.black.withOpacity(0.85),
+        color: Colors.black.withValues(alpha: 0.85),
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -202,7 +199,7 @@ class _QRViewExampleState extends State<ScannerPage>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Barcode Type: ${describeEnum(result!.format)}\nData: ${result!.code}',
+                    'Barcode Type: ${result!.format.name}\nData: ${result!.code}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.white70),
                   ),
@@ -267,6 +264,7 @@ class _QRViewExampleState extends State<ScannerPage>
                       listen: false,
                     ).claimPointsWithLocation('${result!.code}');
                     // Close the loading dialog
+                    // if (!mounted) return;
                     Navigator.of(context, rootNavigator: true).pop();
                     final claimResult = Provider.of<UserProvider>(
                       context,
@@ -278,8 +276,19 @@ class _QRViewExampleState extends State<ScannerPage>
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text('Error'),
-                            content: Text(claimResult['detail']),
+                            title: Row(
+                              children: [
+                                Icon(Icons.error, color: Colors.red),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Unable to claim points, ${claimResult['detail']}',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),
@@ -293,14 +302,26 @@ class _QRViewExampleState extends State<ScannerPage>
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text('Success'),
-                            content: Text(
-                              'Points Gained: ${claimResult['points']}',
+                            title: Row(
+                              children: [
+                                Icon(Icons.celebration, color: Colors.green),
+                                SizedBox(width: 8),
+                                Text(
+                                  'You have earned ${claimResult['points']} points',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(),
-                                child: Text('OK'),
+                                child: Text(
+                                  'OK',
+                                  style: TextStyle(color: Colors.green),
+                                ),
                               ),
                             ],
                           ),
@@ -327,12 +348,6 @@ class _QRViewExampleState extends State<ScannerPage>
                       context,
                       listen: false,
                     ).getUserPoints();
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const HistoryPage(),
-                    //   ),
-                    // );
                   },
                   icon: const Icon(Icons.trending_up),
                   label: const Text('Get Points'),

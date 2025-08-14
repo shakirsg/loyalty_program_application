@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:loyalty_program_application/src/services/local_storage_service.dart';
-import '../services/api_service.dart';
+import 'package:metsec_loyalty_app/src/services/api_service.dart';
+import 'package:metsec_loyalty_app/src/services/local_storage_service.dart';
 
 class AuthProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
@@ -9,6 +8,7 @@ class AuthProvider with ChangeNotifier {
   bool isRemember = false;
 
   bool isLoading = false;
+  bool isSigningWithGoogle = false;
   String? error;
   String? token;
 
@@ -19,6 +19,14 @@ class AuthProvider with ChangeNotifier {
   Map<String, dynamic>? userProfile;
   String? fullName = "";
   String? email;
+
+  bool _termsAccepted = false;
+  bool get termsAccepted => _termsAccepted;
+  set termsAccepted(bool value) {
+    _termsAccepted = value;
+    notifyListeners();
+  }
+
 
   Future<bool> register({
     required String firstName,
@@ -31,7 +39,6 @@ class AuthProvider with ChangeNotifier {
     required String country,
     required String profession,
     required String idNumber,
-
   }) async {
     isLoading = true;
     error = null;
@@ -48,7 +55,7 @@ class AuthProvider with ChangeNotifier {
         county: county,
         country: country,
         profession: profession,
-        idNumber:idNumber,
+        idNumber: idNumber,
       );
 
       // Check if the response is an error or success
@@ -73,7 +80,7 @@ class AuthProvider with ChangeNotifier {
 
   /// Login method
   Future<dynamic> login({
-    required String username,
+    required String email,
     required String password,
   }) async {
     isLoading = true;
@@ -81,11 +88,10 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await _apiService.login(username, password);
+      final response = await _apiService.login(email, password);
 
       if (response is Map<String, dynamic> && response.containsKey('key')) {
         token = response['key'];
-        print("Login Token: ${token}");
         await LocalStorageService.saveToken(token!);
 
         if (isRemember) {
@@ -112,14 +118,12 @@ class AuthProvider with ChangeNotifier {
     error = null;
     notifyListeners();
     token = await LocalStorageService.getToken();
-    print("getUserProfile...");
     try {
       final profile = await _apiService.fetchUserProfile(token!);
       userProfile = profile;
 
       // Full name
       fullName = (userProfile?['full_name'] ?? "");
-      print(fullName);
       // Email
       email = (userProfile?['email'] ?? "");
     } catch (e) {
@@ -130,75 +134,32 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // Google Sign In
-  GoogleSignInAccount? _user;
-
-  GoogleSignInAccount? get user => _user;
-
-  Future<void> signIn() async {
-    _user = await _apiService.signInWithGoogle();
-    if (_user != null) {
-      print('Name: ${_user!.displayName}');
-      print('Email: ${_user!.email}');
-      print('ID: ${_user!.id}');
-      print('Photo URL: ${_user!.photoUrl}');
-    } else {
-      print('Google Sign-In failed or was cancelled.');
-    }
-    notifyListeners();
-  }
-
-  Future<void> signOut() async {
-    await _apiService.signOut();
-    _user = null;
-    notifyListeners();
-  }
-  // loginWithGoogle
-
-  Future<void> loginWithGoogle() async {
-    isLoading = true;
+  Future<String?> loginWithGoogle() async {
+    isSigningWithGoogle = true;
     error = null;
     notifyListeners();
 
     try {
-      final account = await _apiService.signInWithGoogle();
-      if (account == null) {
-        error = 'Google sign-in was cancelled.';
-        return;
+      final res = await _apiService.signInWithGoogle();
+      if (res == null) {
+        error = 'Failed to sign in with Google';
+        return null;
       }
+      await LocalStorageService.saveToken(res);
+      await LocalStorageService.saveRemember(true);
+      token = res;
+      debugPrint('Provider Token: $token');
 
-      _user = account;
-
-      final response = await _apiService.loginWithGoogle(
-        account.email,
-        account.displayName?.split(' ').first ?? '',
-        account.displayName?.split(' ').skip(1).join(' ') ?? '',
-        account.id,
-        account.photoUrl ?? '',
-        'google',
-        account.id,
-      );
-
-      if (response != null && response.containsKey('key')) {
-        token = response['key'];
-        await LocalStorageService.saveToken(token!);
-
-        if (isRemember) {
-          await LocalStorageService.saveRemember(true);
-        } else {
-          await LocalStorageService.saveRemember(false);
-        }
-      } else {
-        error = "Google login failed: Unexpected response";
-      }
+      return res;
     } catch (e) {
       error = "Google login failed: ${e.toString()}";
     } finally {
       await _apiService.signOut();
 
-      isLoading = false;
+      isSigningWithGoogle = false;
       notifyListeners();
     }
+    return null;
   }
 
   Map<String, dynamic>? getOtpResponse;
@@ -239,7 +200,6 @@ class AuthProvider with ChangeNotifier {
           await LocalStorageService.saveRemember(false);
         }
 
-        print(token);
         return token;
       } else {
         return result;

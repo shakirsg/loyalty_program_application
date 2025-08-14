@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/authenticate_page.dart';
+import 'package:metsec_loyalty_app/src/pages/authenticate_page.dart';
 
 class StandingPage extends StatefulWidget {
   const StandingPage({super.key});
@@ -12,27 +12,19 @@ class _StandingPage extends State<StandingPage> {
   void _onRegister() {
     Navigator.pushReplacementNamed(context, '/login');
 
-    print('Register button tapped');
   }
 
   void _onCallSupport() {
-    // TODO: Launch phone dialer
-    print('Call support tapped');
   }
 
   void _onScanQRCode() {
-    // TODO: Open QR code scanner
-    // TODO: Navigate to registration screen
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => AuthenticatePage()),
     );
-    print('QR Scan tapped');
   }
 
   void _onShowInfo() {
-    // TODO: Show app info
-    print('Info tapped');
   }
 
   @override
@@ -50,7 +42,7 @@ class _StandingPage extends State<StandingPage> {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets/images/energya_logo.png', // Replace with your logo path
+                    'assets/eyby.png',
                     height: 80,
                   ),
                   const SizedBox(height: 8),

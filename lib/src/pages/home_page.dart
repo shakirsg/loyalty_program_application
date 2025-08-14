@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/components/QuickActionCard.dart';
-import 'package:loyalty_program_application/src/components/PointsCard.dart';
-import 'package:loyalty_program_application/src/components/RecentActivityCard.dart';
-import 'package:loyalty_program_application/src/components/StatusCard.dart';
-import 'package:loyalty_program_application/src/providers/auth_provider.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'package:metsec_loyalty_app/src/components/quick_action_card.dart';
+import 'package:metsec_loyalty_app/src/components/points_card.dart';
+import 'package:metsec_loyalty_app/src/components/status_card.dart';
+import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,16 +14,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // bool _isLoading = true;
-  bool _showImage = false;
 
   @override
   void initState() {
     super.initState();
-    // Future.delayed(const Duration(seconds: 3), () {
-    //   _showImage = false;
-    //   setState(() {});
-    // });
   }
 
   @override
@@ -37,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     final totalEarnedPoints = userProvider.pointHistory.fold<double>(
       0.0,
       (sum, item) => sum + (item['points_available'] ?? 0.0),
-    ).toInt();;
+    ).toInt();
 
     final now = DateTime.now();
     final currentMonth = now.month;
@@ -51,19 +44,11 @@ class _HomePageState extends State<HomePage> {
     }).fold<double>(
       0.0,
       (sum, item) => sum + (item['points_available'] ?? 0.0),
-    ).toInt();;
+    ).toInt();
 
     return Scaffold(
       // backgroundColor: Colors.blue,
-      appBar: AppBar(
-        leading: Navigator.of(context).canPop()
-            ? IconButton(
-                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null,
-        title: const Text('Home'),
-      ),
+      appBar: AppBar(),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -72,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                 // Remove the image from here since it will be on top now
                 // Your other sections here...
                 SectionCard(
-                  title: 'Points Plus',
+                  title: 'M-Fundi',
                   titleColor: Colors.white,
                   description: 'Welcome back! $fullName',
                   descriptionColor: Colors.white,

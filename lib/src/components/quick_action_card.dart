@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/main_page.dart';
-import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/navigation_provider.dart';
 import 'package:provider/provider.dart';
 
 class QuickActionCard extends StatelessWidget {
@@ -9,6 +8,7 @@ class QuickActionCard extends StatelessWidget {
   final int targetIndex; // The index of the bottom nav to switch to
 
   const QuickActionCard({
+    super.key,
     required this.icon,
     required this.title,
     required this.targetIndex, // Accept the indesx to switch to
@@ -26,7 +26,6 @@ class QuickActionCard extends StatelessWidget {
 
         navProvider.setIndex_(targetIndex);
         Navigator.pushReplacementNamed(context, '/main');
-
       },
       child: Card(
         elevation: 4,

@@ -14,7 +14,7 @@ class HelpSupportPage extends StatelessWidget {
                 icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
                 onPressed: () => Navigator.of(context).pop(),
               )
-            : null, // 
+            : null,
       ),
 
       body: SingleChildScrollView(

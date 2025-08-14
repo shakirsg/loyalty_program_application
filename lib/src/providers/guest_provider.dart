@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/services/api_service.dart';
+import 'package:metsec_loyalty_app/src/services/api_service.dart';
 
 class GuestProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();

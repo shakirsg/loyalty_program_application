@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/redeem_reward_page.dart';
-import 'package:loyalty_program_application/src/providers/auth_provider.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
-import 'package:loyalty_program_application/src/widgets/topTabBar/waveBar.dart';
+import 'package:metsec_loyalty_app/src/pages/redeem_reward_page.dart';
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
+import 'package:metsec_loyalty_app/src/widgets/topTabBar/wave_bar.dart';
 import 'package:provider/provider.dart';
 
 class RewardsPage extends StatefulWidget {
   const RewardsPage({super.key});
 
   @override
-  _RewardsPageState createState() => _RewardsPageState();
+  RewardsPageState createState() => RewardsPageState();
 }
 
-class _RewardsPageState extends State<RewardsPage> {
+class RewardsPageState extends State<RewardsPage> {
   String _selectedCategory = 'All'; // Default category
 
   late TextEditingController _searchController;
@@ -51,27 +50,16 @@ class _RewardsPageState extends State<RewardsPage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
-    final points = context.watch<UserProvider>().total_points.toStringAsFixed(
-      3,
-    );
+    final points = context.watch<UserProvider>().totalPoints.toStringAsFixed(3);
     final categories = Provider.of<UserProvider>(context).categories;
 
     return DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
         appBar: AppBar(
-          leading: Navigator.of(context).canPop()
-              ? IconButton(
-                  icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              : null,
-          title: Text('Rewards'),
           bottom: TabBar(
             indicator: FullTabPillIndicator(
-              color: Colors.white.withOpacity(
-                0.3,
-              ), // semi-transparent white fill
+              color: Colors.white.withValues(alpha: 0.3),
               radius: 0,
             ),
             tabs: const [
@@ -185,10 +173,10 @@ class _RewardsPageState extends State<RewardsPage> {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: [
-                              _categoryButton('All'), // Optional static button
-                              ...categories
-                                  .map((cat) => _categoryButton(cat['name']))
-                                  .toList(),
+                              _categoryButton('All'),
+                              ...categories.map(
+                                (cat) => _categoryButton(cat['name']),
+                              ),
                             ],
                           ),
                         ),
@@ -277,8 +265,6 @@ class _RewardsPageState extends State<RewardsPage> {
                                               imageUrl: reward['image'] ?? '',
                                               title:
                                                   reward['description'] ?? '',
-                                              description:
-                                                  'Redeem for ${reward['uom']}',
                                               points: reward['points_required']
                                                   .toString(),
                                             ),
@@ -383,7 +369,7 @@ class _RewardsPageState extends State<RewardsPage> {
 
     required String imageUrl,
     required String title,
-    required String description,
+    String? description,
     required String points,
   }) {
     return Card(
@@ -415,8 +401,10 @@ class _RewardsPageState extends State<RewardsPage> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 8),
-                Text(description),
-                SizedBox(height: 8),
+                if (description != null) ...{
+                  Text(description),
+                  SizedBox(height: 8),
+                },
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -432,7 +420,7 @@ class _RewardsPageState extends State<RewardsPage> {
                               itemId: itemId,
                               imageUrl: imageUrl,
                               title: title,
-                              description: description,
+                              description: description ?? '',
                               points: points,
                             ),
                           ),
@@ -458,32 +446,32 @@ class _RewardsPageState extends State<RewardsPage> {
     final userProvider = context.watch<UserProvider>();
     final history = userProvider.redeemedHistory;
 
-    Color _getStatusColor({required bool redeemed, required bool expired}) {
+    Color getStatusColor({required bool redeemed, required bool expired}) {
       if (redeemed) return Colors.green;
       if (expired) return Colors.grey;
       return Colors.blueGrey;
     }
 
-    IconData _getStatusIcon({required bool redeemed, required bool expired}) {
+    IconData getStatusIcon({required bool redeemed, required bool expired}) {
       if (redeemed) return Icons.check_circle_outline;
       if (expired) return Icons.cancel_outlined;
       return Icons.info_outline;
     }
 
-    String _getStatusText({required bool redeemed, required bool expired}) {
+    String getStatusText({required bool redeemed, required bool expired}) {
       if (redeemed) return 'Redeemed';
       if (expired) return 'Expired';
       return 'Pending';
     }
 
-    Future<void> _refreshHistory() async {
+    Future<void> refreshHistory() async {
       // Call your provider method to refresh the history data.
       await userProvider
           .getRedeemedPoints(); // Adjust this to your actual refresh method
     }
 
     return RefreshIndicator(
-      onRefresh: _refreshHistory,
+      onRefresh: refreshHistory,
       child: history.isEmpty
           ? const Center(
               child: Column(
@@ -511,19 +499,19 @@ class _RewardsPageState extends State<RewardsPage> {
                 final product = item['reward']['description'] ?? 'Unknown';
                 final date = item['created']?.toString().split('T')[0] ?? '';
                 final points = item['reward']['points_required'] ?? 0;
-                final redeemed = true ?? false;
+                final redeemed = true;
                 final expired = item['expired'] ?? false;
                 final formattedPoints = points.toStringAsFixed(3);
 
-                final statusColor = _getStatusColor(
+                final statusColor = getStatusColor(
                   redeemed: redeemed,
                   expired: expired,
                 );
-                final statusIcon = _getStatusIcon(
+                final statusIcon = getStatusIcon(
                   redeemed: redeemed,
                   expired: expired,
                 );
-                final statusText = _getStatusText(
+                final statusText = getStatusText(
                   redeemed: redeemed,
                   expired: expired,
                 );

@@ -1,4 +1,4 @@
-# loyalty_program_application
+# metsec_loyalty_app
 
 A new Flutter project.
 

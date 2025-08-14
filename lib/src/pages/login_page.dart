@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/providers/auth_provider.dart';
-import 'package:loyalty_program_application/src/utils/show_loading_dialog_while.dart';
+import 'package:metsec_loyalty_app/src/pages/forgot_password_page.dart';
+import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
+import 'package:metsec_loyalty_app/src/utils/show_loading_dialog_while.dart';
 import 'package:provider/provider.dart';
-import './forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,7 +19,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final _phoneController = TextEditingController();
   final _otpController = TextEditingController();
   bool _rememberMe = false;
-  late TabController _tabController;
   int _selectedLoginMethod = 0; // 0 = Email, 1 = Phone
 
   bool _obscureText = true;
@@ -33,7 +32,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
   }
 
   void _loginWithEmail() async {
@@ -48,12 +46,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       final result = await authProvider.login(
-        username: _emailController.text.trim(),
+        email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
       // Close the loading dialog
-      Navigator.of(context, rootNavigator: true).pop();
+      if (mounted) Navigator.of(context, rootNavigator: true).pop();
 
       _handleLoginResult(result);
     }
@@ -73,7 +71,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         _otpController.text.trim(),
       );
       // Close the loading dialog
-      Navigator.of(context, rootNavigator: true).pop();
+      if (mounted) Navigator.of(context, rootNavigator: true).pop();
 
       _handleLoginResult(result);
     }
@@ -92,7 +90,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         },
       );
       final getOtpResponse = authProvider.getOtpResponse;
-      if (getOtpResponse?.containsKey("data") == true) {
+      if (getOtpResponse?.containsKey("data") == true && mounted) {
         setState(() {
           _isOtpSent = true;
         });
@@ -110,7 +108,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             behavior: SnackBarBehavior.floating,
           ),
         );
-      } else if (getOtpResponse!.containsKey("detail")) {
+      } else if (getOtpResponse!.containsKey("detail") && mounted) {
         setState(() {
           _isOtpSent = false;
         });
@@ -121,7 +119,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               children: [
                 const Icon(Icons.error, color: Colors.white),
                 const SizedBox(width: 12),
-                Text(getOtpResponse!["detail"] ?? "No message"),
+                Text(getOtpResponse["detail"] ?? "No message"),
               ],
             ),
             backgroundColor: Colors.red,
@@ -196,13 +194,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   void _signInWithGoogle() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await authProvider.loginWithGoogle();
+    final result = await authProvider.loginWithGoogle();
+
+    if (result != null) {
+      authProvider.getUserProfile().then((_) => _handleLoginResult(result));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-
     return Scaffold(
       body: Stack(
         children: [
@@ -314,6 +314,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   Widget _buildEmailLoginTab() {
+    final authProvider = context.watch<AuthProvider>();
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Form(
@@ -329,8 +331,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 prefixIcon: Icon(Icons.email),
               ),
               validator: (value) {
-                if (value == null || value.isEmpty)
+                if (value == null || value.isEmpty) {
                   return 'Please enter your email';
+                }
                 if (!value.contains('@')) return 'Enter a valid email';
                 return null;
               },
@@ -351,10 +354,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 ),
               ),
               validator: (value) {
-                if (value == null || value.isEmpty)
+                if (value == null || value.isEmpty) {
                   return 'Please enter your password';
-                if (value.length < 6)
+                }
+                if (value.length < 6) {
                   return 'Password must be at least 6 characters';
+                }
                 return null;
               },
             ),
@@ -391,15 +396,23 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _signInWithGoogle,
-              icon: const Icon(Icons.account_circle),
-              label: const Text('Continue with Google'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                padding: const EdgeInsets.symmetric(vertical: 18.0),
-              ),
-            ),
+            authProvider.isSigningWithGoogle
+                ? SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: Center(
+                      child: const CircularProgressIndicator(color: Colors.red),
+                    ),
+                  )
+                : ElevatedButton.icon(
+                    onPressed: _signInWithGoogle,
+                    icon: Icon(Icons.account_circle),
+                    label: const Text('Continue with Google'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      padding: const EdgeInsets.symmetric(vertical: 18.0),
+                    ),
+                  ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

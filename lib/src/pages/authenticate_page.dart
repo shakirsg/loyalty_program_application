@@ -1,25 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:loyalty_program_application/src/pages/history_page.dart';
-import 'package:loyalty_program_application/src/pages/product_info_page.dart';
-import 'package:loyalty_program_application/src/providers/guest_provider.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
-import 'package:loyalty_program_application/src/services/location_service.dart';
+import 'package:metsec_loyalty_app/src/pages/product_info_page.dart';
+import 'package:metsec_loyalty_app/src/providers/guest_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import 'package:loyalty_program_application/src/components/CornerPainter.dart';
-import 'package:loyalty_program_application/src/pages/history_page.dart';
-import 'package:loyalty_program_application/src/pages/earn_point_page.dart';
+import 'package:metsec_loyalty_app/src/components/corner_painter.dart';
 
 class AuthenticatePage extends StatefulWidget {
   const AuthenticatePage({super.key});
 
   @override
-  _QRViewExampleState createState() => _QRViewExampleState();
+  QRViewExampleState createState() => QRViewExampleState();
 }
 
-class _QRViewExampleState extends State<AuthenticatePage>
+class QRViewExampleState extends State<AuthenticatePage>
     with SingleTickerProviderStateMixin {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
@@ -47,7 +41,6 @@ class _QRViewExampleState extends State<AuthenticatePage>
 
   @override
   void dispose() {
-    controller?.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -55,7 +48,6 @@ class _QRViewExampleState extends State<AuthenticatePage>
   @override
   void reassemble() {
     super.reassemble();
-    print("resum -----------");
     if (Platform.isAndroid) {
       controller?.pauseCamera();
     } else if (Platform.isIOS) {
@@ -63,19 +55,18 @@ class _QRViewExampleState extends State<AuthenticatePage>
     }
   }
 
-  Widget _buildHistoryButton(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.work_history, color: Colors.white),
-      tooltip: 'History',
-      onPressed: () {
-        // TODO: Navigate to history details page
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => HistoryPage()),
-        );
-      },
-    );
-  }
+  // Widget _buildHistoryButton(BuildContext context) {
+  //   return IconButton(
+  //     icon: const Icon(Icons.work_history, color: Colors.white),
+  //     tooltip: 'History',
+  //     onPressed: () {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (_) => HistoryPage()),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -171,11 +162,11 @@ class _QRViewExampleState extends State<AuthenticatePage>
   }
 
   Widget _buildResultOverlay() {
-    final isClaiming = context.watch<UserProvider>().isClaiming;
+    // final isClaiming = context.watch<UserProvider>().isClaiming;
 
     return Positioned.fill(
       child: Container(
-        color: Colors.black.withOpacity(0.85),
+        color: Colors.black.withValues(alpha: 0.85),
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -204,7 +195,7 @@ class _QRViewExampleState extends State<AuthenticatePage>
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Barcode Type: ${describeEnum(result!.format)}\nData: ${result!.code}',
+                    'Barcode Type: ${result!.format.name}\nData: ${result!.code}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.white70),
                   ),
@@ -260,25 +251,28 @@ class _QRViewExampleState extends State<AuthenticatePage>
                     );
 
                     // Close the loading dialog
-                    Navigator.of(context, rootNavigator: true).pop();
+                    if (mounted) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
 
                     final productInfo = guestProvider.productInfo;
                     if (productInfo is Map<String, dynamic>) {
                       if (productInfo.containsKey('detail')) {
-                        // ❌ Show error dialog
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text('Error'),
-                            content: Text(productInfo['detail']),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
+                        if (mounted) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Error'),
+                              content: Text(productInfo['detail']),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                       } else {
                         // // ✅ Show success dialog with points
                         // showDialog(
@@ -294,29 +288,32 @@ class _QRViewExampleState extends State<AuthenticatePage>
                         //     ],
                         //   ),
                         // );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ProductInfoPage(productInfo: productInfo),
+                        if (mounted) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  ProductInfoPage(productInfo: productInfo),
+                            ),
+                          );
+                        }
+                      }
+                    } else {
+                      if (mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Error'),
+                            content: Text('Unexpected response format.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('OK'),
+                              ),
+                            ],
                           ),
                         );
                       }
-                    } else {
-                      // 🚫 Show unexpected format dialog
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Error'),
-                          content: Text('Unexpected response format.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
                     }
                   },
                   icon: const Icon(Icons.check),

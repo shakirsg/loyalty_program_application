@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/help_support_page.dart';
-import 'package:loyalty_program_application/src/pages/manage_account_page.dart';
-import 'package:loyalty_program_application/src/pages/notifications_page.dart';
-import 'package:loyalty_program_application/src/pages/privacy_security_page.dart';
-import 'package:loyalty_program_application/src/providers/auth_provider.dart';
-import 'package:loyalty_program_application/src/providers/navigation_provider.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
-import 'package:loyalty_program_application/src/services/local_storage_service.dart';
+import 'package:metsec_loyalty_app/src/pages/manage_account_page.dart';
+import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/navigation_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
+import 'package:metsec_loyalty_app/src/services/local_storage_service.dart';
 import 'package:provider/provider.dart';
-import 'package:skeleton_loader/skeleton_loader.dart'; // Import Notifications Page
+import 'package:skeleton_loader/skeleton_loader.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -25,11 +22,9 @@ class ProfilePage extends StatelessWidget {
     final county = userProfile?['county'] ?? 'N/A';
     final country = userProfile?['country'] ?? 'N/A';
     final idNumber = userProfile?['id_number'] ?? 'N/A';
-    final created = userProfile?['created'] ?? 'N/A';
-    final updated = userProfile?['updated'] ?? 'N/A';
-    final points = context.watch<UserProvider>().total_points.toStringAsFixed(
-      3,
-    );
+    // final created = userProfile?['created'] ?? 'N/A';
+    // final updated = userProfile?['updated'] ?? 'N/A';
+    final points = context.watch<UserProvider>().totalPoints.toStringAsFixed(3);
     final isLoadingUserProfile = context
         .watch<AuthProvider>()
         .isLoadingUserProfile;
@@ -38,16 +33,7 @@ class ProfilePage extends StatelessWidget {
         .isLoadingUserPoints;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: Navigator.of(context).canPop()
-            ? IconButton(
-                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null, // no back button on root page
-        title: Text('Profile'),
-      ),
-
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -186,7 +172,6 @@ class ProfilePage extends StatelessWidget {
                                   color: Colors.deepOrange,
                                 ),
                                 onPressed: () {
-                                  // TODO: handle edit action
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -243,7 +228,7 @@ class ProfilePage extends StatelessWidget {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  '$points',
+                                  points,
                                   style: const TextStyle(
                                     color: Colors.blueAccent,
                                     fontSize: 18,
@@ -256,7 +241,7 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ), // Wrap the settings items inside a Card
+                  ),
             // Card(
             //   margin: EdgeInsets.all(16),
             //   elevation: 5,
@@ -369,20 +354,21 @@ class ProfilePage extends StatelessWidget {
 
                               // Optional: Clear auth/user state if using Provider
                               // Provider.of<AuthProvider>(context, listen: false).logout(); ← if you have it
-                              // TODO: Add your logout logic here
-                              context.read<NavigationProvider>().setIndex_(0);
-                              final userProvider = Provider.of<UserProvider>(
-                                context,
-                                listen: false,
-                              );
-                              userProvider.reset();
+                              if (context.mounted) {
+                                context.read<NavigationProvider>().setIndex_(0);
+                                final userProvider = Provider.of<UserProvider>(
+                                  context,
+                                  listen: false,
+                                );
+                                userProvider.reset();
 
-                              // Then navigate or clean session
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                '/login',
-                                (route) => false,
-                              );
+                                // Then navigate or clean session
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  '/login',
+                                  (route) => false,
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFFF05024),
@@ -414,21 +400,21 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildDateRow(String label, String? date) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              date ?? 'N/A',
-              style: const TextStyle(color: Colors.grey),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+//   Widget _buildDateRow(String label, String? date) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(vertical: 4),
+//       child: Row(
+//         children: [
+//           Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+//           const SizedBox(width: 6),
+//           Expanded(
+//             child: Text(
+//               date ?? 'N/A',
+//               style: const TextStyle(color: Colors.grey),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
 }

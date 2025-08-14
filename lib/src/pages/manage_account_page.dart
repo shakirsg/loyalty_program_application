@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/providers/auth_provider.dart';
-import 'package:loyalty_program_application/src/providers/user_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/auth_provider.dart';
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class ManageAccountPage extends StatefulWidget {
@@ -80,7 +80,7 @@ class _ManageAccountPageState extends State<ManageAccountPage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final userProfile = authProvider.userProfile ?? {};
+    // final userProfile = authProvider.userProfile ?? {};
     final fullName = authProvider.fullName ?? '';
     return Scaffold(
       appBar: AppBar(
@@ -302,7 +302,7 @@ class _ManageAccountPageState extends State<ManageAccountPage> {
             // Save Button at the Bottom (full width)
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Container(
+              child: SizedBox(
                 width: double.infinity, // This ensures full width
                 child: ElevatedButton(
                   onPressed: () async {
@@ -328,7 +328,6 @@ class _ManageAccountPageState extends State<ManageAccountPage> {
                             ElevatedButton(
                               onPressed: () async {
                                 // Show loading dialog
-                                
                                 showDialog(
                                   context: context,
                                   barrierDismissible: false,
@@ -341,52 +340,56 @@ class _ManageAccountPageState extends State<ManageAccountPage> {
                                   listen: false,
                                 );
 
-                                final success = await userProvider
-                                    .editUserProfile(
-                                      firstName: _firstNameController.text
-                                          .trim(),
-                                      lastName: _lastNameController.text.trim(),
-                                      phone: _phoneController.text.trim(),
-                                      email: _emailController.text.trim(),
-                                      password: _passwordController.text.trim(),
-                                      city: _cityController.text.trim(),
-                                      county: _countyController.text.trim(),
-                                      country: _countryController.text.trim(),
-                                      profession: _professionController.text
-                                          .trim(),
-                                      idNumber: _idNumberController.text.trim(),
-                                    );
-                                await Provider.of<AuthProvider>(
-                                  context,
-                                  listen: false,
-                                ).getUserProfile();
+                                await userProvider.editUserProfile(
+                                  firstName: _firstNameController.text.trim(),
+                                  lastName: _lastNameController.text.trim(),
+                                  phone: _phoneController.text.trim(),
+                                  email: _emailController.text.trim(),
+                                  password: _passwordController.text.trim(),
+                                  city: _cityController.text.trim(),
+                                  county: _countyController.text.trim(),
+                                  country: _countryController.text.trim(),
+                                  profession: _professionController.text.trim(),
+                                  idNumber: _idNumberController.text.trim(),
+                                );
+
+                                if (context.mounted) {
+                                  await Provider.of<AuthProvider>(
+                                    context,
+                                    listen: false,
+                                  ).getUserProfile();
+                                }
                                 // Here, you can send the data to an API or  save it locally
                                 // Close the loading dialog
-                                Navigator.of(
-                                  context,
-                                  rootNavigator: true,
-                                ).pop();
+                                if (context.mounted) {
+                                  Navigator.of(
+                                    context,
+                                    rootNavigator: true,
+                                  ).pop();
+                                }
                                 // Show a confirmation message or navigate back to the profile page
-                                showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                    title: Text('Profile Updated'),
-                                    content: Text(
-                                      'Your information has been successfully updated!',
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          Navigator.pop(
-                                            context,
-                                          ); // Navigate back to the Profile Page
-                                        },
-                                        child: Text('OK'),
+                                if (context.mounted) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text('Profile Updated'),
+                                      content: Text(
+                                        'Your information has been successfully updated!',
                                       ),
-                                    ],
-                                  ),
-                                );
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            Navigator.pop(
+                                              context,
+                                            ); // Navigate back to the Profile Page
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xFFF05024),
@@ -398,12 +401,12 @@ class _ManageAccountPageState extends State<ManageAccountPage> {
                       },
                     );
                   },
-                  child: Text('Save Changes'),
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: Color(0xFFF05024),
                     textStyle: TextStyle(fontSize: 18),
                   ),
+                  child: Text('Save Changes'),
                 ),
               ),
             ),

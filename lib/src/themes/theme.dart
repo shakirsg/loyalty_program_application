@@ -49,7 +49,7 @@ final ThemeData lightTheme = ThemeData(
 
   cardTheme: CardThemeData(
     color: Colors.white, // Background color of the card
-    shadowColor: Colors.black.withOpacity(0.2), // Shadow color
+    shadowColor: Colors.black.withValues(alpha: 0.2), // Shadow color
     elevation: 4, // Elevation of the card
     margin: EdgeInsets.all(8), // Margin around the card
     shape: RoundedRectangleBorder(

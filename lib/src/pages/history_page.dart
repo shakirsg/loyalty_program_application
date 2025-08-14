@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/user_provider.dart'; // adjust path as needed
+import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -140,16 +140,16 @@ class HistoryCard extends StatelessWidget {
   final String description;
   final String date;
   final String points;
-  final String expiredTime; // NEW
+  final String expiredTime;
 
   const HistoryCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     required this.date,
     required this.points,
-    required this.expiredTime, // NEW
-  }) : super(key: key);
+    required this.expiredTime,
+  });
 
   @override
   Widget build(BuildContext context) {

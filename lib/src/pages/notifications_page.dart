@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class NotificationsPage extends StatelessWidget {
+  const NotificationsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +70,8 @@ class NotificationsPage extends StatelessWidget {
 }
 
 class NotificationCard extends StatelessWidget {
+  const NotificationCard({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Card(

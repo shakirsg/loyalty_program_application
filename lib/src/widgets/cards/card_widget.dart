@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty_program_application/src/pages/authenticate_page.dart';
+import 'package:metsec_loyalty_app/src/pages/authenticate_page.dart';
 
 class CardWidget extends StatelessWidget {
   final String imageUrl;
@@ -26,25 +26,24 @@ class CardWidget extends StatelessWidget {
         // borderRadius: BorderRadius.circular(10),
         child: Column(
           children: [
-            // Card Image (same as screen width)
-            Image.asset(
-              imageUrl,
-              width: double.infinity,
-              height: width, // Set height to the screen width
-              fit: BoxFit.cover,
+            Flexible(
+              child: Image.asset(
+                imageUrl,
+                width: double.infinity,
+                height: width,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(height: 20),
-            // Card Title (use the dynamic title)
             Text(
-              title, // Use the passed title
+              title,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            // Card Description (use the dynamic description)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
-                description, // Use the passed description
+                description,
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 14),
               ),
