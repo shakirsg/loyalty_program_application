@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                 // Remove the image from here since it will be on top now
                 // Your other sections here...
                 SectionCard(
-                  title: 'M-Fundi',
+                  title: 'MFundi',
                   titleColor: Colors.white,
                   description: 'Welcome back! $fullName',
                   descriptionColor: Colors.white,
