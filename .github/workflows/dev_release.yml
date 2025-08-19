@@ -55,15 +55,14 @@ jobs:
         run: flutter build apk --release
 
       - name: Rename APK with version
-        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/m-fundi.apk
-        # run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-${{ env.VERSION_NAME }}.apk
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/mfundi.apk
 
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
+      # - name: Install Firebase CLI
+      #   run: npm install -g firebase-tools
 
-      - name: Upload to Firebase App Distribution
-        run: |
-          firebase appdistribution:distribute build/app/outputs/flutter-apk/m-fundi.apk \
-            --app ${{ secrets.FIREBASE_APP_ID }} \
-            --token ${{ secrets.FIREBASE_TOKEN }} \
-            --groups testers
+      # - name: Upload to Firebase App Distribution
+      #   run: |
+      #     firebase appdistribution:distribute build/app/outputs/flutter-apk/mfundi.apk \
+      #       --app ${{ secrets.FIREBASE_APP_ID }} \
+      #       --token ${{ secrets.FIREBASE_TOKEN }} \
+      #       --groups testers
