@@ -42,12 +42,12 @@ class _StandingPage extends State<StandingPage> {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets/eyby.png',
+                    'assets/logo.jpg',
                     height: 80,
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Join Eyby Loyalty Program',
+                    'Join MFundi Loyalty Program',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -124,7 +124,7 @@ class _StandingPage extends State<StandingPage> {
             const Padding(
               padding: EdgeInsets.only(bottom: 8.0),
               child: Text(
-                'By Eyby',
+                'By MFundi',
                 style: TextStyle(fontSize: 14, color: Colors.black54),
               ),
             ),

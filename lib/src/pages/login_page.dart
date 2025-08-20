@@ -211,7 +211,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             children: [
               const SizedBox(height: 120),
               const Text(
-                'Welcome to Eyby Points!',
+                'Welcome to Mfundi Points!',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
@@ -297,15 +297,18 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           ),
 
           Positioned(
-            top: 0,
-            right: -30,
+            top: 50,
+            right: 20,
             child: GestureDetector(
               onTap: () {
                 // Do something when logo is tapped
                 // Example: Navigate to settings page
                 Navigator.pushNamed(context, '/landing');
               },
-              child: Image.asset('assets/eyby.png', width: 200, height: 150),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset('assets/logo.jpg', height: 50, width: 50),
+              ),
             ),
           ),
         ],
