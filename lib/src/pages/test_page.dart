@@ -216,7 +216,7 @@ class HomePage extends StatelessWidget {
       backgroundColor: Colors.transparent,
       body: Center(
         child: Text(
-          'Welcome to Eyby Points!',
+          'Welcome to Mfundi Points!',
           style: TextStyle(
             fontSize: 28,
             color: Colors.white,
