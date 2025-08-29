@@ -6,7 +6,7 @@ import 'package:metsec_loyalty_app/src/pages/history_page.dart';
 import 'package:metsec_loyalty_app/src/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import 'package:metsec_loyalty_app/src/components/corner_painter.dart';
+import 'package:geolocator/geolocator.dart';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({super.key});
@@ -22,10 +22,8 @@ class QRViewExampleState extends State<ScannerPage>
   QRViewController? controller;
 
   late AnimationController _animationController;
-  late Animation<double> _animation;
 
   final double scanBoxSize = 250;
-
   bool isProcessing = false;
 
   @override
@@ -35,10 +33,6 @@ class QRViewExampleState extends State<ScannerPage>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat();
-
-    _animation = Tween<double>(begin: 0, end: scanBoxSize).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.linear),
-    );
   }
 
   @override
@@ -78,7 +72,11 @@ class QRViewExampleState extends State<ScannerPage>
       appBar: AppBar(
         leading: Navigator.of(context).canPop()
             ? IconButton(
-                icon: Icon(Icons.chevron_left, color: Colors.white, size: 28),
+                icon: const Icon(
+                  Icons.chevron_left,
+                  color: Colors.white,
+                  size: 28,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
               )
             : null,
@@ -87,11 +85,11 @@ class QRViewExampleState extends State<ScannerPage>
       ),
       body: Stack(
         children: [
+          // Camera view
           QRView(
             key: qrKey,
             onQRViewCreated: _onQRViewCreated,
             cameraFacing: CameraFacing.back,
-            // autofocus: true by default
             overlay: QrScannerOverlayShape(
               borderColor: Colors.red,
               borderRadius: 10,
@@ -100,6 +98,7 @@ class QRViewExampleState extends State<ScannerPage>
               cutOutSize: scanBoxSize,
             ),
           ),
+          // Animated overlay
           Center(
             child: Stack(
               children: [
@@ -111,41 +110,7 @@ class QRViewExampleState extends State<ScannerPage>
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: _cornerBox(Alignment.topLeft),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: _cornerBox(Alignment.topRight),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  child: _cornerBox(Alignment.bottomLeft),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: _cornerBox(Alignment.bottomRight),
-                ),
-                AnimatedBuilder(
-                  animation: _animation,
-                  builder: (context, child) {
-                    return Positioned(
-                      top: _animation.value,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        width: scanBoxSize,
-                        height: 2,
-                        color: Colors.redAccent,
-                      ),
-                    );
-                  },
-                ),
+                // ... your corner boxes & animated red line
               ],
             ),
           ),
@@ -155,19 +120,7 @@ class QRViewExampleState extends State<ScannerPage>
     );
   }
 
-  Widget _cornerBox(Alignment alignment) {
-    return SizedBox(
-      width: 80,
-      height: 80,
-      child: CustomPaint(
-        painter: CornerPainter(color: Colors.red, alignment: alignment),
-      ),
-    );
-  }
-
   Widget _buildResultOverlay() {
-    // final isClaiming = context.watch<UserProvider>().isClaiming;
-
     return Positioned.fill(
       child: Container(
         color: Colors.black.withValues(alpha: 0.85),
@@ -175,6 +128,7 @@ class QRViewExampleState extends State<ScannerPage>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Top section with scan result
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -207,14 +161,10 @@ class QRViewExampleState extends State<ScannerPage>
               ),
             ),
             const SizedBox(height: 32),
+
+            // Buttons
             Column(
               children: [
-                const Text(
-                  'You can now scan another QR code if needed.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white60),
-                ),
-                const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: () async {
                     await controller?.resumeCamera();
@@ -237,117 +187,7 @@ class QRViewExampleState extends State<ScannerPage>
                 const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: () async {
-                    // try {
-                    //   final position =
-                    //       await LocationService.determinePosition();
-                    //   final address =
-                    //       await LocationService.getAddressFromPosition(
-                    //         position,
-                    //       );
-
-                    //   print(
-                    //     'Lat: ${position.latitude}, Lng: ${position.longitude}',
-                    //   );
-                    //   print('Address: $address');
-                    // } catch (e) {
-                    //   print('Error: $e');
-                    // }
-                    // Show loading dialog
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (_) =>
-                          const Center(child: CircularProgressIndicator()),
-                    );
-                    await Provider.of<UserProvider>(
-                      context,
-                      listen: false,
-                    ).claimPointsWithLocation('${result!.code}');
-                    // Close the loading dialog
-                    // if (!mounted) return;
-                    Navigator.of(context, rootNavigator: true).pop();
-                    final claimResult = Provider.of<UserProvider>(
-                      context,
-                      listen: false,
-                    ).claimResult;
-                    if (claimResult is Map<String, dynamic>) {
-                      if (claimResult.containsKey('detail')) {
-                        // ❌ Show error dialog
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Row(
-                              children: [
-                                Icon(Icons.error, color: Colors.red),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Unable to claim points, ${claimResult['detail']}',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text('OK'),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        // ✅ Show success dialog with points
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Row(
-                              children: [
-                                Icon(Icons.celebration, color: Colors.green),
-                                SizedBox(width: 8),
-                                Text(
-                                  'You have earned ${claimResult['points']} points',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: Text(
-                                  'OK',
-                                  style: TextStyle(color: Colors.green),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    } else {
-                      // 🚫 Show unexpected format dialog
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Error'),
-                          content: Text('Unexpected response format.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    Provider.of<UserProvider>(
-                      context,
-                      listen: false,
-                    ).getUserPoints();
+                    await _handleClaimPoints(context, '${result!.code}');
                   },
                   icon: const Icon(Icons.trending_up),
                   label: const Text('Get Points'),
@@ -371,23 +211,167 @@ class QRViewExampleState extends State<ScannerPage>
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) async {
       if (!isProcessing && result == null) {
-        isProcessing = true; // prevent multiple triggers immediately
-
+        isProcessing = true;
         setState(() {
           result = scanData;
         });
-
         try {
           await controller.pauseCamera();
-
-          // Optional: handle heavy processing here with compute() if needed
-          // await compute(processScanData, scanData);
         } catch (e) {
           debugPrint('Camera error: $e');
         }
-        // Don't resume camera automatically here to avoid UI flicker.
-        // Let user tap "Scan Again" button to resume.
       }
     });
+  }
+
+  /// Handles the flow for claiming points with location permission
+  Future<void> _handleClaimPoints(BuildContext context, String qrCode) async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      // Already granted → claim points directly
+      await _claim(context, qrCode);
+      return;
+    }
+
+    if (permission == LocationPermission.denied) {
+      // Show disclosure before requesting
+      final consent = await _showLocationDisclosure(context);
+      if (!consent) return;
+
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        await _claim(context, qrCode);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Location permission denied.")),
+        );
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Location permission permanently denied. Please enable it in Settings.",
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Calls provider and handles loading + dialogs
+  Future<void> _claim(BuildContext context, String qrCode) async {
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    await Provider.of<UserProvider>(
+      context,
+      listen: false,
+    ).claimPointsWithLocation(qrCode);
+
+    if (context.mounted) {
+      Navigator.of(context, rootNavigator: true).pop(); // close loading
+    }
+
+    final claimResult = Provider.of<UserProvider>(
+      context,
+      listen: false,
+    ).claimResult;
+
+    if (claimResult is Map<String, dynamic>) {
+      if (claimResult.containsKey('detail')) {
+        _showResultDialog(
+          context,
+          "Unable to claim points, ${claimResult['detail']}",
+          Icons.error,
+          Colors.red,
+        );
+      } else {
+        _showResultDialog(
+          context,
+          "You have earned ${claimResult['points']} points",
+          Icons.celebration,
+          Colors.green,
+        );
+      }
+    } else {
+      _showResultDialog(
+        context,
+        "Unexpected response format.",
+        Icons.error,
+        Colors.red,
+      );
+    }
+
+    Provider.of<UserProvider>(context, listen: false).getUserPoints();
+  }
+
+  void _showResultDialog(
+    BuildContext context,
+    String message,
+    IconData icon,
+    Color iconColor,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(icon, color: iconColor),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Prominent disclosure dialog
+  Future<bool> _showLocationDisclosure(BuildContext context) async {
+    return await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Location Permission Required"),
+              content: const Text(
+                "This app collects location data to verify your presence when claiming points. "
+                "Your location is only used for this feature and is never shared with third parties.",
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("Allow"),
+                  onPressed: () => Navigator.of(context).pop(true),
+                ),
+                TextButton(
+                  child: const Text("No Thanks", style: TextStyle(color: Colors.red)),
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 }
